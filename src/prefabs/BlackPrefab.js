@@ -7,6 +7,6 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-
+        //Add updates here
     }
 }
