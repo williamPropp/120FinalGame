@@ -1,3 +1,5 @@
+'use strict';
+
 let config = {
     type: Phaser.Canvas,
     width: 960,
@@ -8,7 +10,7 @@ let config = {
             debug: false,
         }
     },
-    scene: [Menu, Play]
+    scene: [/*Menu,*/ Play]
 }
 
 let game = new Phaser.Game(config);

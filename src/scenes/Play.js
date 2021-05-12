@@ -25,6 +25,19 @@ class Play extends Phaser.Scene {
         //     loop: true,
         // });
         // this.soundtrack.play();
+        this.bg = this.add.rectangle(0, 0, game.config.width, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
+
+        this.button = this.add.circle(game.config.width/2, game.config.height/2, game.config.width/8, 0xFF2255).setOrigin(0.5,0.5);
+        this.button.setInteractive({
+            draggable: false,
+            useHandCursor: false
+        });
+        this.input.on('gameobjectdown', (pointer, gameObject, event) => {
+            // console.log(pointer);
+            // console.log(gameObject);
+            // console.log(event);
+            this.clickOn();
+        });
 
         //Define keys
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -33,5 +46,10 @@ class Play extends Phaser.Scene {
 
     update() {
 
+    }
+
+    clickOn() {
+        console.log('button clicked');
+        //this.button.setTint(0x0000FF);
     }
 }
