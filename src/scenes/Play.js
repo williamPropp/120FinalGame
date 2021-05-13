@@ -14,7 +14,7 @@ class Play extends Phaser.Scene {
 
         //Initialize data variables
         this.Y_GRAVITY = 2600;
-        
+        this.physics.world.gravity.y = this.Y_GRAVITY;
         
         //Max amount of Ingredient that can fit in 1 kg bag
         this.maxPeanuts = 1000;
@@ -50,11 +50,24 @@ class Play extends Phaser.Scene {
             gameObject.x = 25;
             gameObject.y = 600;
         });
+        this.bin.on('drop', (pointer, target) => {
+            // note: the message below will be superseded by the dragend event above
+            console.log(`Dropped '${this.burrito.texture.key}' on '${target.texture.key}'`);
+            this.printMessage(`Dropped '${this.burrito.texture.key}' on '${target.texture.key}'`);
+            // put the burrito in the garbage
+            if (target.texture.key === 'trash') {
+                this.burrito.destroy();
+            }
+        });
 
-        this.button = this.add.circle(game.config.width - 200, game.config.height/4, game.config.width/8, 0xFF2255).setOrigin(0.5,0.5);
+        this.button = this.add.circle(game.config.width - 200, game.config.height/4, game.config.width/16, 0xFF0000).setOrigin(0.5,0.5);
+        this.physics.add.existing(this.button, 1);
+        this.physics.world.enable(this.button, 1);
+        this.buttonBox = this.button.body;
+        this.buttonBox.setCircle(game.config.width/16);
         this.button.setInteractive({
             draggable: false,
-            useHandCursor: false
+            useHandCursor: true
         });
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
             console.log(pointer);
@@ -116,6 +129,19 @@ class Play extends Phaser.Scene {
             createMultipleCallback: null
         });
 
+        //ingredients physics group
+        this.ingredients = this.physics.add.group({
+            classType: Phaser.GameObjects.Sprite,
+            defaultKey: null,
+            defaultFrame: null,
+            active: true,
+            maxSize: -1,
+            runChildUpdate: false,
+            createCallback: null,
+            removeCallback: null,
+            createMultipleCallback: null
+        });
+
     }
 
     update() {
@@ -125,9 +151,10 @@ class Play extends Phaser.Scene {
     clickOn() {
         console.log('button clicked');
         this.button.setData('fillColor', 0x0000FF);
-        let x = Phaser.clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-square.width);
-        let y = Phaser.clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-square.height);
-        new Ingredient(this, x, y, ).setOrigin(0,0);
+        let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
+        let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
+        let spawnedIngredient = new Ingredient(this, x, y, 'square').setOrigin(0,0);
+        this.ingredients.add(spawnedIngredient);
     }
 
 
