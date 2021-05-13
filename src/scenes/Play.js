@@ -39,6 +39,11 @@ class Play extends Phaser.Scene {
 
         this.conveyor = this.add.rectangle(0, 450, game.config.width - 250, game.config.height/10, 0x000000).setOrigin(0 ,0);
 
+        this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
+        this.physics.add.existing(this.floor);
+        this.floor.setData('gravityEnabled','false');
+        this.floor.body.collideWorldBounds = true;
+
         this.bin = this.add.rectangle(25, 600, 100, 200, 0x808080).setOrigin(0 ,0);
         this.bin.setInteractive();
         this.input.setDraggable(this.bin);
@@ -142,10 +147,17 @@ class Play extends Phaser.Scene {
             createMultipleCallback: null
         });
 
+        this.physics.add.collider(this.ingredients, this.ingredients);
+        this.physics.add.collider(this.floor, this.ingredients);
+
     }
 
     update() {
 
+    }
+
+    collided() {
+        console.log('collision occured');
     }
 
     clickOn() {
@@ -155,6 +167,7 @@ class Play extends Phaser.Scene {
         let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
         let spawnedIngredient = new Ingredient(this, x, y, 'square').setOrigin(0,0);
         this.ingredients.add(spawnedIngredient);
+        spawnedIngredient.body.collideWorldBounds = true;
     }
 
 
