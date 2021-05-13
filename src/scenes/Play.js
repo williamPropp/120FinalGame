@@ -13,7 +13,8 @@ class Play extends Phaser.Scene {
     create() {
 
         //Initialize data variables
-
+        this.Y_GRAVITY = 2600;
+        
         //Initialize location variables
         
         //Initialize UI coordinate variables
@@ -55,7 +56,7 @@ class Play extends Phaser.Scene {
         this.button.setData('fillColor', 0x0000FF);
         let x = Phaser.clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-square.width);
         let y = Phaser.clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-square.height);
-        new Ingredient(this, x, y, 'square').setOrigin(0,0);
+        new Ingredient(this, x, y, ).setOrigin(0,0);
     }
 
 
