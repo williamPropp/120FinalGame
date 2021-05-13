@@ -6,6 +6,8 @@ class Play extends Phaser.Scene {
 
     preload() {
         //Load all assets
+        this.load.path = './assets/';
+        this.load.image('square', 'square.png');
     }
 
     create() {
@@ -33,9 +35,9 @@ class Play extends Phaser.Scene {
             useHandCursor: false
         });
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
-            // console.log(pointer);
-            // console.log(gameObject);
-            // console.log(event);
+            console.log(pointer);
+            console.log(gameObject);
+            console.log(event);
             this.clickOn();
         });
 
@@ -50,6 +52,11 @@ class Play extends Phaser.Scene {
 
     clickOn() {
         console.log('button clicked');
-        //this.button.setTint(0x0000FF);
+        this.button.setData('fillColor', 0x0000FF);
+        let x = Phaser.clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-square.width);
+        let y = Phaser.clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-square.height);
+        new Ingredient(this, x, y, 'square').setOrigin(0,0);
     }
+
+
 }

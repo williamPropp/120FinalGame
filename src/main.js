@@ -8,6 +8,7 @@ let config = {
         default: 'arcade',
         arcade: {
             debug: false,
+            gravity: 0.9,
         }
     },
     scene: [/*Menu,*/ Play]
