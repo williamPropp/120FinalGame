@@ -22,6 +22,10 @@ class Play extends Phaser.Scene {
         this.maxMNMs = 909;
         this.maxAlmonds = 769;
 
+
+        //Starting cash
+        this.money = 50;
+        
         //Initialize location variables
         
         //Initialize UI coordinate variables
@@ -169,6 +173,26 @@ class Play extends Phaser.Scene {
         this.ingredients.add(spawnedIngredient);
         spawnedIngredient.body.collideWorldBounds = true;
     }
+    // Call this method when spending any amount of money
+    spendCash(spent) {
+        this.money -= spent;
+    }
 
+    //Calculates money made from selling trail mix bag
+    //Mix will be an array of the weight of each ingredient contained in the bag: [peanuts, raisins, m&ms, almonds] 
+    sellMix(mix){
+        this.money += (0.0214 * mix[0] + 0.0208 * mix[1] / 0.5 + 0.0745 * mix[2] / 1.1 + 0.0465 * mix[3] / 1.3);         
+    }
+
+    //Calculates the total weight of the trail mix bag and percentage of each ingredient in bag
+    //Mix will be an array of the weight of each ingredient contained in the bag: [peanuts, raisins, m&ms, almonds] 
+    weightAndPercentage(mix){
+        let totalWeight = mix[0] + mix[1] + mix[2] + mix[3];
+        console.log("Total weight of bag: " + totalWeight);
+        console.log("Peanut %: " + mix[0] / totalWeight);
+        console.log("Raisin %: " + mix[1] / totalWeight);
+        console.log("M&M %: " + mix[2] / totalWeight);
+        console.log("Almond %: " + mix[3] / totalWeight);
+    }
 
 }
