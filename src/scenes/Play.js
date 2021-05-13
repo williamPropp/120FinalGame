@@ -27,6 +27,7 @@ class Play extends Phaser.Scene {
         //Initialize UI coordinate variables
 
         //Add boolean flags
+        this.spawnIngredientLoop = false;
 
         //Add music to the scene
         // this.soundtrack = this.sound.add('soundtrack', {
@@ -35,6 +36,8 @@ class Play extends Phaser.Scene {
         //     loop: true,
         // });
         // this.soundtrack.play();
+        this.ingredientTypeArray = ["peanut", "raisin", "m&m", "almond"];
+
         this.bg = this.add.rectangle(0, 0, game.config.width, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
         this.conveyor = this.add.rectangle(0, 450, game.config.width - 250, game.config.height/10, 0x000000).setOrigin(0 ,0);
@@ -65,20 +68,37 @@ class Play extends Phaser.Scene {
             }
         });
 
-        this.button = this.add.circle(game.config.width - 200, game.config.height/4, game.config.width/16, 0xFF0000).setOrigin(0.5,0.5);
-        this.physics.add.existing(this.button, 1);
-        this.physics.world.enable(this.button, 1);
-        this.buttonBox = this.button.body;
-        this.buttonBox.setCircle(game.config.width/16);
-        this.button.setInteractive({
-            draggable: false,
-            useHandCursor: true
-        });
+        this.button1 = this.add.circle(game.config.width/2-50, game.config.height/4, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        this.button2 = this.add.circle(game.config.width/2+50, game.config.height/4, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        this.button3 = this.add.circle(game.config.width/2+150, game.config.height/4, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        this.buttons = this.add.group();
+        this.buttons.addMultiple([this.button1, this.button2, this.button3]);
+        // this.physics.add.existing(this.button, 1);
+        // this.physics.world.enable(this.button, 1);
+        // this.buttonBox = this.button.body;
+        // this.buttonBox.setCircle(game.config.width/16);
+        for(let b of this.buttons.getChildren()) {
+            b.setInteractive({
+                draggable: false,
+                useHandCursor: true
+            });
+        }
+        // this.button1.setInteractive({
+        //     draggable: false,
+        //     useHandCursor: true
+        // });
+        
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
-            console.log(pointer);
-            console.log(gameObject);
-            console.log(event);
-            this.clickOn();
+            // console.log(pointer);
+            // console.log(gameObject);
+            // console.log(event);
+            this.clickOn(gameObject);
+        });
+        this.input.on('gameobjectup', (pointer, gameObject, event) => {
+            // console.log(pointer);
+            // console.log(gameObject);
+            // console.log(event);
+            this.clickOff();
         });
 
         //Define keys
@@ -153,21 +173,32 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-
+        for(let i of this.ingredients.getChildren()){
+            if(i.x > game.config.width + i.width || i.y > game.config.height + i.height) {
+                i.destroy();
+            }
+        }
     }
 
     collided() {
-        console.log('collision occured');
+        //console.log('collision occured');
     }
 
-    clickOn() {
-        console.log('button clicked');
-        this.button.setData('fillColor', 0x0000FF);
-        let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
-        let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
-        let spawnedIngredient = new Ingredient(this, x, y, 'square').setOrigin(0,0);
+    clickOn(target) {
+        //console.log('button clicked');
+        // let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
+        // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
+        let spawnedIngredient = new Ingredient(this, target.x+((Math.floor(Math.random()*25)-12)), target.y, 'square', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)]).setOrigin(0,0);
         this.ingredients.add(spawnedIngredient);
+        let ingredientHitBox = spawnedIngredient.body;
+        ingredientHitBox.setCircle(spawnedIngredient.height/2);
         spawnedIngredient.body.collideWorldBounds = true;
+        this.spawnIngredientLoop = true;
+    }
+
+    clickOff() {
+        //console.log('click over');
+        this.spawnIngredientLoop = false;
     }
 
 
