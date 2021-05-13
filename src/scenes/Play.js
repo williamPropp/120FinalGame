@@ -11,6 +11,12 @@ class Play extends Phaser.Scene {
     create() {
 
         //Initialize data variables
+        
+        //Max amount of Ingredient that can fit in 1 kg bag
+        this.maxPeanuts = 1000;
+        this.maxRaisins = 2000;
+        this.maxMNMs = 909;
+        this.maxAlmonds = 769;
 
         //Initialize location variables
         
@@ -56,6 +62,56 @@ class Play extends Phaser.Scene {
         //Define keys
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+
+        //Create bags of Ingredients used to refill dispensers
+        this.peanutBag = this.physics.add.group({
+            classType: Phaser.GameObjects.Sprite,
+            defaultKey: null,
+            defaultFrame: null,
+            active: true,
+            maxSize: this.maxPeanuts,
+            runChildUpdate: false,
+            createCallback: null,
+            removeCallback: null,
+            createMultipleCallback: null
+        });
+
+        this.raisinBag = this.physics.add.group({
+            classType: Phaser.GameObjects.Sprite,
+            defaultKey: null,
+            defaultFrame: null,
+            active: true,
+            maxSize: this.maxRaisins,
+            runChildUpdate: false,
+            createCallback: null,
+            removeCallback: null,
+            createMultipleCallback: null
+        });
+        
+        this.MNMBag = this.physics.add.group({
+            classType: Phaser.GameObjects.Sprite,
+            defaultKey: null,
+            defaultFrame: null,
+            active: true,
+            maxSize: this.maxMNMs,
+            runChildUpdate: false,
+            createCallback: null,
+            removeCallback: null,
+            createMultipleCallback: null
+        });
+        
+        this.almondBag = this.physics.add.group({
+            classType: Phaser.GameObjects.Sprite,
+            defaultKey: null,
+            defaultFrame: null,
+            active: true,
+            maxSize: this.maxAlmonds,
+            runChildUpdate: false,
+            createCallback: null,
+            removeCallback: null,
+            createMultipleCallback: null
+        });
+
     }
 
     update() {
