@@ -1,7 +1,7 @@
 'use strict';
 
 let config = {
-    type: Phaser.Canvas,
+    type: Phaser.AUTO,
     width: 960,
     height: 720,
     physics: {
@@ -9,9 +9,13 @@ let config = {
         arcade: {
             debug: true,
             gravity: {
-                x: 0,
+                x: 0.01,
                 y: 0
             }
+        },
+        matter: {
+            debug: true,
+            gravity: { y: 0 }
         }
     },
     scene: [/*Menu,*/ Play]

@@ -1,0 +1,34 @@
+{
+	"generator_info": "Shape definitions generated with PhysicsEditor. Visit https://www.codeandweb.com/physicseditor",
+	"bag": {
+		"type": "fromPhysicsEditor",
+		"label": "bag",
+		"isStatic": false,
+		"density": 0.1,
+		"restitution": 0,
+		"friction": 0.1,
+		"frictionAir": 0.01,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"vertices": [
+					[ { "x":0, "y":0 }, { "x":0, "y":100 }, { "x":1, "y":99 } ],
+					[ { "x":0, "y":100 }, { "x":100, "y":100 }, { "x":99, "y":99 }, { "x":1, "y":99 } ],
+					[ { "x":99, "y":99 }, { "x":100, "y":100 }, { "x":100, "y":0 } ]
+				]
+			},
+			{
+				"label": "",
+				"isSensor": false,
+				"vertices": []
+			}
+		]
+	}
+}

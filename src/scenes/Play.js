@@ -8,6 +8,11 @@ class Play extends Phaser.Scene {
         //Load all assets
         this.load.path = './assets/';
         this.load.image('square', 'square.png');
+        this.load.image('wall', 'bagWall.png');
+        this.load.image('base', 'bagBase.png');
+        this.load.atlas('bag_info', 'bag.png', 'bagIcon.json');
+        this.load.json('bag_physics', 'bag.json');
+        this.load.image('conveyor', 'conveyor.png');
     }
 
     create() {
@@ -44,7 +49,47 @@ class Play extends Phaser.Scene {
 
         this.bg = this.add.rectangle(0, 0, game.config.width, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
-        this.conveyor = this.add.rectangle(0, 450, game.config.width - 250, game.config.height/10, 0x000000).setOrigin(0 ,0);
+        this.conveyor = this.add.sprite(250, 500, 'conveyor');
+        this.physics.add.existing(this.conveyor).body.setImmovable(true).setAllowGravity(false);
+
+
+        this.dispOne = this.add.rectangle(250, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
+        this.dispTwo = this.add.rectangle(370, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
+        this.dispThree = this.add.rectangle(490, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
+
+        this.bagWallOne = this.add.sprite(-50, 0, 'wall');
+        this.bagBase = this.add.sprite(0, 80, 'base');
+        this.bagWallTwo = this.add.sprite(50, 0, 'wall');
+        this.container = this.add.container(100, 10);
+        this.container.setSize(100, 200);
+        this.physics.add.existing(this.bagWallOne).body.setImmovable(true).setAllowGravity(false).pushable=false;
+        this.physics.add.existing(this.bagBase).body.setImmovable(true).setAllowGravity(false).pushable=false;
+        this.physics.add.existing(this.bagWallTwo).body.setImmovable(true).setAllowGravity(false).pushable=false;
+        this.physics.add.existing(this.container);
+        this.container.add(this.bagWallOne);
+        this.container.add(this.bagBase);
+        this.container.add(this.bagWallTwo);
+        this.bagWallOne.body.collideWorldBounds = true;
+        this.bagBase.body.collideWorldBounds = true;
+        this.bagWallTwo.body.collideWorldBounds = true;
+        //this.container.body.collideWorldBounds = true;
+
+
+        // this.inform = this.cache.json.get('bag_physics');
+        // this.bag = this.physics.add.sprite(400, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
+        // this.bag.body.collideWorldBounds = true;
+
+        // this.bagOut = this.add.rectangle(450, 300, 100, 100, 0xD3D3D3).setOrigin(0 ,0);
+        // this.bagIn = this.add.rectangle(451, 300, 98, 99, 0xFFFFFF).setOrigin(0 ,0);
+        // this.physics.add.existing(this.bagOut);
+        // this.physics.add.existing(this.bagIn);
+        // this.bagOut.setData('gravityEnabled','false');
+        // this.bagIn.setData('gravityEnabled','false');
+
+        this.scale = this.add.rectangle(game.config.width - 225, 477, game.config.width/5, game.config.height/16, 0x808080).setOrigin(0 ,0);
+        this.scaleChart = this.add.rectangle(game.config.width - 225, 550, game.config.width/5, game.config.height/5, 0x808080).setOrigin(0 ,0);
+        this.tube = this.add.rectangle(775, 0, 100, 350, 0xadd8e6).setOrigin(0 ,0);
+        this.tracker = this.add.rectangle(725, 50, 225, 250, 0xC4A484).setOrigin(0 ,0);
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
         this.physics.add.existing(this.floor);
@@ -168,20 +213,28 @@ class Play extends Phaser.Scene {
             runChildUpdate: false,
             createCallback: null,
             removeCallback: null,
-            createMultipleCallback: null
+            createMultipleCallback: null,
         });
 
         this.physics.add.collider(this.ingredients, this.ingredients);
         this.physics.add.collider(this.floor, this.ingredients);
-
+        this.physics.add.collider(this.ingredients, this.bag);
+        this.physics.add.collider(this.bagWallOne, this.ingredients);
+        this.physics.add.collider(this.bagBase, this.ingredients);
+        this.physics.add.collider(this.bagWallTwo, this.ingredients);
+        this.physics.add.collider(this.bagWallOne, this.conveyor);
+        this.physics.add.collider(this.bagBase, this.conveyor);
+        this.physics.add.collider(this.bagWallTwo, this.conveyor);
+        this.physics.add.collider(this.conveyor, this.ingredients);
+        this.physics.add.collider(this.conveyor, this.container);
     }
 
-    update() {
+    update() { 
         for(let i of this.ingredients.getChildren()){
             if(i.x > game.config.width + i.width || i.y > game.config.height + i.height) {
                 i.destroy();
             }
-        }
+        } 
     }
 
     collided() {
@@ -192,6 +245,7 @@ class Play extends Phaser.Scene {
         //console.log('button clicked');
         // let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
         // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
+        this.container.body.setVelocity(100,0);
         let spawnedIngredient = new Ingredient(this, target.x+((Math.floor(Math.random()*25)-12)), target.y, 'square', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)]).setOrigin(0,0);
         this.ingredients.add(spawnedIngredient);
         let ingredientHitBox = spawnedIngredient.body;

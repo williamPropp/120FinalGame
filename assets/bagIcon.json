@@ -1,0 +1,20 @@
+{"frames": [
+
+{
+	"filename": "bag.png",
+	"frame": {"x":0,"y":0,"w":100,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
+	"sourceSize": {"w":100,"h":100}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "bagIcon.png",
+	"format": "RGBA8888",
+	"size": {"w":100,"h":100},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:0ec68afdde23d93834b76fc3d5e731f6:ac01a5d9148cfb061068abb69eced18e:b35176c8bc8418f401888887485c36c5$"
+}
+}
