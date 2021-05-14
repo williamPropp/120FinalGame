@@ -13,6 +13,7 @@ class Play extends Phaser.Scene {
         this.load.atlas('bag_info', 'bag.png', 'bagIcon.json');
         this.load.json('bag_physics', 'bag.json');
         this.load.image('conveyor', 'conveyor.png');
+        this.load.audio('dispense', 'dispenserNoise.wav');
     }
 
     create() {
@@ -252,6 +253,7 @@ class Play extends Phaser.Scene {
         ingredientHitBox.setCircle(spawnedIngredient.height/2);
         spawnedIngredient.body.collideWorldBounds = true;
         this.spawnIngredientLoop = true;
+        this.sound.play('dispense');
     }
 
     clickOff() {
