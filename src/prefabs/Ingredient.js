@@ -6,10 +6,14 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         this.type = type;
 
-        this.color; 
-        this.weight;    //in grams
-        this.price;     //in dollars
-        this.value;     // in dollars
+        this.color;     //In hexadecimal
+        this.weight;    //In grams
+        this.price;     //In dollars
+        this.value;     //In dollars
+
+        //Bag booleans
+        this.insideBag = false;
+        this.bagQuery = true;
 
         // let candy_colors = ["blue", "red", "green", "yellow", "brown"];
         let candy_colors = [0x1c3ca6, 0xad1111, 0x4e9c0b, 0xeff53b, 0x523a00];
@@ -23,7 +27,7 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
         }
         else if(type == "raisin"){
             // this.color = "dark purple";
-            this.color = 0x2e1c2a;
+            this.color = 0x722D5E;
             this.weight = 0.5; 
             this.price = 0.0023;
             this.value = 0.0208;
@@ -48,6 +52,6 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        //Add updates here
+
     }
 }

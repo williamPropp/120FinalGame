@@ -7,7 +7,7 @@ class Play extends Phaser.Scene {
     preload() {
         //Load all assets
         this.load.path = './assets/';
-        this.load.image('square', 'square.png');
+        this.load.image('circle', 'circle.png');
         this.load.image('wall', 'bagWall.png');
         this.load.image('base', 'bagBase.png');
         this.load.atlas('bag_info', 'bag.png', 'bagIcon.json');
@@ -79,7 +79,7 @@ class Play extends Phaser.Scene {
         this.bagWallOne.body.collideWorldBounds = true;
         this.bagBase.body.collideWorldBounds = true;
         this.bagWallTwo.body.collideWorldBounds = true;
-        //this.container.body.collideWorldBounds = true;
+        this.container.body.collideWorldBounds = true;
 
 
         // this.inform = this.cache.json.get('bag_physics');
@@ -124,9 +124,9 @@ class Play extends Phaser.Scene {
             }
         });
 
-        this.button1 = this.add.circle(game.config.width/2-50, game.config.height/4, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
-        this.button2 = this.add.circle(game.config.width/2+50, game.config.height/4, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
-        this.button3 = this.add.circle(game.config.width/2+150, game.config.height/4, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        this.button1 = this.add.circle(300, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        this.button2 = this.add.circle(420, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        this.button3 = this.add.circle(540, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
         this.buttons = this.add.group();
         this.buttons.addMultiple([this.button1, this.button2, this.button3]);
         // this.physics.add.existing(this.button, 1);
@@ -225,8 +225,10 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.floor, this.ingredients);
         this.physics.add.collider(this.ingredients, this.bag);
         this.physics.add.collider(this.bagWallOne, this.ingredients);
+        this.physics.add.collider(this.ingredients, this.bagWallOne);
         this.physics.add.collider(this.bagBase, this.ingredients);
         this.physics.add.collider(this.bagWallTwo, this.ingredients);
+        this.physics.add.collider(this.ingredients, this.bagWallTwo);
         this.physics.add.collider(this.bagWallOne, this.conveyor);
         this.physics.add.collider(this.bagBase, this.conveyor);
         this.physics.add.collider(this.bagWallTwo, this.conveyor);
@@ -257,11 +259,23 @@ class Play extends Phaser.Scene {
             }
             if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser) {
                 this.sound.play('dispense');
-                let spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'square', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)]).setOrigin(0,0);
+                let spawnedIngredient;
+                if(this.clickTarget == this.button1) {
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut', this.container).setOrigin(0,0);
+                } else if(this.clickTarget == this.button2) {
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin', this.container).setOrigin(0,0);
+                } else if(this.clickTarget == this.button3) {
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m', this.container).setOrigin(0,0);
+                } else {
+                    // Spawn random ingredient
+                    console.log(this.clickTarget);
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)], this.container).setOrigin(0,0);
+                }
+                //Add ingredient to ingredient group and change hitbox to circle
                 this.ingredients.add(spawnedIngredient);
                 let ingredientHitBox = spawnedIngredient.body;
                 ingredientHitBox.setCircle(spawnedIngredient.height/2);
-                spawnedIngredient.body.collideWorldBounds = true;
+                // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
             }
         }
 
