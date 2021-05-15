@@ -18,9 +18,18 @@ let config = {
             gravity: { y: 0 }
         }
     },
-    scene: [Menu, Play]
+    scene: [Menu, Options, Play]
 }
 
 let game = new Phaser.Game(config);
 
 let keySPACE, keyLEFT, keyRIGHT, keyESC;
+
+// Often used locations coordinates
+let screenWidth = game.config.width;
+let screenHeight = game.config.height;
+let screenCenterX = game.config.width / 2;
+let screenCenterY = game.config.height / 2;
+
+//Cheat Code Booleans
+let moneyCheat = false;

@@ -42,7 +42,6 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
             this.price = 0.028;
             this.value = 0.0465;
         }
-        console.log(this.color);
         this.setTint(this.color);
 
 

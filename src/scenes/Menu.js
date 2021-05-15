@@ -10,57 +10,38 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
-        this.input.on('pointerdown', function (pointer) {
-
-            console.log('down');
-            // this.pointerClicked(pointer);
-            while (pointer.isDown) {
-                this.add.text(pointer.x, pointer.y, Math.floor(Math.random()*64), { 
-                    fontFamily: 'Helvetica', 
-                    fontSize: '40px', 
-                    backgroundColor: '#FFFFFF00', 
-                    color: '#000000', 
-                    stroke: '#FFFFFF', 
-                    strokeThickness: 3, 
-                    align: 'right' });
-                break;
-            }
+        this.pointerDown = false;
+        this.textConfig = { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center' };
+        this.playButton = this.add.rectangle(game.config.width/2, game.config.height/2, game.config.width/10, game.config.height/12, 0x00FF00).setOrigin(0.5,0.5);
+        this.playText = this.add.text(game.config.width/2, game.config.height/2, 'Play', this.textConfig).setOrigin(0.5,0.5);
+        this.optionsButton = this.add.rectangle(game.config.width/2, game.config.height/2 + 100, game.config.width/6, game.config.height/12, 0x0000FF).setOrigin(0.5,0.5);
+        this.optionsText = this.add.text(game.config.width/2, game.config.height/2 + 100, 'Options', this.textConfig).setOrigin(0.5,0.5);
+        this.playButton.setInteractive({
+            draggable: false,
+            useHandCursor: true
+        });
+        this.optionsButton.setInteractive({
+            draggable: false,
+            useHandCursor: true
+        });
     
+        // }, this);
+        this.input.on('gameobjectdown', function (pointer, gameObject) {
+            // console.log('down');
+            this.clickOn(gameObject);
+            this.doPrintLoop = true;
         }, this);
     }
 
     update() {
-        // this.testText.setText('mouse1 is not pressed');
-        // if(game.input.activePointer.leftButton.isDown) {
-        //     this.testText.setText('mouse1 pressed');
-        // }
-        // while(this.input.on('pointerdown', function (pointer) {
-        //     console.log('down pointer');
-        //     this.add.text(pointer.x, pointer.y, Math.floor(Math.random()*64), { 
-        //         fontFamily: 'Helvetica', 
-        //         fontSize: '40px', 
-        //         backgroundColor: '#FFFFFF00', 
-        //         color: '#000000', 
-        //         stroke: '#FFFFFF', 
-        //         strokeThickness: 3, 
-        //         align: 'right' });
-        // })) {
+
     }
 
-    clickPlay() {
-        this.scene.start("playScene");
+    clickOn(gObj) {
+        if(gObj == this.playButton) {
+            this.scene.start("playScene");
+        } else if(gObj == this.optionsButton) {
+            this.scene.start("optionsScene");
+        }
     }
-
-    // pointerClicked(pointer) {
-    //     while(pointer.isDown) {
-    //         this.add.text(pointer.x, pointer.y, Math.floor(Math.random()*64), { 
-    //             fontFamily: 'Helvetica', 
-    //             fontSize: '40px', 
-    //             backgroundColor: '#FFFFFF00', 
-    //             color: '#000000', 
-    //             stroke: '#FFFFFF', 
-    //             strokeThickness: 3, 
-    //             align: 'right' });
-    //     }
-    // }
 }

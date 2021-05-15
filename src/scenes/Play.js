@@ -21,22 +21,25 @@ class Play extends Phaser.Scene {
         //Initialize data variables
         this.Y_GRAVITY = 2600;
         this.physics.world.gravity.y = this.Y_GRAVITY;
-        
+        this.frameCount = 0;
+        this.flowRate = 7; //How often in ms to spawn Ingredients
+        this.money = 50; //Starting cash
+
         //Max amount of Ingredient that can fit in 1 kg bag
         this.maxPeanuts = 1000;
         this.maxRaisins = 2000;
         this.maxMNMs = 909;
         this.maxAlmonds = 769;
-
-
-        //Starting cash
-        this.money = 50;
         
+        //Initialize Arrays;
+        this.ingredientTypeArray = ["peanut", "raisin", "m&m", "almond"];
+
         //Initialize location variables
         
         //Initialize UI coordinate variables
 
         //Add boolean flags
+        this.paused = false;
         this.spawnIngredientLoop = false;
 
         //Add music to the scene
@@ -46,9 +49,12 @@ class Play extends Phaser.Scene {
         //     loop: true,
         // });
         // this.soundtrack.play();
-        this.ingredientTypeArray = ["peanut", "raisin", "m&m", "almond"];
 
-        this.bg = this.add.rectangle(0, 0, game.config.width, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
+
+        this.clickTarget;
+        
+
+        this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
         this.conveyor = this.add.sprite(250, 500, 'conveyor');
         this.physics.add.existing(this.conveyor).body.setImmovable(true).setAllowGravity(false);
@@ -94,7 +100,7 @@ class Play extends Phaser.Scene {
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
         this.physics.add.existing(this.floor);
-        this.floor.setData('gravityEnabled','false');
+        // this.floor.setData('gravityEnabled','false');
         this.floor.body.collideWorldBounds = true;
 
         this.bin = this.add.rectangle(25, 600, 100, 200, 0x808080).setOrigin(0 ,0);
@@ -142,18 +148,16 @@ class Play extends Phaser.Scene {
             // console.log(pointer);
             // console.log(gameObject);
             // console.log(event);
+            this.clickTarget = gameObject;
             this.clickOn(gameObject);
         });
         this.input.on('gameobjectup', (pointer, gameObject, event) => {
             // console.log(pointer);
             // console.log(gameObject);
             // console.log(event);
+            this.clickTarget = null;
             this.clickOff();
         });
-
-        //Define keys
-        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         //Create bags of Ingredients used to refill dispensers
         this.peanutBag = this.physics.add.group({
@@ -228,32 +232,51 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.bagWallTwo, this.conveyor);
         this.physics.add.collider(this.conveyor, this.ingredients);
         this.physics.add.collider(this.conveyor, this.container);
+
+        //Define keys
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 
     update() { 
+        this.frameCount++;
+
         for(let i of this.ingredients.getChildren()){
             if(i.x > game.config.width + i.width || i.y > game.config.height + i.height) {
                 i.destroy();
             }
-        } 
+        }
+        let isDispenser = false;
+        for(let i of this.buttons.getChildren()) {
+            if(this.clickTarget == i) {
+                isDispenser = true;
+            }
+        }
+        if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser) {
+            this.sound.play('dispense');
+            let spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'square', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)]).setOrigin(0,0);
+            this.ingredients.add(spawnedIngredient);
+            let ingredientHitBox = spawnedIngredient.body;
+            ingredientHitBox.setCircle(spawnedIngredient.height/2);
+            spawnedIngredient.body.collideWorldBounds = true;
+        }
+
+        if(Phaser.Input.Keyboard.JustDown(keyESC)) {
+            this.scene.start("menuScene");
+        }
+
     }
 
     collided() {
         //console.log('collision occured');
     }
 
-    clickOn(target) {
+    clickOn() {
         //console.log('button clicked');
         // let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
         // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
         this.container.body.setVelocity(100,0);
-        let spawnedIngredient = new Ingredient(this, target.x+((Math.floor(Math.random()*25)-12)), target.y, 'square', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)]).setOrigin(0,0);
-        this.ingredients.add(spawnedIngredient);
-        let ingredientHitBox = spawnedIngredient.body;
-        ingredientHitBox.setCircle(spawnedIngredient.height/2);
-        spawnedIngredient.body.collideWorldBounds = true;
         this.spawnIngredientLoop = true;
-        this.sound.play('dispense');
     }
 
     clickOff() {
@@ -281,5 +304,10 @@ class Play extends Phaser.Scene {
         console.log("M&M %: " + mix[2] / totalWeight);
         console.log("Almond %: " + mix[3] / totalWeight);
     }
+
+    // makePauseMenu() {
+    //     this.paused = true;
+    //     this.add.rectangle(game.config.width / 2, game.config.height / 2, )
+    // }
 
 }
