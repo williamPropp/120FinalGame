@@ -284,12 +284,8 @@ class Play extends Phaser.Scene {
                 ingredientHitBox.setCircle(spawnedIngredient.height/2);
                 // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
             }
-<<<<<<< HEAD
         }
-
-        //Go back to menu when you press ESC
-=======
-        }
+        
         if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser) {
             console.log(this.ingredient);
             this.sound.play('dispense');
@@ -306,8 +302,7 @@ class Play extends Phaser.Scene {
                 i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
             }
         }
-
->>>>>>> 66b6387e95dde8e9d66a186826f529adf4d015de
+        //Go back to menu when you press ESC
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
             this.scene.start("menuScene");
         }
