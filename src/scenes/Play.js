@@ -64,18 +64,22 @@ class Play extends Phaser.Scene {
         this.dispTwo = this.add.rectangle(370, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
         this.dispThree = this.add.rectangle(490, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
 
-        this.bagWallOne = this.add.sprite(-50, 0, 'wall');
+        this.bagWallOne = this.add.sprite(50, 400,'wall');
+        this.bagWallOne1 = this.add.sprite(51, 400,'wall');
         this.bagBase = this.add.sprite(0, 80, 'base');
-        this.bagWallTwo = this.add.sprite(50, 0, 'wall');
+        this.bagWallTwo = this.add.sprite(150, 400, 'wall');
+        this.bagWallTwo2 = this.add.sprite(151, 400, 'wall');
         this.container = this.add.container(100, 10);
         this.container.setSize(100, 200);
-        this.physics.add.existing(this.bagWallOne).body.setImmovable(true).setAllowGravity(false).pushable=false;
-        this.physics.add.existing(this.bagBase).body.setImmovable(true).setAllowGravity(false).pushable=false;
-        this.physics.add.existing(this.bagWallTwo).body.setImmovable(true).setAllowGravity(false).pushable=false;
+        this.physics.add.existing(this.bagWallOne).body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
+        this.physics.add.existing(this.bagWallOne1).body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
+        this.physics.add.existing(this.bagBase).body.setImmovable(true).setAllowGravity(false).pushable = false;
+        this.physics.add.existing(this.bagWallTwo).body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
+        this.physics.add.existing(this.bagWallTwo2).body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
         this.physics.add.existing(this.container);
-        this.container.add(this.bagWallOne);
+        //this.container.add(this.bagWallOne);
         this.container.add(this.bagBase);
-        this.container.add(this.bagWallTwo);
+        //this.container.add(this.bagWallTwo);
         this.bagWallOne.body.collideWorldBounds = true;
         this.bagBase.body.collideWorldBounds = true;
         this.bagWallTwo.body.collideWorldBounds = true;
@@ -219,6 +223,7 @@ class Play extends Phaser.Scene {
             createCallback: null,
             removeCallback: null,
             createMultipleCallback: null,
+            pushable: true
         });
 
         this.physics.add.collider(this.ingredients, this.ingredients);
@@ -236,6 +241,8 @@ class Play extends Phaser.Scene {
         //Define keys
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
     }
 
     update() { 
@@ -253,16 +260,39 @@ class Play extends Phaser.Scene {
             }
         }
         if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser) {
+            console.log(this.ingredient);
             this.sound.play('dispense');
             let spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'square', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)]).setOrigin(0,0);
             this.ingredients.add(spawnedIngredient);
+            console.log(this.ingredient);
             let ingredientHitBox = spawnedIngredient.body;
-            ingredientHitBox.setCircle(spawnedIngredient.height/2);
+            ingredientHitBox.setCircle(spawnedIngredient.height/6);
             spawnedIngredient.body.collideWorldBounds = true;
+        }
+
+        for(let i of this.ingredients.getChildren()){
+            if(this.container.body.hitTest(i.x,i.y) == true) {
+                i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
+            }
         }
 
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
             this.scene.start("menuScene");
+        }
+
+        if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+            this.bagWallOne.body.setVelocity(100, 0);
+            this.bagWallOne1.body.setVelocity(100, 0);
+            this.container.body.setVelocity(100,0);
+            this.bagWallTwo.body.setVelocity(100, 0);
+            this.bagWallTwo2.body.setVelocity(100, 0);
+        }
+        if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.bagWallOne.body.setVelocity(0, 0);
+            this.bagWallOne1.body.setVelocity(0, 0);
+            this.container.body.setVelocity(0,0);
+            this.bagWallTwo.body.setVelocity(0, 0);
+            this.bagWallTwo2.body.setVelocity(0, 0);
         }
 
     }
@@ -275,7 +305,6 @@ class Play extends Phaser.Scene {
         //console.log('button clicked');
         // let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
         // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
-        this.container.body.setVelocity(100,0);
         this.spawnIngredientLoop = true;
     }
 
