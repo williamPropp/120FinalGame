@@ -284,24 +284,13 @@ class Play extends Phaser.Scene {
                 ingredientHitBox.setCircle(spawnedIngredient.height/2);
                 // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
             }
-        }
-        
-        if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser) {
-            console.log(this.ingredient);
-            this.sound.play('dispense');
-            let spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'square', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)]).setOrigin(0,0);
-            this.ingredients.add(spawnedIngredient);
-            console.log(this.ingredient);
-            let ingredientHitBox = spawnedIngredient.body;
-            ingredientHitBox.setCircle(spawnedIngredient.height/6);
-            spawnedIngredient.body.collideWorldBounds = true;
-        }
-
-        for(let i of this.ingredients.getChildren()){
-            if(this.container.body.hitTest(i.x,i.y) == true) {
-                i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
+            for(let i of this.ingredients.getChildren()){
+                if(this.container.body.hitTest(i.x,i.y) == true) {
+                    i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
+                }
             }
         }
+        
         //Go back to menu when you press ESC
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
             this.scene.start("menuScene");
