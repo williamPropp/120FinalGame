@@ -238,7 +238,8 @@ class Play extends Phaser.Scene {
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 
-    update() { 
+    update() {
+        //How many frames have elapsed since the start of the scene
         this.frameCount++;
 
         for(let i of this.ingredients.getChildren()){
@@ -246,21 +247,25 @@ class Play extends Phaser.Scene {
                 i.destroy();
             }
         }
-        let isDispenser = false;
-        for(let i of this.buttons.getChildren()) {
-            if(this.clickTarget == i) {
-                isDispenser = true;
+
+        if(!this.isPaused){
+            let isDispenser = false;
+            for(let i of this.buttons.getChildren()) {
+                if(this.clickTarget == i) {
+                    isDispenser = true;
+                }
+            }
+            if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser) {
+                this.sound.play('dispense');
+                let spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'square', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)]).setOrigin(0,0);
+                this.ingredients.add(spawnedIngredient);
+                let ingredientHitBox = spawnedIngredient.body;
+                ingredientHitBox.setCircle(spawnedIngredient.height/2);
+                spawnedIngredient.body.collideWorldBounds = true;
             }
         }
-        if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser) {
-            this.sound.play('dispense');
-            let spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'square', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)]).setOrigin(0,0);
-            this.ingredients.add(spawnedIngredient);
-            let ingredientHitBox = spawnedIngredient.body;
-            ingredientHitBox.setCircle(spawnedIngredient.height/2);
-            spawnedIngredient.body.collideWorldBounds = true;
-        }
 
+        //Go back to menu when you press ESC
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
             this.scene.start("menuScene");
         }
