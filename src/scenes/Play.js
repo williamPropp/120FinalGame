@@ -58,7 +58,7 @@ class Play extends Phaser.Scene {
 
         this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
-        this.conveyor = this.matter.add.image(250, 500, 'conveyor').setIgnoreGravity(true);
+        this.conveyor = this.matter.add.image(250, 500, 'conveyor').setIgnoreGravity(true).setStatic(true);;
         //this.matter.add.image(this.conveyor);//.body.setImmovable(true).setAllowGravity(false);
 
 
@@ -67,6 +67,9 @@ class Play extends Phaser.Scene {
         this.dispThree = this.add.rectangle(490, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
 
         this.bagWallOne = this.matter.add.image(430, 200,'wall');
+        this.matter.add.image(430, 80,'ball');
+        this.matter.add.image(430, 100,'ball');
+        this.matter.add.image(430, 120,'ball');
         // this.bagWallOne1 = this.add.sprite(53, 400,'wall');
         // this.bagBase = this.add.sprite(0, 80, 'base');
         // this.bagWallTwo = this.add.sprite(150, 400, 'wall');
@@ -90,7 +93,7 @@ class Play extends Phaser.Scene {
 
 
         this.inform = this.cache.json.get('bag_physics');
-        this.bag = this.matter.add.image(400, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag }).setIgnoreGravity(true);
+        this.bag = this.matter.add.image(400, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
         // this.bag.body.collideWorldBounds = true;
 
         // this.bagOut = this.add.rectangle(450, 300, 100, 100, 0xD3D3D3).setOrigin(0 ,0);
@@ -139,32 +142,32 @@ class Play extends Phaser.Scene {
         // this.physics.add.existing(this.button, 1);
         // this.physics.world.enable(this.button, 1);
         // this.buttonBox = this.button.body;
-        // // this.buttonBox.setCircle(game.config.width/16);
-        // for(let b of this.buttons.getChildren()) {
-        //     b.setInteractive({
-        //         draggable: false,
-        //         useHandCursor: true
-        //     });
-        // }
-        // // this.button1.setInteractive({
-        // //     draggable: false,
-        // //     useHandCursor: true
-        // // });
+        // this.buttonBox.setCircle(game.config.width/16);
+        for(let b of this.buttons.getChildren()) {
+            b.setInteractive({
+                draggable: false,
+                useHandCursor: true
+            });
+        }
+        // this.button1.setInteractive({
+        //     draggable: false,
+        //     useHandCursor: true
+        // });
         
-        // this.input.on('gameobjectdown', (pointer, gameObject, event) => {
-        //     // console.log(pointer);
-        //     // console.log(gameObject);
-        //     // console.log(event);
-        //     this.clickTarget = gameObject;
-        //     this.clickOn(gameObject);
-        // });
-        // this.input.on('gameobjectup', (pointer, gameObject, event) => {
-        //     // console.log(pointer);
-        //     // console.log(gameObject);
-        //     // console.log(event);
-        //     this.clickTarget = null;
-        //     this.clickOff();
-        // });
+        this.input.on('gameobjectdown', (pointer, gameObject, event) => {
+            // console.log(pointer);
+            // console.log(gameObject);
+            // console.log(event);
+            this.clickTarget = gameObject;
+            this.clickOn(gameObject);
+        });
+        this.input.on('gameobjectup', (pointer, gameObject, event) => {
+            // console.log(pointer);
+            // console.log(gameObject);
+            // console.log(event);
+            this.clickTarget = null;
+            this.clickOff();
+        });
 
         // //Create bags of Ingredients used to refill dispensers
         // this.peanutBag = this.matter.add.group({
@@ -215,19 +218,18 @@ class Play extends Phaser.Scene {
         //     createMultipleCallback: null
         // });
 
-        // //ingredients physics group
-        // this.ingredients = this.physics.add.group({
-        //     classType: Phaser.GameObjects.Sprite,
-        //     defaultKey: null,
-        //     defaultFrame: null,
-        //     active: true,
-        //     maxSize: -1,
-        //     runChildUpdate: false,
-        //     createCallback: null,
-        //     removeCallback: null,
-        //     createMultipleCallback: null,
-        //     pushable: true
-        // });
+        //ingredients physics group
+        this.ingredients = this.matter.add.sprite({
+            classType: Phaser.Physics.Matter.Sprite,
+            defaultKey: null,
+            defaultFrame: null,
+            active: true,
+            maxSize: -1,
+            runChildUpdate: false,
+            createCallback: null,
+            removeCallback: null,
+            createMultipleCallback: null,
+        });
 
         // this.physics.add.collider(this.ingredients, this.ingredients);
         // this.physics.add.collider(this.floor, this.ingredients);
@@ -260,39 +262,42 @@ class Play extends Phaser.Scene {
         //     }
         // }
 
-        // if(!this.isPaused){
-        //     let isDispenser = false;
-        //     for(let i of this.buttons.getChildren()) {
-        //         if(this.clickTarget == i) {
-        //             isDispenser = true;
-        //         }
-        //     }
-        //     if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser) {
-        //         this.sound.play('dispense');
-        //         let spawnedIngredient;
-        //         if(this.clickTarget == this.button1) {
-        //             spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut', this.container).setOrigin(0,0);
-        //         } else if(this.clickTarget == this.button2) {
-        //             spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin', this.container).setOrigin(0,0);
-        //         } else if(this.clickTarget == this.button3) {
-        //             spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m', this.container).setOrigin(0,0);
-        //         } else {
-        //             // Spawn random ingredient
-        //             console.log(this.clickTarget);
-        //             spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)], this.container).setOrigin(0,0);
-        //         }
-        //         //Add ingredient to ingredient group and change hitbox to circle
-        //         this.ingredients.add(spawnedIngredient);
-        //         let ingredientHitBox = spawnedIngredient.body;
-        //         ingredientHitBox.setCircle(spawnedIngredient.height/2);
-        //         // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
-        //     }
-        //     for(let i of this.ingredients.getChildren()){
-        //         if(this.container.body.hitTest(i.x,i.y) == true) {
-        //             i.setVelocity(this.container.body.velocity.x)
-        //         }
-        //     }
-        // }
+        if(!this.isPaused){
+            let isDispenser = false;
+            for(let i of this.buttons.getChildren()) {
+                if(this.clickTarget == i) {
+                    isDispenser = true;
+                }
+            }
+            if(!this.isPaused){
+                let isDispenser = false;
+                for(let i of this.buttons.getChildren()) {
+                    if(this.clickTarget == i) {
+                        isDispenser = true;
+                    }
+                }
+                if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser) {
+                    this.sound.play('dispense');
+                    let spawnedIngredient;
+                    if(this.clickTarget == this.button1) {
+                        spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', 1, 'peanut', this.container).setOrigin(0,0);
+                    //} else if(this.clickTarget == this.button2) {
+                        //spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin', this.container).setOrigin(0,0);
+                    } else if(this.clickTarget == this.button3) {
+                        spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m', this.container).setOrigin(0,0);
+                    } else {
+                        // Spawn random ingredient
+                        console.log(this.clickTarget);
+                        spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)], this.container).setOrigin(0,0);
+                    }
+                    //Add ingredient to ingredient group and change hitbox to circle
+                    //this.ingredients.add(spawnedIngredient);
+                    let ingredientHitBox = spawnedIngredient.body;
+                    ingredientHitBox = this.matter.bodies.circle(spawnedIngredient.x, spawnedIngredient.y, spawnedIngredient.width/2);
+                    // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
+                }
+            }
+        }
         
         //Go back to menu when you press ESC
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
@@ -300,18 +305,16 @@ class Play extends Phaser.Scene {
         }
 
         if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-            this.bagWallOne.body.setVelocity(100, 0);
-            this.bagWallOne1.body.setVelocity(100, 0);
-            this.container.body.setVelocity(100,0);
-            this.bagWallTwo.body.setVelocity(100, 0);
-            this.bagWallTwo2.body.setVelocity(100, 0);
+            this.bag.setVelocity(10, 0);
+
         }
         if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-            this.bagWallOne.body.setVelocity(0, 0);
-            this.bagWallOne1.body.setVelocity(0, 0);
-            this.container.body.setVelocity(0,0);
-            this.bagWallTwo.body.setVelocity(0, 0);
-            this.bagWallTwo2.body.setVelocity(0, 0);
+            this.bag.setVelocity(-10, 0);
+            // this.bagWallOne.body.setVelocity(0, 0);
+            // this.bagWallOne1.body.setVelocity(0, 0);
+            // this.container.body.setVelocity(0,0);
+            // this.bagWallTwo.body.setVelocity(0, 0);
+            // this.bagWallTwo2.body.setVelocity(0, 0);
         }
 
     }
@@ -320,17 +323,17 @@ class Play extends Phaser.Scene {
         //console.log('collision occured');
     }
 
-    // clickOn() {
-    //     //console.log('button clicked');
-    //     // let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
-    //     // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
-    //     this.spawnIngredientLoop = true;
-    // }
+    clickOn() {
+        console.log('button clicked');
+        // let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
+        // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
+        this.spawnIngredientLoop = true;
+    }
 
-    // clickOff() {
-    //     //console.log('click over');
-    //     this.spawnIngredientLoop = false;
-    // }
+    clickOff() {
+        //console.log('click over');
+        this.spawnIngredientLoop = false;
+    }
     // // Call this method when spending any amount of money
     // spendCash(spent) {
     //     this.money -= spent;

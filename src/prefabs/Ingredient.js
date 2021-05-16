@@ -1,6 +1,6 @@
 class Ingredient extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y, texture, frame, type) {
-        super(scene, x, y, texture, frame, type);
+        super(scene.matter.world, x, y, texture, frame);
 
         //Add object to existing scene
         scene.add.existing(this);
