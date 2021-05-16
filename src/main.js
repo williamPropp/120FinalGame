@@ -5,7 +5,7 @@ let config = {
     width: 960,
     height: 720,
     physics: {
-        default: 'arcade',
+        default: 'matter',
         arcade: {
             debug: true,
             gravity: {
@@ -15,7 +15,13 @@ let config = {
         },
         matter: {
             debug: true,
-            gravity: { y: 0 }
+            gravity: { y: 10 },
+            setBounds: {
+                left: true,
+                right: true,
+                up: true,
+                down: true
+            }
         }
     },
     scene: [Menu, Options, Play]

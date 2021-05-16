@@ -19,8 +19,10 @@ class Play extends Phaser.Scene {
     create() {
 
         //Initialize data variables
-        this.Y_GRAVITY = 8000/*2600*/;
-        this.physics.world.gravity.y = this.Y_GRAVITY;
+        // this.Y_GRAVITY = 2600;
+        // this.matter.world.gravity.y = this.Y_GRAVITY;
+        this.matter.world.setBounds(0, 0, 960, 720);
+        this.matter.world.setGravity(0, 1); 
         this.frameCount = 0;
         this.flowRate = 7; //How often in ms to spawn Ingredients
         this.money = 50; //Starting cash
@@ -56,44 +58,48 @@ class Play extends Phaser.Scene {
 
         this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
-        this.conveyor = this.add.sprite(250, 500, 'conveyor');
-        this.physics.add.existing(this.conveyor).body.setImmovable(true).setAllowGravity(false);
+        this.conveyor = this.matter.add.image(250, 500, 'conveyor').setIgnoreGravity(true).setStatic(true);;
+        //this.matter.add.image(this.conveyor);//.body.setImmovable(true).setAllowGravity(false);
 
 
         this.dispOne = this.add.rectangle(250, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
         this.dispTwo = this.add.rectangle(370, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
         this.dispThree = this.add.rectangle(490, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
 
-        this.bagWallOne = this.add.sprite(50, 400,'wall');
-        this.bagWallOne1 = this.add.sprite(51, 400,'wall');
-        this.bagBase = this.add.sprite(0, 80, 'base');
-        this.bagWallTwo = this.add.sprite(150, 400, 'wall');
-        this.bagWallTwo2 = this.add.sprite(151, 400, 'wall');
-        this.container = this.add.container(100, 10);
-        this.container.setSize(100, 200);
-        this.physics.add.existing(this.bagWallOne).body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
-        this.physics.add.existing(this.bagWallOne1).body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
-        this.physics.add.existing(this.bagBase).body.setImmovable(true).setAllowGravity(false).pushable = false;
-        this.physics.add.existing(this.bagWallTwo).body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
-        this.physics.add.existing(this.bagWallTwo2).body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
-        this.physics.add.existing(this.container);
+        this.bagWallOne = this.matter.add.image(430, 200,'wall');
+        this.matter.add.image(430, 80,'ball');
+        this.matter.add.image(430, 100,'ball');
+        this.matter.add.image(430, 120,'ball');
+        // this.bagWallOne1 = this.add.sprite(53, 400,'wall');
+        // this.bagBase = this.add.sprite(0, 80, 'base');
+        // this.bagWallTwo = this.add.sprite(150, 400, 'wall');
+        // this.bagWallTwo2 = this.add.sprite(153, 400, 'wall');
+        // this.container = this.add.container(100, 10);
+        // this.container.setSize(100, 200);
+        //this.matter.add.image(this.bagWallOne);//.setGravity(0, 2300);//.body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
+        //this.bagWallOne.setVelocity(10,20);
+        // this.matter.add.image(this.bagWallOne1);//.body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
+        // this.matter.add.image(this.bagBase);//.body.setImmovable(true).setAllowGravity(false).pushable = false;
+        // this.matter.add.image(this.bagWallTwo);//.body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
+        // this.matter.add.image(this.bagWallTwo2);//.body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
+        // this.matter.add.image(this.container);
         //this.container.add(this.bagWallOne);
-        this.container.add(this.bagBase);
+        // this.container.add(this.bagBase);
         //this.container.add(this.bagWallTwo);
-        this.bagWallOne.body.collideWorldBounds = true;
-        this.bagBase.body.collideWorldBounds = true;
-        this.bagWallTwo.body.collideWorldBounds = true;
-        this.container.body.collideWorldBounds = true;
+        // this.bagWallOne.body.collideWorldBounds = true;
+        // this.bagBase.body.collideWorldBounds = true;
+        // this.bagWallTwo.body.collideWorldBounds = true;
+        // this.container.body.collideWorldBounds = true;
 
 
-        // this.inform = this.cache.json.get('bag_physics');
-        // this.bag = this.physics.add.sprite(400, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
+        this.inform = this.cache.json.get('bag_physics');
+        this.bag = this.matter.add.image(400, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
         // this.bag.body.collideWorldBounds = true;
 
         // this.bagOut = this.add.rectangle(450, 300, 100, 100, 0xD3D3D3).setOrigin(0 ,0);
         // this.bagIn = this.add.rectangle(451, 300, 98, 99, 0xFFFFFF).setOrigin(0 ,0);
-        // this.physics.add.existing(this.bagOut);
-        // this.physics.add.existing(this.bagIn);
+        // this.matter.add.image(this.bagOut);
+        // this.matter.add.image(this.bagIn).setIgnoreGravity(false);
         // this.bagOut.setData('gravityEnabled','false');
         // this.bagIn.setData('gravityEnabled','false');
 
@@ -103,9 +109,9 @@ class Play extends Phaser.Scene {
         this.tracker = this.add.rectangle(725, 50, 225, 250, 0xC4A484).setOrigin(0 ,0);
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
-        this.physics.add.existing(this.floor);
+        this.matter.add.image(this.floor);
         // this.floor.setData('gravityEnabled','false');
-        this.floor.body.collideWorldBounds = true;
+        //this.floor.body.collideWorldBounds = true;
 
         this.bin = this.add.rectangle(25, 600, 100, 200, 0x808080).setOrigin(0 ,0);
         this.bin.setInteractive();
@@ -170,58 +176,58 @@ class Play extends Phaser.Scene {
             this.clickOff();
         });
 
-        //Create bags of Ingredients used to refill dispensers
-        this.peanutBag = this.physics.add.group({
-            classType: Phaser.GameObjects.Sprite,
-            defaultKey: null,
-            defaultFrame: null,
-            active: true,
-            maxSize: this.maxPeanuts,
-            runChildUpdate: false,
-            createCallback: null,
-            removeCallback: null,
-            createMultipleCallback: null
-        });
+        // //Create bags of Ingredients used to refill dispensers
+        // this.peanutBag = this.matter.add.group({
+        //     classType: Phaser.GameObjects.Sprite,
+        //     defaultKey: null,
+        //     defaultFrame: null,
+        //     active: true,
+        //     maxSize: this.maxPeanuts,
+        //     runChildUpdate: false,
+        //     createCallback: null,
+        //     removeCallback: null,
+        //     createMultipleCallback: null
+        // });
 
-        this.raisinBag = this.physics.add.group({
-            classType: Phaser.GameObjects.Sprite,
-            defaultKey: null,
-            defaultFrame: null,
-            active: true,
-            maxSize: this.maxRaisins,
-            runChildUpdate: false,
-            createCallback: null,
-            removeCallback: null,
-            createMultipleCallback: null
-        });
+        // this.raisinBag = this.physics.add.group({
+        //     classType: Phaser.GameObjects.Sprite,
+        //     defaultKey: null,
+        //     defaultFrame: null,
+        //     active: true,
+        //     maxSize: this.maxRaisins,
+        //     runChildUpdate: false,
+        //     createCallback: null,
+        //     removeCallback: null,
+        //     createMultipleCallback: null
+        // });
         
-        this.MNMBag = this.physics.add.group({
-            classType: Phaser.GameObjects.Sprite,
-            defaultKey: null,
-            defaultFrame: null,
-            active: true,
-            maxSize: this.maxMNMs,
-            runChildUpdate: false,
-            createCallback: null,
-            removeCallback: null,
-            createMultipleCallback: null
-        });
+        // this.MNMBag = this.physics.add.group({
+        //     classType: Phaser.GameObjects.Sprite,
+        //     defaultKey: null,
+        //     defaultFrame: null,
+        //     active: true,
+        //     maxSize: this.maxMNMs,
+        //     runChildUpdate: false,
+        //     createCallback: null,
+        //     removeCallback: null,
+        //     createMultipleCallback: null
+        // });
         
-        this.almondBag = this.physics.add.group({
-            classType: Phaser.GameObjects.Sprite,
-            defaultKey: null,
-            defaultFrame: null,
-            active: true,
-            maxSize: this.maxAlmonds,
-            runChildUpdate: false,
-            createCallback: null,
-            removeCallback: null,
-            createMultipleCallback: null
-        });
+        // this.almondBag = this.physics.add.group({
+        //     classType: Phaser.GameObjects.Sprite,
+        //     defaultKey: null,
+        //     defaultFrame: null,
+        //     active: true,
+        //     maxSize: this.maxAlmonds,
+        //     runChildUpdate: false,
+        //     createCallback: null,
+        //     removeCallback: null,
+        //     createMultipleCallback: null
+        // });
 
         //ingredients physics group
-        this.ingredients = this.physics.add.group({
-            classType: Phaser.GameObjects.Sprite,
+        this.ingredients = this.matter.add.sprite({
+            classType: Phaser.Physics.Matter.Sprite,
             defaultKey: null,
             defaultFrame: null,
             active: true,
@@ -230,22 +236,21 @@ class Play extends Phaser.Scene {
             createCallback: null,
             removeCallback: null,
             createMultipleCallback: null,
-            pushable: true
         });
 
-        this.physics.add.collider(this.ingredients, this.ingredients);
-        this.physics.add.collider(this.floor, this.ingredients);
-        this.physics.add.collider(this.ingredients, this.bag);
-        this.physics.add.collider(this.bagWallOne, this.ingredients);
-        this.physics.add.collider(this.ingredients, this.bagWallOne);
-        this.physics.add.collider(this.bagBase, this.ingredients);
-        this.physics.add.collider(this.bagWallTwo, this.ingredients);
-        this.physics.add.collider(this.ingredients, this.bagWallTwo);
-        this.physics.add.collider(this.bagWallOne, this.conveyor);
-        this.physics.add.collider(this.bagBase, this.conveyor);
-        this.physics.add.collider(this.bagWallTwo, this.conveyor);
-        this.physics.add.collider(this.conveyor, this.ingredients);
-        this.physics.add.collider(this.conveyor, this.container);
+        // this.physics.add.collider(this.ingredients, this.ingredients);
+        // this.physics.add.collider(this.floor, this.ingredients);
+        // this.physics.add.collider(this.ingredients, this.bag);
+        // this.physics.add.collider(this.bagWallOne, this.ingredients);
+        // this.physics.add.collider(this.ingredients, this.bagWallOne);
+        // this.physics.add.collider(this.bagBase, this.ingredients);
+        // this.physics.add.collider(this.bagWallTwo, this.ingredients);
+        // this.physics.add.collider(this.ingredients, this.bagWallTwo);
+        // this.physics.add.collider(this.bagWallOne, this.conveyor);
+        // this.physics.add.collider(this.bagBase, this.conveyor);
+        // this.physics.add.collider(this.bagWallTwo, this.conveyor);
+        // this.physics.add.collider(this.conveyor, this.ingredients);
+        // this.physics.add.collider(this.conveyor, this.container);
 
         //Define keys
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -258,11 +263,11 @@ class Play extends Phaser.Scene {
         //How many frames have elapsed since the start of the scene
         this.frameCount++;
 
-        for(let i of this.ingredients.getChildren()){
-            if(i.x > game.config.width + i.width || i.y > game.config.height + i.height) {
-                i.destroy();
-            }
-        }
+        // for(let i of this.ingredients.getChildren()){
+        //     if(i.x > game.config.width + i.width || i.y > game.config.height + i.height) {
+        //         i.destroy();
+        //     }
+        // }
 
         if(!this.isPaused){
             this.moneyText.setText('Money: $'+this.money);
@@ -290,7 +295,7 @@ class Play extends Phaser.Scene {
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)], this.container).setOrigin(0,0);
                 }
                 //Add ingredient to ingredient group and change hitbox to circle
-                this.ingredients.add(spawnedIngredient);
+                // this.ingredients.add(spawnedIngredient);
                 let ingredientHitBox = spawnedIngredient.body;
                 ingredientHitBox.setCircle(spawnedIngredient.height/2);
                 // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
@@ -309,18 +314,16 @@ class Play extends Phaser.Scene {
         }
 
         if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-            this.bagWallOne.body.setVelocity(100, 0);
-            this.bagWallOne1.body.setVelocity(100, 0);
-            this.container.body.setVelocity(100,0);
-            this.bagWallTwo.body.setVelocity(100, 0);
-            this.bagWallTwo2.body.setVelocity(100, 0);
+            this.bag.setVelocity(10, 0);
+
         }
         if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-            this.bagWallOne.body.setVelocity(0, 0);
-            this.bagWallOne1.body.setVelocity(0, 0);
-            this.container.body.setVelocity(0,0);
-            this.bagWallTwo.body.setVelocity(0, 0);
-            this.bagWallTwo2.body.setVelocity(0, 0);
+            this.bag.setVelocity(-10, 0);
+            // this.bagWallOne.body.setVelocity(0, 0);
+            // this.bagWallOne1.body.setVelocity(0, 0);
+            // this.container.body.setVelocity(0,0);
+            // this.bagWallTwo.body.setVelocity(0, 0);
+            // this.bagWallTwo2.body.setVelocity(0, 0);
         }
 
     }
@@ -330,7 +333,7 @@ class Play extends Phaser.Scene {
     }
 
     clickOn() {
-        //console.log('button clicked');
+        console.log('button clicked');
         // let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
         // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
         this.spawnIngredientLoop = true;
@@ -340,27 +343,27 @@ class Play extends Phaser.Scene {
         //console.log('click over');
         this.spawnIngredientLoop = false;
     }
-    // Call this method when spending any amount of money
-    spendCash(spent) {
-        this.money -= spent;
-    }
+    // // Call this method when spending any amount of money
+    // spendCash(spent) {
+    //     this.money -= spent;
+    // }
 
     //Calculates money made from selling trail mix bag
     //Mix will be an array of the weight of each ingredient contained in the bag: [peanuts, raisins, m&ms, almonds] 
-    sellMix(mix){
-        this.money += (0.0214 * mix[0] + 0.0208 * mix[1] / 0.5 + 0.0745 * mix[2] / 1.1 + 0.0465 * mix[3] / 1.3);         
-    }
+    // sellMix(mix){
+    //     this.money += (0.0214 * mix[0] + 0.0208 * mix[1] / 0.5 + 0.0745 * mix[2] / 1.1 + 0.0465 * mix[3] / 1.3);         
+    // }
 
     //Calculates the total weight of the trail mix bag and percentage of each ingredient in bag
     //Mix will be an array of the weight of each ingredient contained in the bag: [peanuts, raisins, m&ms, almonds] 
-    weightAndPercentage(mix){
-        let totalWeight = mix[0] + mix[1] + mix[2] + mix[3];
-        console.log("Total weight of bag: " + totalWeight);
-        console.log("Peanut %: " + mix[0] / totalWeight);
-        console.log("Raisin %: " + mix[1] / totalWeight);
-        console.log("M&M %: " + mix[2] / totalWeight);
-        console.log("Almond %: " + mix[3] / totalWeight);
-    }
+    // weightAndPercentage(mix){
+    //     let totalWeight = mix[0] + mix[1] + mix[2] + mix[3];
+    //     console.log("Total weight of bag: " + totalWeight);
+    //     console.log("Peanut %: " + mix[0] / totalWeight);
+    //     console.log("Raisin %: " + mix[1] / totalWeight);
+    //     console.log("M&M %: " + mix[2] / totalWeight);
+    //     console.log("Almond %: " + mix[3] / totalWeight);
+    // }
 
     // makePauseMenu() {
     //     this.paused = true;
