@@ -1,4 +1,4 @@
-class Ingredient extends Phaser.Physics.Arcade.Sprite {
+class Ingredient extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y, texture, frame, type) {
         super(scene, x, y, texture, frame, type);
 
