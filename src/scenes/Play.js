@@ -19,7 +19,7 @@ class Play extends Phaser.Scene {
     create() {
 
         //Initialize data variables
-        this.Y_GRAVITY = 2600;
+        this.Y_GRAVITY = 8000/*2600*/;
         this.physics.world.gravity.y = this.Y_GRAVITY;
         this.frameCount = 0;
         this.flowRate = 7; //How often in ms to spawn Ingredients
@@ -142,11 +142,18 @@ class Play extends Phaser.Scene {
                 draggable: false,
                 useHandCursor: true
             });
+            b.setDataEnabled();
         }
+        this.button1.data.set('numIngredients', this.maxPeanuts);
+        this.button2.data.set('numIngredients', this.maxRaisins);
+        this.button3.data.set('numIngredients', this.maxMNMs);
         // this.button1.setInteractive({
         //     draggable: false,
         //     useHandCursor: true
         // });
+
+
+        this.moneyText = this.add.text(10, 20, 'Money: $'+this.money, {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'});
         
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
             // console.log(pointer);
@@ -258,20 +265,24 @@ class Play extends Phaser.Scene {
         }
 
         if(!this.isPaused){
+            this.moneyText.setText('Money: $'+this.money);
             let isDispenser = false;
             for(let i of this.buttons.getChildren()) {
                 if(this.clickTarget == i) {
                     isDispenser = true;
                 }
             }
-            if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser) {
+            if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser && this.clickTarget.getData('numIngredients') > 0) {
                 this.sound.play('dispense');
                 let spawnedIngredient;
                 if(this.clickTarget == this.button1) {
+                    this.button1.setData('numIngredients', (this.button1.getData('numIngredients')) - 1);
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut', this.container).setOrigin(0,0);
                 } else if(this.clickTarget == this.button2) {
+                    this.button2.setData('numIngredients', (this.button2.getData('numIngredients')) - 1);
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin', this.container).setOrigin(0,0);
                 } else if(this.clickTarget == this.button3) {
+                    this.button3.setData('numIngredients', (this.button3.getData('numIngredients')) - 1);
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m', this.container).setOrigin(0,0);
                 } else {
                     // Spawn random ingredient
@@ -283,6 +294,7 @@ class Play extends Phaser.Scene {
                 let ingredientHitBox = spawnedIngredient.body;
                 ingredientHitBox.setCircle(spawnedIngredient.height/2);
                 // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
+                console.log('ingredients left = ' + this.clickTarget.getData('numIngredients'))
             }
             for(let i of this.ingredients.getChildren()){
                 if(this.container.body.hitTest(i.x,i.y) == true) {
