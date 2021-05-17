@@ -25,7 +25,7 @@ class Play extends Phaser.Scene {
         this.matter.world.setBounds(0, 0, 960, 720);
         this.matter.world.setGravity(0, 7); 
         this.frameCount = 0;
-        this.flowRate = 1; //How often in ms to spawn Ingredients
+        this.flowRate = 5; //How often in ms to spawn Ingredients
         this.money = 50; //Starting cash
 
         //Max amount of Ingredient that can fit in 1 kg bag
@@ -98,13 +98,11 @@ class Play extends Phaser.Scene {
 
         //Set max ingredients for each dispenser
         this.button1.data.set('numIngredients', this.maxPeanuts);
+        this.button1.data.set('maxIngredients', this.maxPeanuts);
         this.button2.data.set('numIngredients', this.maxRaisins);
+        this.button2.data.set('maxIngredients', this.maxRaisins);
         this.button3.data.set('numIngredients', this.maxMNMs);
-
-        // this.button1.setInteractive({
-        //     draggable: false,
-        //     useHandCursor: true
-        // });
+        this.button3.data.set('maxIngredients', this.maxMNMs);
 
         //Refill button for each dispenser
         this.dispOneRefill = this.add.circle(330, 100, 10, 0x0000FF).setOrigin(0.5, 0.5);
@@ -129,6 +127,10 @@ class Play extends Phaser.Scene {
                 });
             });
         }
+
+        this.dispOneRefill.data.set('dispenser', this.button1);
+        this.dispTwoRefill.data.set('dispenser', this.button2);
+        this.dispThreeRefill.data.set('dispenser', this.button3);
         // this.dispOneRefill.data.set('priceToRefill', (this.maxPeanuts - this.maxPeanuts) * 0.0029);
         // this.dispTwoRefill.data.set('priceToRefill', (this.maxRaisins - this.maxRaisins) * 0.0023);
         // this.dispThreeRefill.data.set('priceToRefill', (this.maxMNMs - this.maxMNMs) * 0.0056);
@@ -408,6 +410,13 @@ class Play extends Phaser.Scene {
                 this.spawnIngredientLoop = true;
             }
         }
+
+        for(let r of this.refillButtons.getChildren()) {
+            if(gObj == r) {
+                this.buyIngredients(r);
+                
+            }
+        }
     }
 
     clickOff() {
@@ -459,11 +468,23 @@ class Play extends Phaser.Scene {
     // }
 
     buyIngredients(gObj) {
-        let priceToBuy = gObj.getData('price');
+        let priceToBuy = gObj.getData('priceToRefill');
         if(this.money - priceToBuy > 0) {
             this.money -= priceToBuy;
+            // if(gObj == this.dispOneRefill) {
+            //     this.dispOneRefill.setData('numIngredients', this.dispOneRefill.getData('maxIngredients'));
+            // } else if(gObj == this.dispTwoRefill) {
+            //     this.dispOneRefill.setData('numIngredients', this.dispOneRefill.getData('maxIngredients'));
+            // } else if(gObj == this.dispThreeRefill) {
+            //     this.dispOneRefill.setData('numIngredients', this.dispOneRefill.getData('maxIngredients'));
+            // }
+            let disp = gObj.getData('dispenser');
+            disp.setData('numIngredients', disp.getData('maxIngredients'));
+            gObj.setData('priceToRefill', 0);
+            console.log(disp.getData('numIngredients'));
+            console.log(disp.getData('maxIngredients'));
         } else {
-            insufficientFunds(priceToBuy);
+            this.insufficientFunds(priceToBuy);
         }
     }
 
