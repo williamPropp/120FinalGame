@@ -8,6 +8,7 @@ class Play extends Phaser.Scene {
         //Load all assets
         this.load.path = './assets/';
         this.load.image('circle', 'circle.png');
+        this.load.image('contract', 'Contract.png');
         this.load.image('wall', 'bagWall.png');
         this.load.image('base', 'bagBase.png');
         this.load.atlas('bag_info', 'bag.png', 'bagIcon.json');
@@ -22,7 +23,7 @@ class Play extends Phaser.Scene {
         // this.Y_GRAVITY = 2600;
         // this.matter.world.gravity.y = this.Y_GRAVITY;
         this.matter.world.setBounds(0, 0, 960, 720);
-        this.matter.world.setGravity(0, 1); 
+        this.matter.world.setGravity(0, 7); 
         this.frameCount = 0;
         this.flowRate = 1; //How often in ms to spawn Ingredients
         this.money = 50; //Starting cash
@@ -145,10 +146,6 @@ class Play extends Phaser.Scene {
         //     priceText.setScale(0.5);
         // });
 
-        this.bagWallOne = this.matter.add.image(430, 200,'wall');
-        this.matter.add.image(430, 80,'ball');
-        this.matter.add.image(430, 100,'ball');
-        this.matter.add.image(430, 120,'ball');
         // this.bagWallOne1 = this.add.sprite(53, 400,'wall');
         // this.bagBase = this.add.sprite(0, 80, 'base');
         // this.bagWallTwo = this.add.sprite(150, 400, 'wall');
@@ -182,10 +179,12 @@ class Play extends Phaser.Scene {
         // this.bagOut.setData('gravityEnabled','false');
         // this.bagIn.setData('gravityEnabled','false');
 
-        this.scale = this.add.rectangle(game.config.width - 225, 477, game.config.width/5, game.config.height/16, 0x808080).setOrigin(0 ,0);
-        this.scaleChart = this.add.rectangle(game.config.width - 225, 550, game.config.width/5, game.config.height/5, 0x808080).setOrigin(0 ,0);
-        this.tube = this.add.rectangle(775, 0, 100, 350, 0xadd8e6).setOrigin(0 ,0);
+        this.scale = this.add.rectangle(game.config.width - 120, 489, game.config.width/4, game.config.height/10, 0x808080).setOrigin(0 ,0);
+        this.matter.add.gameObject(this.scale).setIgnoreGravity(true).setStatic(true);;
+        this.scaleChart = this.add.rectangle(game.config.width - 225, 550, game.config.width/5, game.config.height/4, 0x808080).setOrigin(0 ,0);
+        this.tube = this.add.rectangle(790, 0, 100, 350, 0xadd8e6).setOrigin(0 ,0);
         this.tracker = this.add.rectangle(725, 50, 225, 250, 0xC4A484).setOrigin(0 ,0);
+        this.contract = this.add.image(735, 60, 'contract').setOrigin(0 ,0);
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
         this.matter.add.image(this.floor);
@@ -296,6 +295,8 @@ class Play extends Phaser.Scene {
             createMultipleCallback: null,
         });
 
+        this.ingHolder = this.add.group();
+
         // this.physics.add.collider(this.ingredients, this.ingredients);
         // this.physics.add.collider(this.floor, this.ingredients);
         // this.physics.add.collider(this.ingredients, this.bag);
@@ -321,11 +322,11 @@ class Play extends Phaser.Scene {
         //How many frames have elapsed since the start of the scene
         this.frameCount++;
 
-        // for(let i of this.ingredients.getChildren()){
-        //     if(i.x > game.config.width + i.width || i.y > game.config.height + i.height) {
-        //         i.destroy();
-        //     }
-        // }
+        for(let i of this.ingHolder.getChildren()){
+            if(i.x > game.config.width - 200) {//|| i.y > game.config.height + i.height) {
+                i.destroy();
+            }
+        }
 
         if(!this.isPaused){
             this.moneyText.setText('Money: $'+this.money);
@@ -339,22 +340,22 @@ class Play extends Phaser.Scene {
                 if(this.clickTarget == this.button1) {
                     this.button1.setData('numIngredients', (this.button1.getData('numIngredients')) - 1);
                     this.dispOneRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxPeanuts - (this.button1.getData('numIngredients')))) * 0.0029));
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut', this.container).setOrigin(0,0);
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut', this.container).setOrigin(0.5,0.5);
                 } else if(this.clickTarget == this.button2) {
                     this.button2.setData('numIngredients', (this.button2.getData('numIngredients')) - 1);
                     this.dispTwoRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxRaisins - (this.button2.getData('numIngredients')))) * 0.0023));
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin', this.container).setOrigin(0,0);
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin', this.container).setOrigin(0.5,0.5);
                 } else if(this.clickTarget == this.button3) {
                     this.button3.setData('numIngredients', (this.button3.getData('numIngredients')) - 1);
                     this.dispThreeRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxMNMs - (this.button3.getData('numIngredients')))) * 0.056));
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m', this.container).setOrigin(0,0);
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m', this.container).setOrigin(0.5,0.5);
                 } /*else {
                     // Spawn random ingredient
                     console.log(this.clickTarget);
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)], this.container).setOrigin(0,0);
                 }*/
                 //Add ingredient to ingredient group and change hitbox to circle
-                // this.ingredients.add(spawnedIngredient);
+                this.ingHolder.add(spawnedIngredient);
                 // let ingredientHitBox = spawnedIngredient.body;
                 // ingredientHitBox.setCircle(spawnedIngredient.height/2);
                 // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
