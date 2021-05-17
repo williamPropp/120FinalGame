@@ -13,7 +13,7 @@ class Play extends Phaser.Scene {
         this.load.atlas('bag_info', 'bag.png', 'bagIcon.json');
         this.load.json('bag_physics', 'bag.json');
         this.load.image('conveyor', 'conveyor.png');
-        this.load.audio('dispense', 'dispenserNoise.wav');
+        this.load.audio('dispense', 'dispenserNoise2.mp3');
     }
 
     create() {
@@ -24,7 +24,7 @@ class Play extends Phaser.Scene {
         this.matter.world.setBounds(0, 0, 960, 720);
         this.matter.world.setGravity(0, 1); 
         this.frameCount = 0;
-        this.flowRate = 7; //How often in ms to spawn Ingredients
+        this.flowRate = 1; //How often in ms to spawn Ingredients
         this.money = 50; //Starting cash
 
         //Max amount of Ingredient that can fit in 1 kg bag
@@ -52,7 +52,10 @@ class Play extends Phaser.Scene {
         // });
         // this.soundtrack.play();
 
+        //Text configs
+        this.defaultTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
 
+        //Keep track of clickTarget globally
         this.clickTarget;
         
 
@@ -61,10 +64,86 @@ class Play extends Phaser.Scene {
         this.conveyor = this.matter.add.image(250, 500, 'conveyor').setIgnoreGravity(true).setStatic(true);;
         //this.matter.add.image(this.conveyor);//.body.setImmovable(true).setAllowGravity(false);
 
+        //Grey dispenser rectangles
+        this.dispOne = this.add.rectangle(250, 0, 100, 250, 0xD3D3D3).setOrigin(0, 0);
+        this.dispTwo = this.add.rectangle(370, 0, 100, 250, 0xD3D3D3).setOrigin(0, 0);
+        this.dispThree = this.add.rectangle(490, 0, 100, 250, 0xD3D3D3).setOrigin(0, 0);
 
-        this.dispOne = this.add.rectangle(250, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
-        this.dispTwo = this.add.rectangle(370, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
-        this.dispThree = this.add.rectangle(490, 50, 100, 200, 0xD3D3D3).setOrigin(0 ,0);
+        //Black rectangles behind dispenser meters
+        this.add.rectangle(300, 150, 25, 75, 0x000000).setOrigin(0.5, 1);
+        this.add.rectangle(420, 150, 25, 75, 0x000000).setOrigin(0.5, 1);
+        this.add.rectangle(540, 150, 25, 75, 0x000000).setOrigin(0.5, 1);
+
+        //Meters to gauge how full a dispenser is
+        this.dispOneMeter = this.add.rectangle(300, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
+        this.dispTwoMeter = this.add.rectangle(420, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
+        this.dispThreeMeter = this.add.rectangle(540, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
+
+        //Dispenser buttons
+        this.button1 = this.add.circle(300, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        this.button2 = this.add.circle(420, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        this.button3 = this.add.circle(540, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        this.buttons = this.add.group();
+        this.buttons.addMultiple([this.button1, this.button2, this.button3]); //Make dispenser button group
+
+        //Make all dispenser buttons interactable
+        for(let b of this.buttons.getChildren()) {
+            b.setInteractive({
+                draggable: false,
+                useHandCursor: true
+            });
+            b.setDataEnabled();
+        }
+
+        //Set max ingredients for each dispenser
+        this.button1.data.set('numIngredients', this.maxPeanuts);
+        this.button2.data.set('numIngredients', this.maxRaisins);
+        this.button3.data.set('numIngredients', this.maxMNMs);
+
+        // this.button1.setInteractive({
+        //     draggable: false,
+        //     useHandCursor: true
+        // });
+
+        //Refill button for each dispenser
+        this.dispOneRefill = this.add.circle(330, 100, 10, 0x0000FF).setOrigin(0.5, 0.5);
+        this.dispTwoRefill = this.add.circle(450, 100, 10, 0x0000FF).setOrigin(0.5, 0.5);
+        this.dispThreeRefill = this.add.circle(570, 100, 10, 0x0000FF).setOrigin(0.5, 0.6);
+        this.refillButtons = this.add.group();
+        this.refillButtons.addMultiple([this.dispOneRefill, this.dispTwoRefill, this.dispThreeRefill]); //Make refill button group
+
+        //Make all refill buttons interactable
+        for(let b of this.refillButtons.getChildren()) {
+            b.setInteractive({
+                draggable: false,
+                useHandCursor: true
+            });
+            b.setDataEnabled();
+            b.data.set('priceToRefill', 0);
+            b.on('pointerover',() => {
+                let priceText = this.add.text(b.x - 10, b.y - 50, 'this item costs $' + b.getData('priceToRefill') + ' to refill', this.defaultTextConfig);
+                priceText.setScale(0.5);
+                this.time.delayedCall(2000, () => {
+                    priceText.destroy();
+                });
+            });
+        }
+        // this.dispOneRefill.data.set('priceToRefill', (this.maxPeanuts - this.maxPeanuts) * 0.0029);
+        // this.dispTwoRefill.data.set('priceToRefill', (this.maxRaisins - this.maxRaisins) * 0.0023);
+        // this.dispThreeRefill.data.set('priceToRefill', (this.maxMNMs - this.maxMNMs) * 0.0056);
+
+        // this.dispOneRefill.on('pointerover',() => {
+        //     let priceText = this.add.text(this.dispOneRefill.x,this.dispOneRefill.y - 10 , 'this item costs $' /*+ b.getData('priceToRefill')*/, this.defaultTextConfig);
+        //     priceText.setScale(0.5);
+        // });
+        // this.dispTwoRefill.on('pointerover',() => {
+        //     let priceText = this.add.text(this.dispTwoRefill.x,this.dispTwoRefill.y - 10 , 'this item costs $' + /*b.getData('priceToRefill')*/, this.defaultTextConfig);
+        //     priceText.setScale(0.5);
+        // });
+        // this.dispThreeRefill.on('pointerover',() => {
+        //     let priceText = this.add.text(this.dispThreeRefill.x,this.dispThreeRefill.y - 10 , 'this item costs $' /*+ b.getData('priceToRefill')*/, this.defaultTextConfig);
+        //     priceText.setScale(0.5);
+        // });
 
         this.bagWallOne = this.matter.add.image(430, 200,'wall');
         this.matter.add.image(430, 80,'ball');
@@ -134,32 +213,8 @@ class Play extends Phaser.Scene {
             }
         });
 
-        this.button1 = this.add.circle(300, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
-        this.button2 = this.add.circle(420, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
-        this.button3 = this.add.circle(540, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
-        this.buttons = this.add.group();
-        this.buttons.addMultiple([this.button1, this.button2, this.button3]);
-        // this.physics.add.existing(this.button, 1);
-        // this.physics.world.enable(this.button, 1);
-        // this.buttonBox = this.button.body;
-        // this.buttonBox.setCircle(game.config.width/16);
-        for(let b of this.buttons.getChildren()) {
-            b.setInteractive({
-                draggable: false,
-                useHandCursor: true
-            });
-            b.setDataEnabled();
-        }
-        this.button1.data.set('numIngredients', this.maxPeanuts);
-        this.button2.data.set('numIngredients', this.maxRaisins);
-        this.button3.data.set('numIngredients', this.maxMNMs);
-        // this.button1.setInteractive({
-        //     draggable: false,
-        //     useHandCursor: true
-        // });
 
-
-        this.moneyText = this.add.text(10, 20, 'Money: $'+this.money, {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'});
+        this.moneyText = this.add.text(10, 20, 'Money: $'+this.money, this.defaultTextConfig);
         
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
             // console.log(pointer);
@@ -175,6 +230,9 @@ class Play extends Phaser.Scene {
             this.clickTarget = null;
             this.clickOff();
         });
+        // this.input.on('pointerover',(pointer, gameObject, event) => {
+        //     this.hoverOn(gameObject);
+        // });
 
         // //Create bags of Ingredients used to refill dispensers
         // this.peanutBag = this.matter.add.group({
@@ -271,41 +329,42 @@ class Play extends Phaser.Scene {
 
         if(!this.isPaused){
             this.moneyText.setText('Money: $'+this.money);
-            let isDispenser = false;
-            for(let i of this.buttons.getChildren()) {
-                if(this.clickTarget == i) {
-                    isDispenser = true;
-                }
-            }
-            if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && isDispenser && this.clickTarget.getData('numIngredients') > 0) {
+            this.dispOneMeter.height = (this.button1.getData('numIngredients') / this.maxPeanuts) * 75;
+            this.dispTwoMeter.height = (this.button2.getData('numIngredients') / this.maxRaisins) * 75;
+            this.dispThreeMeter.height = (this.button3.getData('numIngredients') / this.maxMNMs) * 75;
+
+            if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && this.clickTarget.getData('numIngredients') > 0) {
                 this.sound.play('dispense');
                 let spawnedIngredient;
                 if(this.clickTarget == this.button1) {
                     this.button1.setData('numIngredients', (this.button1.getData('numIngredients')) - 1);
+                    this.dispOneRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxPeanuts - (this.button1.getData('numIngredients')))) * 0.0029));
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut', this.container).setOrigin(0,0);
                 } else if(this.clickTarget == this.button2) {
                     this.button2.setData('numIngredients', (this.button2.getData('numIngredients')) - 1);
+                    this.dispTwoRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxRaisins - (this.button2.getData('numIngredients')))) * 0.0023));
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin', this.container).setOrigin(0,0);
                 } else if(this.clickTarget == this.button3) {
                     this.button3.setData('numIngredients', (this.button3.getData('numIngredients')) - 1);
+                    this.dispThreeRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxMNMs - (this.button3.getData('numIngredients')))) * 0.056));
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m', this.container).setOrigin(0,0);
-                } else {
+                } /*else {
                     // Spawn random ingredient
                     console.log(this.clickTarget);
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)], this.container).setOrigin(0,0);
-                }
+                }*/
                 //Add ingredient to ingredient group and change hitbox to circle
                 // this.ingredients.add(spawnedIngredient);
-                let ingredientHitBox = spawnedIngredient.body;
-                ingredientHitBox.setCircle(spawnedIngredient.height/2);
+                // let ingredientHitBox = spawnedIngredient.body;
+                // ingredientHitBox.setCircle(spawnedIngredient.height/2);
                 // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
                 console.log('ingredients left = ' + this.clickTarget.getData('numIngredients'))
             }
-            for(let i of this.ingredients.getChildren()){
-                if(this.container.body.hitTest(i.x,i.y) == true) {
-                    i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
-                }
-            }
+            // for(let i of this.ingredients.getChildren()){
+            //     if(this.container.body.hitTest(i.x,i.y) == true) {
+            //         i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
+            //     }
+            // }
         }
         
         //Go back to menu when you press ESC
@@ -332,17 +391,45 @@ class Play extends Phaser.Scene {
         //console.log('collision occured');
     }
 
-    clickOn() {
+    clickOn(gObj) {
         console.log('button clicked');
         // let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
         // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
-        this.spawnIngredientLoop = true;
+        // for(let r of this.refillButtons.getChildren()) {
+        //     if(gObj == r) {
+        //         buyIngredients(gObj);
+        //     }
+        // }
+        
+            
+        for(let b of this.buttons.getChildren()) {
+            if(gObj == b) {
+                this.spawnIngredientLoop = true;
+            }
+        }
     }
 
     clickOff() {
         //console.log('click over');
         this.spawnIngredientLoop = false;
     }
+
+    // hoverOn(gObj) {
+    //     console.log(gObj);
+    //     let priceText;
+    //     if(gObj == this.dispOneRefill) {
+    //         priceText = this.add.text(this.dispOneRefill.x,this.dispOneRefill.y, 'this item costs $' /*+ b.getData('priceToRefill')*/, this.defaultTextConfig);
+    //         priceText.setScale(0.5);
+    //         console.log('disp1refill');
+    //     } else if(gObj == this.dispTwoRefill) {
+    //         priceText = this.add.text(this.dispTwoRefill.x,this.dispTwoRefill.y, 'this item costs $' /*+ b.getData('priceToRefill')*/, this.defaultTextConfig);
+    //         priceText.setScale(0.5);
+    //     } else if(gObj == this.dispThreeRefill) {
+    //         priceText = this.add.text(this.dispThreeRefill.x,this.dispThreeRefill.y, 'this item costs $' /*+ b.getData('priceToRefill')*/, this.defaultTextConfig);
+    //         priceText.setScale(0.5);
+    //     }  
+        
+    // }
     // // Call this method when spending any amount of money
     // spendCash(spent) {
     //     this.money -= spent;
@@ -369,5 +456,18 @@ class Play extends Phaser.Scene {
     //     this.paused = true;
     //     this.add.rectangle(game.config.width / 2, game.config.height / 2, )
     // }
+
+    buyIngredients(gObj) {
+        let priceToBuy = gObj.getData('price');
+        if(this.money - priceToBuy > 0) {
+            this.money -= priceToBuy;
+        } else {
+            insufficientFunds(priceToBuy);
+        }
+    }
+
+    insufficientFunds(price) {
+        this.text.add(game.config.width/2, game.config.height/2, 'You do not have enough funds, you need $' + price + 'to purchase', this.defaultTextConfig);
+    }
 
 }
