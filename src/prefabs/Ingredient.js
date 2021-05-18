@@ -6,6 +6,9 @@ class Ingredient extends Phaser.Physics.Matter.Sprite {
         scene.add.existing(this);
         this.type = type;
 
+        //this.setCollisionGroup(1);
+        //this.setDensity(.2); 
+
         this.color;     //In hexadecimal
         this.weight;    //In grams
         this.price;     //In dollars

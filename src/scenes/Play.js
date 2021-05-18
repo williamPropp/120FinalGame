@@ -149,6 +149,9 @@ class Play extends Phaser.Scene {
 
         this.inform = this.cache.json.get('bag_physics');
         this.bag = this.matter.add.image(400, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
+        //this.bag.setCollisionGroup(1);
+        //this.bag.setDensity(.5);
+        //this.bag.setBounce(.5);
         // this.bag.body.collideWorldBounds = true;
 
         // this.bagOut = this.add.rectangle(450, 300, 100, 100, 0xD3D3D3).setOrigin(0 ,0);
@@ -224,15 +227,16 @@ class Play extends Phaser.Scene {
         });
 
         this.ingHolder = this.add.group();
+        //this.ingHolder.setCollisionGroup(1);
 
         // this.physics.add.collider(this.ingredients, this.ingredients);
         // this.physics.add.collider(this.floor, this.ingredients);
         // this.physics.add.collider(this.ingredients, this.bag);
-        // this.physics.add.collider(this.bagWallOne, this.ingredients);
-        // this.physics.add.collider(this.ingredients, this.bagWallOne);
+        //this.physics.matter.add.collider(this.bagWallOne, this.ingredients);
+        //this.physics.add.collider(this.ingredients, this.bagWallOne);
         // this.physics.add.collider(this.bagBase, this.ingredients);
-        // this.physics.add.collider(this.bagWallTwo, this.ingredients);
-        // this.physics.add.collider(this.ingredients, this.bagWallTwo);
+        //this.physics.add.collider(this.bagWallTwo, this.ingredients);
+        //this.physics.add.collider(this.ingredients, this.bagWallTwo);
         // this.physics.add.collider(this.bagWallOne, this.conveyor);
         // this.physics.add.collider(this.bagBase, this.conveyor);
         // this.physics.add.collider(this.bagWallTwo, this.conveyor);
@@ -283,6 +287,7 @@ class Play extends Phaser.Scene {
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)], this.container).setOrigin(0,0);
                 }*/
                 //Add ingredient to ingredient group and change hitbox to circle
+                //spawnedIngredient.setCollisionGroup(1);
                 this.ingHolder.add(spawnedIngredient);
                 // let ingredientHitBox = spawnedIngredient.body;
                 // ingredientHitBox.setCircle(spawnedIngredient.height/2);
@@ -303,10 +308,20 @@ class Play extends Phaser.Scene {
 
         if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
             this.bag.setVelocity(10, 0);
-
+            
+            for(let ing of this.ingHolder.getChildren()){
+                ing.setVelocity(7,0);
+                //ing.x += 10;
+            }
+            
         }
         if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.bag.setVelocity(-10, 0);
+            for(let ing of this.ingHolder.getChildren()){
+                ing.setVelocity(-7,0);
+                //ing.x -= 10;
+            }
+            
             // this.bagWallOne.body.setVelocity(0, 0);
             // this.bagWallOne1.body.setVelocity(0, 0);
             // this.container.body.setVelocity(0,0);
