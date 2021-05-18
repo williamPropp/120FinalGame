@@ -20,12 +20,10 @@ class Play extends Phaser.Scene {
     create() {
 
         //Initialize data variables
-        // this.Y_GRAVITY = 2600;
-        // this.matter.world.gravity.y = this.Y_GRAVITY;
         this.matter.world.setBounds(0, 0, 960, 720);
         this.matter.world.setGravity(0, 7); 
         this.frameCount = 0;
-        this.flowRate = 5; //How often in ms to spawn Ingredients
+        this.flowRate = 5; //How often in frames to spawn Ingredients
         this.money = 50; //Starting cash
 
         //Max amount of Ingredient that can fit in 1 kg bag
@@ -36,10 +34,6 @@ class Play extends Phaser.Scene {
         
         //Initialize Arrays;
         this.ingredientTypeArray = ["peanut", "raisin", "m&m", "almond"];
-
-        //Initialize location variables
-        
-        //Initialize UI coordinate variables
 
         //Add boolean flags
         this.paused = false;
@@ -59,7 +53,6 @@ class Play extends Phaser.Scene {
         //Keep track of clickTarget globally
         this.clickTarget;
         
-
         this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
         this.conveyor = this.matter.add.image(250, 500, 'conveyor').setIgnoreGravity(true).setStatic(true);;
@@ -131,22 +124,6 @@ class Play extends Phaser.Scene {
         this.dispOneRefill.data.set('dispenser', this.button1);
         this.dispTwoRefill.data.set('dispenser', this.button2);
         this.dispThreeRefill.data.set('dispenser', this.button3);
-        // this.dispOneRefill.data.set('priceToRefill', (this.maxPeanuts - this.maxPeanuts) * 0.0029);
-        // this.dispTwoRefill.data.set('priceToRefill', (this.maxRaisins - this.maxRaisins) * 0.0023);
-        // this.dispThreeRefill.data.set('priceToRefill', (this.maxMNMs - this.maxMNMs) * 0.0056);
-
-        // this.dispOneRefill.on('pointerover',() => {
-        //     let priceText = this.add.text(this.dispOneRefill.x,this.dispOneRefill.y - 10 , 'this item costs $' /*+ b.getData('priceToRefill')*/, this.defaultTextConfig);
-        //     priceText.setScale(0.5);
-        // });
-        // this.dispTwoRefill.on('pointerover',() => {
-        //     let priceText = this.add.text(this.dispTwoRefill.x,this.dispTwoRefill.y - 10 , 'this item costs $' + /*b.getData('priceToRefill')*/, this.defaultTextConfig);
-        //     priceText.setScale(0.5);
-        // });
-        // this.dispThreeRefill.on('pointerover',() => {
-        //     let priceText = this.add.text(this.dispThreeRefill.x,this.dispThreeRefill.y - 10 , 'this item costs $' /*+ b.getData('priceToRefill')*/, this.defaultTextConfig);
-        //     priceText.setScale(0.5);
-        // });
 
         // this.bagWallOne1 = this.add.sprite(53, 400,'wall');
         // this.bagBase = this.add.sprite(0, 80, 'base');
@@ -190,8 +167,6 @@ class Play extends Phaser.Scene {
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
         this.matter.add.image(this.floor);
-        // this.floor.setData('gravityEnabled','false');
-        //this.floor.body.collideWorldBounds = true;
 
         this.bin = this.add.rectangle(25, 600, 100, 200, 0x808080).setOrigin(0 ,0);
         this.bin.setInteractive();
@@ -206,15 +181,15 @@ class Play extends Phaser.Scene {
         });
         this.bin.on('drop', (pointer, target) => {
             // note: the message below will be superseded by the dragend event above
-            console.log(`Dropped '${this.burrito.texture.key}' on '${target.texture.key}'`);
-            this.printMessage(`Dropped '${this.burrito.texture.key}' on '${target.texture.key}'`);
-            // put the burrito in the garbage
-            if (target.texture.key === 'trash') {
-                this.burrito.destroy();
-            }
+            // console.log(`Dropped '${this.burrito.texture.key}' on '${target.texture.key}'`);
+            // this.printMessage(`Dropped '${this.burrito.texture.key}' on '${target.texture.key}'`);
+    
+            // if (target.texture.key === 'dispenser') {
+            //     this.bin.destroy();
+            // }
         });
 
-
+        //Add UI element to keep track on the player's money
         this.moneyText = this.add.text(10, 20, 'Money: $'+this.money, this.defaultTextConfig);
         
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
@@ -233,55 +208,6 @@ class Play extends Phaser.Scene {
         });
         // this.input.on('pointerover',(pointer, gameObject, event) => {
         //     this.hoverOn(gameObject);
-        // });
-
-        // //Create bags of Ingredients used to refill dispensers
-        // this.peanutBag = this.matter.add.group({
-        //     classType: Phaser.GameObjects.Sprite,
-        //     defaultKey: null,
-        //     defaultFrame: null,
-        //     active: true,
-        //     maxSize: this.maxPeanuts,
-        //     runChildUpdate: false,
-        //     createCallback: null,
-        //     removeCallback: null,
-        //     createMultipleCallback: null
-        // });
-
-        // this.raisinBag = this.physics.add.group({
-        //     classType: Phaser.GameObjects.Sprite,
-        //     defaultKey: null,
-        //     defaultFrame: null,
-        //     active: true,
-        //     maxSize: this.maxRaisins,
-        //     runChildUpdate: false,
-        //     createCallback: null,
-        //     removeCallback: null,
-        //     createMultipleCallback: null
-        // });
-        
-        // this.MNMBag = this.physics.add.group({
-        //     classType: Phaser.GameObjects.Sprite,
-        //     defaultKey: null,
-        //     defaultFrame: null,
-        //     active: true,
-        //     maxSize: this.maxMNMs,
-        //     runChildUpdate: false,
-        //     createCallback: null,
-        //     removeCallback: null,
-        //     createMultipleCallback: null
-        // });
-        
-        // this.almondBag = this.physics.add.group({
-        //     classType: Phaser.GameObjects.Sprite,
-        //     defaultKey: null,
-        //     defaultFrame: null,
-        //     active: true,
-        //     maxSize: this.maxAlmonds,
-        //     runChildUpdate: false,
-        //     createCallback: null,
-        //     removeCallback: null,
-        //     createMultipleCallback: null
         // });
 
         //ingredients physics group
@@ -440,10 +366,6 @@ class Play extends Phaser.Scene {
     //     }  
         
     // }
-    // // Call this method when spending any amount of money
-    // spendCash(spent) {
-    //     this.money -= spent;
-    // }
 
     //Calculates money made from selling trail mix bag
     //Mix will be an array of the weight of each ingredient contained in the bag: [peanuts, raisins, m&ms, almonds] 
@@ -467,10 +389,15 @@ class Play extends Phaser.Scene {
     //     this.add.rectangle(game.config.width / 2, game.config.height / 2, )
     // }
 
+    // Call this method when spending any amount of money
+    spendCash(spent) {
+        this.money -= spent;
+    }
+
     buyIngredients(gObj) {
         let priceToBuy = gObj.getData('priceToRefill');
         if(this.money - priceToBuy > 0) {
-            this.money -= priceToBuy;
+            this.spendCash(priceToBuy);
             // if(gObj == this.dispOneRefill) {
             //     this.dispOneRefill.setData('numIngredients', this.dispOneRefill.getData('maxIngredients'));
             // } else if(gObj == this.dispTwoRefill) {
@@ -489,7 +416,19 @@ class Play extends Phaser.Scene {
     }
 
     insufficientFunds(price) {
-        this.text.add(game.config.width/2, game.config.height/2, 'You do not have enough funds, you need $' + price + 'to purchase', this.defaultTextConfig);
+        let insFundText = this.add.text(game.config.width/2-50, game.config.height/2-100, 'You do not have enough funds, you need $' + price + ' to purchase', this.defaultTextConfig).setOrigin(0.5,0.5);
+        insFundText.setScale(0.4);
+        this.time.delayedCall(2000, () => {
+            insFundText.destroy();
+        });
     }
 
 }
+
+
+
+// Matter ideas
+// Matter.Body.translate(body, translation) // Moves a body by a given vector relative to its current position, without imparting any velocity.
+// body.restitution // A Number that defines the restitution (elasticity) of the body. The value is always positive and is in the range (0, 1). A value of 0 means collisions may be perfectly inelastic and no bouncing may occur. A value of 0.8 means the body may bounce back with approximately 80% of its kinetic energy. Note that collision response is based on pairs of bodies, and that restitution values are combined with the following formula:
+// body.sleepThreshold //A Number that defines the number of updates in which this body must have near-zero velocity before it is set as sleeping by the Matter.Sleeping module (if sleeping is enabled by the engine).
+// body.slop //A Number that specifies a tolerance on how far a body is allowed to 'sink' or rotate into other bodies. Avoid changing this value unless you understand the purpose of slop in physics engines. The default should generally suffice, although very large bodies may require larger values for stable stacking.
