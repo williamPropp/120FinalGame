@@ -21,7 +21,7 @@ class Play extends Phaser.Scene {
 
         //Initialize data variables
         this.matter.world.setBounds(0, 0, 960, 720);
-        this.matter.world.setGravity(0, 7); 
+        this.matter.world.setGravity(0, 1); 
         this.frameCount = 0;
         this.flowRate = 5; //How often in frames to spawn Ingredients
         this.money = 50; //Starting cash
@@ -55,7 +55,7 @@ class Play extends Phaser.Scene {
         
         this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
-        this.conveyor = this.matter.add.image(250, 500, 'conveyor').setIgnoreGravity(true).setStatic(true);;
+        this.conveyor = this.matter.add.image(250, 500, 'conveyor').setIgnoreGravity(true).setStatic(true);
         //this.matter.add.image(this.conveyor);//.body.setImmovable(true).setAllowGravity(false);
 
         //Grey dispenser rectangles
@@ -124,28 +124,6 @@ class Play extends Phaser.Scene {
         this.dispOneRefill.data.set('dispenser', this.button1);
         this.dispTwoRefill.data.set('dispenser', this.button2);
         this.dispThreeRefill.data.set('dispenser', this.button3);
-
-        // this.bagWallOne1 = this.add.sprite(53, 400,'wall');
-        // this.bagBase = this.add.sprite(0, 80, 'base');
-        // this.bagWallTwo = this.add.sprite(150, 400, 'wall');
-        // this.bagWallTwo2 = this.add.sprite(153, 400, 'wall');
-        // this.container = this.add.container(100, 10);
-        // this.container.setSize(100, 200);
-        //this.matter.add.image(this.bagWallOne);//.setGravity(0, 2300);//.body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
-        //this.bagWallOne.setVelocity(10,20);
-        // this.matter.add.image(this.bagWallOne1);//.body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
-        // this.matter.add.image(this.bagBase);//.body.setImmovable(true).setAllowGravity(false).pushable = false;
-        // this.matter.add.image(this.bagWallTwo);//.body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
-        // this.matter.add.image(this.bagWallTwo2);//.body.setImmovable(true).setAllowGravity(false).setMass(1000000).pushable = false;
-        // this.matter.add.image(this.container);
-        //this.container.add(this.bagWallOne);
-        // this.container.add(this.bagBase);
-        //this.container.add(this.bagWallTwo);
-        // this.bagWallOne.body.collideWorldBounds = true;
-        // this.bagBase.body.collideWorldBounds = true;
-        // this.bagWallTwo.body.collideWorldBounds = true;
-        // this.container.body.collideWorldBounds = true;
-
 
         this.inform = this.cache.json.get('bag_physics');
         this.bag = this.matter.add.image(400, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
@@ -258,12 +236,7 @@ class Play extends Phaser.Scene {
     update() {
         //How many frames have elapsed since the start of the scene
         this.frameCount++;
-
-        for(let i of this.ingHolder.getChildren()){
-            if(i.x > game.config.width - 200) {//|| i.y > game.config.height + i.height) {
-                i.destroy();
-            }
-        }
+        //console.log(this.bag.x - this.bag.width/2);
 
         if(!this.isPaused){
             this.moneyText.setText('Money: $'+this.money);
@@ -277,7 +250,7 @@ class Play extends Phaser.Scene {
                 if(this.clickTarget == this.button1) {
                     this.button1.setData('numIngredients', (this.button1.getData('numIngredients')) - 1);
                     this.dispOneRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxPeanuts - (this.button1.getData('numIngredients')))) * 0.0029));
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut'/*, this.container*/).setOrigin(0.5,0.5);
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut'/*, this.container*/).setOrigin(0.5,0.5).setBounce();
                 } else if(this.clickTarget == this.button2) {
                     this.button2.setData('numIngredients', (this.button2.getData('numIngredients')) - 1);
                     this.dispTwoRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxRaisins - (this.button2.getData('numIngredients')))) * 0.0023));
@@ -317,6 +290,11 @@ class Play extends Phaser.Scene {
             //         i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
             //     }
             // }
+            for(let i of this.ingHolder.getChildren()){
+                if(i.x > 750) {
+                    i.destroy();
+                }
+            }
         }
         
         //Go back to menu when you press ESC
@@ -325,26 +303,22 @@ class Play extends Phaser.Scene {
         }
 
         if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-            this.bag.setVelocity(10, 0);
-            
-            for(let ing of this.ingHolder.getChildren()){
-                ing.setVelocity(7,0);
-                //ing.x += 10;
+            for(let i of this.ingHolder.getChildren()){
+                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                    console.log("right called");
+                    i.setVelocity(5,0)
+                }
             }
-            
+            this.bag.setVelocity(5, 0);
         }
         if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-            this.bag.setVelocity(-10, 0);
-            for(let ing of this.ingHolder.getChildren()){
-                ing.setVelocity(-7,0);
-                //ing.x -= 10;
+            this.bag.setVelocity(-5, 0);
+            for(let i of this.ingHolder.getChildren()){
+                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                    console.log("left called");
+                    i.setVelocity(-5,0)
+                }
             }
-            
-            // this.bagWallOne.body.setVelocity(0, 0);
-            // this.bagWallOne1.body.setVelocity(0, 0);
-            // this.container.body.setVelocity(0,0);
-            // this.bagWallTwo.body.setVelocity(0, 0);
-            // this.bagWallTwo2.body.setVelocity(0, 0);
         }
 
     }
