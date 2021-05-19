@@ -248,8 +248,6 @@ class Play extends Phaser.Scene {
         //console.log(this.bag.x - this.bag.width/2);
 
         if(!this.isPaused){
-            this.money = Number.parseFloat(this.money);
-            this.moneyText.setText('Money: $'+ this.money);
             this.dispOneMeter.height = (this.button1.getData('numIngredients') / this.maxPeanuts) * 75;
             this.dispTwoMeter.height = (this.button2.getData('numIngredients') / this.maxRaisins) * 75;
             this.dispThreeMeter.height = (this.button3.getData('numIngredients') / this.maxMNMs) * 75;
@@ -312,10 +310,11 @@ class Play extends Phaser.Scene {
                     weightText.destroy();
                     valueText.destroy();
                     this.getCash(value);
-                    for(let i of this.ingHolder.getChildren()){
-                        i.body.destroy();
-                        i.destroy();
-                    }
+                    this.ingHolder.clear(true, true);
+                    // for(let i of this.ingHolder.getChildren()){
+                    //     i.body.destroy();
+                    //     i.destroy();
+                    // }
                     this.bag.setPosition(400, 400);
                     this.priceCalculated = false;
                 });
@@ -441,11 +440,17 @@ class Play extends Phaser.Scene {
     //Call this method when spending any amount of money
     spendCash(spent) {
         this.money -= spent;
+        this.money = this.money.toFixed(2);
+        this.money = Number.parseFloat(this.money);
+        this.moneyText.setText('Money: $'+ this.money);
     }
 
     //Call this method when gaining any amount of money
     getCash(gained) {
         this.money += gained;
+        this.money = this.money.toFixed(2);
+        this.money = Number.parseFloat(this.money);
+        this.moneyText.setText('Money: $'+ this.money);
     }
 
     //Calculate the price of a bag
