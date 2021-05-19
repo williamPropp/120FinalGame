@@ -248,6 +248,11 @@ class Play extends Phaser.Scene {
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+
+        this.testIng = new Ingredient(this, game.config.width/2, game.config.width/2, 'circle', null, 'peanut', this.container).setOrigin(0.5,0.5)
+        this.testIng.body.density = 1;
+        this.testIng.body.slop = 0;
+        this.testIng.body.friction = 1;
     }
 
     update() {
@@ -272,15 +277,15 @@ class Play extends Phaser.Scene {
                 if(this.clickTarget == this.button1) {
                     this.button1.setData('numIngredients', (this.button1.getData('numIngredients')) - 1);
                     this.dispOneRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxPeanuts - (this.button1.getData('numIngredients')))) * 0.0029));
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut', this.container).setOrigin(0.5,0.5);
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut'/*, this.container*/).setOrigin(0.5,0.5);
                 } else if(this.clickTarget == this.button2) {
                     this.button2.setData('numIngredients', (this.button2.getData('numIngredients')) - 1);
                     this.dispTwoRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxRaisins - (this.button2.getData('numIngredients')))) * 0.0023));
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin', this.container).setOrigin(0.5,0.5);
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin'/*, this.container*/).setOrigin(0.5,0.5);
                 } else if(this.clickTarget == this.button3) {
                     this.button3.setData('numIngredients', (this.button3.getData('numIngredients')) - 1);
                     this.dispThreeRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxMNMs - (this.button3.getData('numIngredients')))) * 0.056));
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m', this.container).setOrigin(0.5,0.5);
+                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m'/*, this.container*/).setOrigin(0.5,0.5);
                 } /*else {
                     // Spawn random ingredient
                     console.log(this.clickTarget);
@@ -288,11 +293,24 @@ class Play extends Phaser.Scene {
                 }*/
                 //Add ingredient to ingredient group and change hitbox to circle
                 //spawnedIngredient.setCollisionGroup(1);
-                this.ingHolder.add(spawnedIngredient);
+                // this.ingHolder.add(spawnedIngredient);
+                // spawnedIngredient.body.setSlop(0);
+                // spawnedIngredient.body.setBounce(0);
+
                 // let ingredientHitBox = spawnedIngredient.body;
                 // ingredientHitBox.setCircle(spawnedIngredient.height/2);
                 // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
-                console.log('ingredients left = ' + this.clickTarget.getData('numIngredients'))
+                console.log('ingredients left = ' + this.clickTarget.getData('numIngredients'));
+                // spawnedIngredient.body.slop = 0;
+                // spawnedIngredient.body.restitution = 0;
+                spawnedIngredient.setCircle();
+                // spawnedIngredient.body.friction = 1;
+                spawnedIngredient.body.density = 0;
+                console.log(spawnedIngredient.body.properties);
+                this.ingHolder.add(spawnedIngredient);
+            }
+            if(this.bag.x > 700) {
+                console.log('bag on scale');
             }
             // for(let i of this.ingredients.getChildren()){
             //     if(this.container.body.hitTest(i.x,i.y) == true) {
@@ -404,22 +422,16 @@ class Play extends Phaser.Scene {
     //     this.add.rectangle(game.config.width / 2, game.config.height / 2, )
     // }
 
-    // Call this method when spending any amount of money
+    //Call this method when spending any amount of money
     spendCash(spent) {
         this.money -= spent;
     }
+
 
     buyIngredients(gObj) {
         let priceToBuy = gObj.getData('priceToRefill');
         if(this.money - priceToBuy > 0) {
             this.spendCash(priceToBuy);
-            // if(gObj == this.dispOneRefill) {
-            //     this.dispOneRefill.setData('numIngredients', this.dispOneRefill.getData('maxIngredients'));
-            // } else if(gObj == this.dispTwoRefill) {
-            //     this.dispOneRefill.setData('numIngredients', this.dispOneRefill.getData('maxIngredients'));
-            // } else if(gObj == this.dispThreeRefill) {
-            //     this.dispOneRefill.setData('numIngredients', this.dispOneRefill.getData('maxIngredients'));
-            // }
             let disp = gObj.getData('dispenser');
             disp.setData('numIngredients', disp.getData('maxIngredients'));
             gObj.setData('priceToRefill', 0);
