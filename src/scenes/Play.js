@@ -56,6 +56,13 @@ class Play extends Phaser.Scene {
         
         this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
+        //Menu
+        this.playMenu = this.add.rectangle(10, 100, 220, 100, 0x000000).setOrigin(0 ,0);
+        this.playMenu.setInteractive({
+            useHandCursor: true
+        });
+        this.playMenu.setDataEnabled;
+
         this.conveyor = this.matter.add.image(250, 500, 'conveyor').setIgnoreGravity(true).setStatic(true);
         //this.matter.add.image(this.conveyor);//.body.setImmovable(true).setAllowGravity(false);
 
@@ -369,6 +376,9 @@ class Play extends Phaser.Scene {
         //     }
         // }
         
+        if(gObj == this.playMenu) {
+            this.scene.launch("playMenuScene");
+        }
             
         for(let b of this.buttons.getChildren()) {
             if(gObj == b) {
