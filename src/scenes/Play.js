@@ -38,6 +38,7 @@ class Play extends Phaser.Scene {
         //Add boolean flags
         this.paused = false;
         this.spawnIngredientLoop = false;
+        this.priceCalculated = false;
 
         //Add music to the scene
         // this.soundtrack = this.sound.add('soundtrack', {
@@ -227,10 +228,11 @@ class Play extends Phaser.Scene {
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 
-        this.testIng = new Ingredient(this, game.config.width/2, game.config.width/2, 'circle', null, 'peanut', this.container).setOrigin(0.5,0.5)
-        this.testIng.body.density = 1;
-        this.testIng.body.slop = 0;
-        this.testIng.body.friction = 1;
+        // this.testIng = new Ingredient(this, game.config.width/2, game.config.width/2, 'circle', null, 'peanut', this.container).setOrigin(0.5,0.5)
+        // this.testIng.body.density = 1;
+        // this.testIng.body.slop = 0;
+        // this.testIng.body.friction = 1;
+
     }
 
     update() {
@@ -239,7 +241,8 @@ class Play extends Phaser.Scene {
         //console.log(this.bag.x - this.bag.width/2);
 
         if(!this.isPaused){
-            this.moneyText.setText('Money: $'+this.money);
+            this.money = Number.parseFloat(this.money);
+            this.moneyText.setText('Money: $'+ this.money);
             this.dispOneMeter.height = (this.button1.getData('numIngredients') / this.maxPeanuts) * 75;
             this.dispTwoMeter.height = (this.button2.getData('numIngredients') / this.maxRaisins) * 75;
             this.dispThreeMeter.height = (this.button3.getData('numIngredients') / this.maxMNMs) * 75;
@@ -274,58 +277,87 @@ class Play extends Phaser.Scene {
                 // ingredientHitBox.setCircle(spawnedIngredient.height/2);
                 // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
                 console.log('ingredients left = ' + this.clickTarget.getData('numIngredients'));
-                // spawnedIngredient.body.slop = 0;
-                // spawnedIngredient.body.restitution = 0;
+                spawnedIngredient.body.slop = 0;
+                spawnedIngredient.body.restitution = 0;
                 spawnedIngredient.setCircle();
-                // spawnedIngredient.body.friction = 1;
                 spawnedIngredient.body.density = 0;
-                console.log(spawnedIngredient.body.properties);
                 this.ingHolder.add(spawnedIngredient);
             }
-            if(this.bag.x > 700) {
+
+            //Calculate bag value and weight when on the scale
+            if(this.bag.x > 800 && !this.priceCalculated) {
+                this.priceCalculated = true;
                 console.log('bag on scale');
+                let bagContentsArray = [];
+                for(let i of this.ingHolder.getChildren()) {
+                    if(i.x > this.bag.x - (this.bag.width / 2) && i.x < this.bag.x + (this.bag.width / 2) && i.y > this.bag.y - (this.bag.height/2) && i.y < this.bag.y + (this.bag.height/2)) {
+                        bagContentsArray.push(i);
+                    }
+                }
+                
+                let value = parseFloat(this.calculatePrice(bagContentsArray));
+                let weight = parseFloat(this.calculateWeight(bagContentsArray));
+                let weightText = this.add.text(700, 350, 'this bag weighs ' + weight + 'g', this.defaultTextConfig).setOrigin(0.5,0.5);
+                let valueText = this.add.text(700, 380, 'this bag is worth $' + value, this.defaultTextConfig).setOrigin(0.5,0.5);
+                weightText.setScale(0.5);
+                valueText.setScale(0.5);
+                this.time.delayedCall(2000, () => {
+                    weightText.destroy();
+                    valueText.destroy();
+                    this.getCash(value);
+                    for(let i of this.ingHolder.getChildren()){
+                        i.body.destroy();
+                        i.destroy();
+                    }
+                    this.bag.setPosition(400, 400);
+                    this.priceCalculated = false;
+                });
             }
+
+            //Move the bag right
+            if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+                for(let i of this.ingHolder.getChildren()){
+                    if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                        console.log("right called");
+                        i.setVelocity(5,0)
+                    }
+                }
+                this.bag.setVelocity(5, 0);
+            }
+
+            //Move the bag left
+            if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+                this.bag.setVelocity(-5, 0);
+                for(let i of this.ingHolder.getChildren()){
+                    if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                        console.log("left called");
+                        i.setVelocity(-5,0)
+                    }
+                }
+            }
+
+        }
             // for(let i of this.ingredients.getChildren()){
             //     if(this.container.body.hitTest(i.x,i.y) == true) {
             //         i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
             //     }
             // }
-            for(let i of this.ingHolder.getChildren()){
-                if(i.x > 750) {
-                    i.destroy();
-                }
-            }
-        }
+            // for(let i of this.ingHolder.getChildren()){
+            //     if(i.x > 750) {
+            //         i.destroy();
+            //     }
+            // }
         
         //Go back to menu when you press ESC
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
             this.scene.start("menuScene");
         }
 
-        if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-            for(let i of this.ingHolder.getChildren()){
-                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                    console.log("right called");
-                    i.setVelocity(5,0)
-                }
-            }
-            this.bag.setVelocity(5, 0);
-        }
-        if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-            this.bag.setVelocity(-5, 0);
-            for(let i of this.ingHolder.getChildren()){
-                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                    console.log("left called");
-                    i.setVelocity(-5,0)
-                }
-            }
-        }
-
     }
 
-    collided() {
-        //console.log('collision occured');
-    }
+    // collided() {
+    //     //console.log('collision occured');
+    // }
 
     clickOn(gObj) {
         console.log('button clicked');
@@ -399,6 +431,31 @@ class Play extends Phaser.Scene {
     //Call this method when spending any amount of money
     spendCash(spent) {
         this.money -= spent;
+    }
+
+    //Call this method when gaining any amount of money
+    getCash(gained) {
+        this.money += gained;
+    }
+
+    //Calculate the price of a bag
+    calculatePrice(contents) {
+        let bagValue = 0;
+        for(let c of contents) {
+            bagValue += c.value;
+        }
+        bagValue = bagValue.toFixed(2);
+        return bagValue;
+    }
+
+    //Calculate the weight of a bag
+    calculateWeight(contents) {
+        let bagWeight = 0;
+        for(let c of contents) {
+            bagWeight += c.weight;
+        }
+        bagWeight = bagWeight.toFixed(1);
+        return bagWeight;
     }
 
 
