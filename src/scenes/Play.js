@@ -24,7 +24,26 @@ class Play extends Phaser.Scene {
         this.matter.world.setGravity(0, 1); 
         this.frameCount = 0;
         this.flowRate = 5; //How often in frames to spawn Ingredients
-        this.money = 50; //Starting cash
+        this.money;
+
+        //Initialize player money based on previous gameplay
+        if(localStorage.getItem('money') == null){
+            this.money = 50.00;
+            localStorage.setItem('money', this.money);
+        }
+        else{
+            this.money = parseFloat(localStorage.getItem('money'));
+        }
+        
+
+       /* if(baseCache.exists('money')){
+            this.money = baseCache.get('money');
+        }
+        else{
+            this.money = 50; //Starting cash
+            baseCache.add('money', this.money);
+        }
+        */
 
         //Max amount of Ingredient that can fit in 1 kg bag
         this.maxPeanuts = 1000;
@@ -247,6 +266,7 @@ class Play extends Phaser.Scene {
         this.frameCount++;
         //console.log(this.bag.x - this.bag.width/2);
 
+
         if(!this.isPaused){
             this.dispOneMeter.height = (this.button1.getData('numIngredients') / this.maxPeanuts) * 75;
             this.dispTwoMeter.height = (this.button2.getData('numIngredients') / this.maxRaisins) * 75;
@@ -443,6 +463,7 @@ class Play extends Phaser.Scene {
         this.money = this.money.toFixed(2);
         this.money = Number.parseFloat(this.money);
         this.moneyText.setText('Money: $'+ this.money);
+        localStorage.setItem('money', this.money);
     }
 
     //Call this method when gaining any amount of money
@@ -451,6 +472,7 @@ class Play extends Phaser.Scene {
         this.money = this.money.toFixed(2);
         this.money = Number.parseFloat(this.money);
         this.moneyText.setText('Money: $'+ this.money);
+        localStorage.setItem('money', this.money);
     }
 
     //Calculate the price of a bag

@@ -39,3 +39,7 @@ let screenCenterY = game.config.height / 2;
 
 //Cheat Code Booleans
 let moneyCheat = false;
+
+//game.cache = new this.Phaser.Cache.CacheManager(game);
+//let baseCache = game.cache.addCustom('info');
+
