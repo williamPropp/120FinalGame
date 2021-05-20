@@ -99,6 +99,16 @@ class Play extends Phaser.Scene {
         this.dispOneMeter = this.add.rectangle(300, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
         this.dispTwoMeter = this.add.rectangle(420, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
         this.dispThreeMeter = this.add.rectangle(540, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
+        if(localStorage.getItem('meterOneHeight') != null){
+            this.dispOneMeter.height = localStorage.getItem('meterOneHeight');    
+        }
+        if(localStorage.getItem('meterTwoHeight') != null){
+            this.dispTwoMeter.height = localStorage.getItem('meterTwoHeight');    
+        }
+        if(localStorage.getItem('meterThreeHeight') != null){
+            this.dispThreeMeter.height = localStorage.getItem('meterThreeHeight');    
+        }
+
 
         //Dispenser buttons
         this.button1 = this.add.circle(300, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
@@ -117,12 +127,29 @@ class Play extends Phaser.Scene {
         }
 
         //Set max ingredients for each dispenser
-        this.button1.data.set('numIngredients', this.maxPeanuts);
         this.button1.data.set('maxIngredients', this.maxPeanuts);
-        this.button2.data.set('numIngredients', this.maxRaisins);
         this.button2.data.set('maxIngredients', this.maxRaisins);
-        this.button3.data.set('numIngredients', this.maxMNMs);
         this.button3.data.set('maxIngredients', this.maxMNMs);
+
+        if(localStorage.getItem('numPeanuts') == null){
+            this.button1.data.set('numIngredients', this.maxPeanuts);
+        }
+        else{
+            this.button1.data.set('numIngredients', localStorage.getItem('numPeanuts'));
+        }
+        if(localStorage.getItem('numRaisins') == null){
+            this.button2.data.set('numIngredients', this.maxRaisins);
+        }
+        else{
+            this.button2.data.set('numIngredients', localStorage.getItem('numRaisins'));
+        }
+        if(localStorage.getItem('numM&Ms') == null){
+            this.button3.data.set('numIngredients', this.maxMNMs);
+        }
+        else{
+            this.button3.data.set('numIngredients', localStorage.getItem('numM&Ms'));
+        }        
+        
 
         //Refill button for each dispenser
         this.dispOneRefill = this.add.circle(330, 100, 10, 0x0000FF).setOrigin(0.5, 0.5);
@@ -139,6 +166,7 @@ class Play extends Phaser.Scene {
             });
             b.setDataEnabled();
             b.data.set('priceToRefill', 0);
+
             b.on('pointerover',() => {
                 let priceText = this.add.text(b.x - 10, b.y - 50, 'this item costs $' + b.getData('priceToRefill') + ' to refill', this.defaultTextConfig);
                 priceText.setScale(0.5);
@@ -146,6 +174,15 @@ class Play extends Phaser.Scene {
                     priceText.destroy();
                 });
             });
+        }
+        if(localStorage.getItem('refillOne$') != null){
+            this.dispOneRefill.setData('priceToRefill', localStorage.getItem('refillOne$'));
+        }
+        if(localStorage.getItem('refillTwo$') != null){
+            this.dispTwoRefill.setData('priceToRefill', localStorage.getItem('refillTwo$'));
+        }
+        if(localStorage.getItem('refillThree$') != null){
+            this.dispThreeRefill.setData('priceToRefill', localStorage.getItem('refillThree$'));
         }
 
         this.dispOneRefill.data.set('dispenser', this.button1);
@@ -269,8 +306,11 @@ class Play extends Phaser.Scene {
 
         if(!this.isPaused){
             this.dispOneMeter.height = (this.button1.getData('numIngredients') / this.maxPeanuts) * 75;
+            localStorage.setItem('meterOneHeight', this.dispOneMeter.height);
             this.dispTwoMeter.height = (this.button2.getData('numIngredients') / this.maxRaisins) * 75;
+            localStorage.setItem('meterTwoHeight', this.dispTwoMeter.height);
             this.dispThreeMeter.height = (this.button3.getData('numIngredients') / this.maxMNMs) * 75;
+            localStorage.setItem('meterThreeHeight', this.dispThreeMeter.height);
 
             if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && this.clickTarget.getData('numIngredients') > 0) {
                 this.sound.play('dispense');
@@ -278,14 +318,20 @@ class Play extends Phaser.Scene {
                 if(this.clickTarget == this.button1) {
                     this.button1.setData('numIngredients', (this.button1.getData('numIngredients')) - 1);
                     this.dispOneRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxPeanuts - (this.button1.getData('numIngredients')))) * 0.0029));
+                    localStorage.setItem('refillOne$', this.dispOneRefill.getData('priceToRefill'));
+                    localStorage.setItem('numPeanuts', this.button1.getData('numIngredients'));
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut'/*, this.container*/).setOrigin(0.5,0.5).setBounce();
                 } else if(this.clickTarget == this.button2) {
                     this.button2.setData('numIngredients', (this.button2.getData('numIngredients')) - 1);
                     this.dispTwoRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxRaisins - (this.button2.getData('numIngredients')))) * 0.0023));
+                    localStorage.setItem('refillTwo$', this.dispTwoRefill.getData('priceToRefill'));
+                    localStorage.setItem('numRaisins', this.button2.getData('numIngredients'));
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin'/*, this.container*/).setOrigin(0.5,0.5);
                 } else if(this.clickTarget == this.button3) {
                     this.button3.setData('numIngredients', (this.button3.getData('numIngredients')) - 1);
                     this.dispThreeRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxMNMs - (this.button3.getData('numIngredients')))) * 0.056));
+                    localStorage.setItem('refillThree$', this.dispThreeRefill.getData('priceToRefill'));
+                    localStorage.setItem('numM&Ms', this.button3.getData('numIngredients'));
                     spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m'/*, this.container*/).setOrigin(0.5,0.5);
                 } /*else {
                     // Spawn random ingredient
