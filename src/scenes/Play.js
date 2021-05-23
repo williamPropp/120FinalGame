@@ -436,6 +436,7 @@ class Play extends Phaser.Scene {
         
         if(gObj == this.playMenu) {
             this.scene.launch("playMenuScene");
+            this.scene.pause('playScene');
         }
             
         for(let b of this.dispenseButtons.getChildren()) {
