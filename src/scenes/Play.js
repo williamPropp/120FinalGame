@@ -27,6 +27,7 @@ class Play extends Phaser.Scene {
         this.flowRate = 5; //How often in frames to spawn Ingredients
         this.money;
         this.binWeight = 1000; //How many grams of ingredients can fit in one dispenser
+        this.lift = false; //for sell action
 
         //Initialize player money based on previous gameplay
         if(localStorage.getItem('money') == null){
@@ -201,7 +202,7 @@ class Play extends Phaser.Scene {
                                         // }
 
         this.inform = this.cache.json.get('bag_physics');
-        this.bag = this.matter.add.image(400, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
+        this.bag = this.matter.add.image(200, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
         //this.bag.setCollisionGroup(1);
         //this.bag.setDensity(.5);
         //this.bag.setBounce(.5);
@@ -217,7 +218,7 @@ class Play extends Phaser.Scene {
         this.scale = this.add.rectangle(game.config.width - 120, 489, game.config.width/4, game.config.height/10, 0x808080).setOrigin(0 ,0);
         this.matter.add.gameObject(this.scale).setIgnoreGravity(true).setStatic(true);;
         this.scaleChart = this.add.rectangle(game.config.width - 225, 550, game.config.width/5, game.config.height/4, 0x808080).setOrigin(0 ,0);
-        this.tube = this.add.rectangle(790, 0, 100, 350, 0xadd8e6).setOrigin(0 ,0);
+        this.tube = this.add.rectangle(780, 0, 120, 330, 0xadd8e6).setOrigin(0 ,0);
         this.tracker = this.add.rectangle(725, 50, 225, 250, 0xC4A484).setOrigin(0 ,0);
         this.contract = this.add.image(735, 60, 'contract').setOrigin(0 ,0);
 
@@ -356,7 +357,7 @@ class Play extends Phaser.Scene {
             }
 
             //Calculate bag value and weight when on the scale
-            if(this.bag.x > 800 && !this.priceCalculated) {
+            if(this.bag.x > 840 && !this.priceCalculated) {
                 this.priceCalculated = true;
 
                 //Calculate which ingredients are in the bag, then add them to an array
@@ -381,10 +382,21 @@ class Play extends Phaser.Scene {
                 this.time.delayedCall(2000, () => {
                     weightText.destroy();
                     valueText.destroy();
-                    this.getCash(value);
-                    this.ingHolder.clear(true, true);
-                    this.bag.setPosition(400, 400);
-                    this.priceCalculated = false;
+                    this.lift = true;
+                    this.bag.setVelocity(0, -20);
+                    this.time.delayedCall(550, () => {
+                        this.getCash(value);
+                        this.ingHolder.clear(true, true);
+                        this.bag.setPosition(200, 400);
+                        this.priceCalculated = false;
+                        this.lift = false;
+                    });
+                    for(let i of this.ingHolder.getChildren()){
+                        if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                            console.log("left called");
+                            i.setVelocity(0,-20);
+                        }
+                    }
                 });
             }
 
@@ -393,19 +405,19 @@ class Play extends Phaser.Scene {
                 for(let i of this.ingHolder.getChildren()){
                     if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
                         console.log("right called");
-                        i.setVelocity(5,0)
+                        i.setVelocity(7,0)
                     }
                 }
-                this.bag.setVelocity(5, 0);
+                this.bag.setVelocity(7, 0);
             }
 
             //Move the bag left
             if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-                this.bag.setVelocity(-5, 0);
+                this.bag.setVelocity(-7, 0);
                 for(let i of this.ingHolder.getChildren()){
                     if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
                         console.log("left called");
-                        i.setVelocity(-5,0)
+                        i.setVelocity(-7,0);
                     }
                 }
             }
@@ -422,6 +434,16 @@ class Play extends Phaser.Scene {
             //     }
             // }
         
+        if(this.bag.x > 840 && this.lift == false){
+            this.bag.setVelocity(0,0);
+            for(let i of this.ingHolder.getChildren()){
+                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                    console.log("left called");
+                    i.setVelocity(0,0);
+                }
+            }
+        }
+
         //Go back to menu when you press ESC
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
             this.scene.start("menuScene");
