@@ -14,7 +14,8 @@ class Play extends Phaser.Scene {
         this.load.atlas('bag_info', 'bag.png', 'bagIcon.json');
         this.load.json('bag_physics', 'bag.json');
         this.load.image('conveyor', 'conveyor.png');
-        this.load.audio('dispense', 'dispenserNoise2.mp3');
+        this.load.audio('dispense', 'dispenserNoise.mp3');
+        this.load.audio('emptyDispenser', 'dispenserEmpty.mp3');
     }
 
     create() {
@@ -25,6 +26,7 @@ class Play extends Phaser.Scene {
         this.frameCount = 0;
         this.flowRate = 5; //How often in frames to spawn Ingredients
         this.money;
+        this.binWeight = 1000; //How many grams of ingredients can fit in one dispenser
 
         //Initialize player money based on previous gameplay
         if(localStorage.getItem('money') == null){
@@ -44,15 +46,6 @@ class Play extends Phaser.Scene {
             baseCache.add('money', this.money);
         }
         */
-
-        //Max amount of Ingredient that can fit in 1 kg bag
-        this.maxPeanuts = 1000;
-        this.maxRaisins = 2000;
-        this.maxMNMs = 909;
-        this.maxAlmonds = 769;
-        
-        //Initialize Arrays;
-        this.ingredientTypeArray = ["peanut", "raisin", "m&m", "almond"];
 
         //Add boolean flags
         this.paused = false;
@@ -85,109 +78,127 @@ class Play extends Phaser.Scene {
         this.conveyor = this.matter.add.image(250, 500, 'conveyor').setIgnoreGravity(true).setStatic(true);
         //this.matter.add.image(this.conveyor);//.body.setImmovable(true).setAllowGravity(false);
 
-        //Grey dispenser rectangles
-        this.dispOne = this.add.rectangle(250, 0, 100, 250, 0xD3D3D3).setOrigin(0, 0);
-        this.dispTwo = this.add.rectangle(370, 0, 100, 250, 0xD3D3D3).setOrigin(0, 0);
-        this.dispThree = this.add.rectangle(490, 0, 100, 250, 0xD3D3D3).setOrigin(0, 0);
+        this.ingredients = this.matter.add.sprite({
+            classType: Phaser.Physics.Matter.Sprite,
+            defaultKey: null,
+            defaultFrame: null,
+            active: true,
+            maxSize: -1,
+            runChildUpdate: false,
+            createCallback: null,
+            removeCallback: null,
+            createMultipleCallback: null,
+        });
 
-        //Black rectangles behind dispenser meters
-        this.add.rectangle(300, 150, 25, 75, 0x000000).setOrigin(0.5, 1);
-        this.add.rectangle(420, 150, 25, 75, 0x000000).setOrigin(0.5, 1);
-        this.add.rectangle(540, 150, 25, 75, 0x000000).setOrigin(0.5, 1);
+        this.ingHolder = this.add.group();
+
+        this.dispenseButtons = this.add.group();
+        this.refillButtons = this.add.group();
+
+        this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond'];
+        this.dispenserArray = [];
+
+        for(let i = 0; i < 4; i++) {
+            this.createDispenser(250 + (120 * i), 0, this.ingredientTypeArray[i]);
+        }
 
         //Meters to gauge how full a dispenser is
-        this.dispOneMeter = this.add.rectangle(300, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
-        this.dispTwoMeter = this.add.rectangle(420, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
-        this.dispThreeMeter = this.add.rectangle(540, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
-        if(localStorage.getItem('meterOneHeight') != null){
-            this.dispOneMeter.height = localStorage.getItem('meterOneHeight');    
-        }
-        if(localStorage.getItem('meterTwoHeight') != null){
-            this.dispTwoMeter.height = localStorage.getItem('meterTwoHeight');    
-        }
-        if(localStorage.getItem('meterThreeHeight') != null){
-            this.dispThreeMeter.height = localStorage.getItem('meterThreeHeight');    
-        }
+        // this.dispOneMeter = this.add.rectangle(300, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
+        // this.dispTwoMeter = this.add.rectangle(420, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
+        // this.dispThreeMeter = this.add.rectangle(540, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
+
+                                        //LOCAL STORAGE I GOTTA FIX IT MY BAD
+                                        // if(localStorage.getItem('meterOneHeight') != null){
+                                        //     this.dispOneMeter.height = localStorage.getItem('meterOneHeight');    
+                                        // }
+                                        // if(localStorage.getItem('meterTwoHeight') != null){
+                                        //     this.dispTwoMeter.height = localStorage.getItem('meterTwoHeight');    
+                                        // }
+                                        // if(localStorage.getItem('meterThreeHeight') != null){
+                                        //     this.dispThreeMeter.height = localStorage.getItem('meterThreeHeight');    
+                                        // }
 
 
         //Dispenser buttons
-        this.button1 = this.add.circle(300, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
-        this.button2 = this.add.circle(420, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
-        this.button3 = this.add.circle(540, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
-        this.buttons = this.add.group();
-        this.buttons.addMultiple([this.button1, this.button2, this.button3]); //Make dispenser button group
+        // this.button1 = this.add.circle(300, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        // this.button2 = this.add.circle(420, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+        // this.button3 = this.add.circle(540, 200, game.config.width/32, 0xFF0000).setOrigin(0.5,0.5);
+
+        // this.dispenseButtons = this.add.group();
+
+        // this.dispenseButtons.addMultiple([this.button1, this.button2, this.button3]); //Make dispenser button group
 
         //Make all dispenser buttons interactable
-        for(let b of this.buttons.getChildren()) {
-            b.setInteractive({
-                draggable: false,
-                useHandCursor: true
-            });
-            b.setDataEnabled();
-        }
+        // for(let b of this.dispenseButtons.getChildren()) {
+        //     b.setInteractive({
+        //         draggable: false,
+        //         useHandCursor: true
+        //     });
+        //     b.setDataEnabled();
+        // }
 
         //Set max ingredients for each dispenser
-        this.button1.data.set('maxIngredients', this.maxPeanuts);
-        this.button2.data.set('maxIngredients', this.maxRaisins);
-        this.button3.data.set('maxIngredients', this.maxMNMs);
+        // this.button1.data.set('maxIngredients', this.maxPeanuts);
+        // this.button2.data.set('maxIngredients', this.maxRaisins);
+        // this.button3.data.set('maxIngredients', this.maxMNMs);
 
-        if(localStorage.getItem('numPeanuts') == null){
-            this.button1.data.set('numIngredients', this.maxPeanuts);
-        }
-        else{
-            this.button1.data.set('numIngredients', localStorage.getItem('numPeanuts'));
-        }
-        if(localStorage.getItem('numRaisins') == null){
-            this.button2.data.set('numIngredients', this.maxRaisins);
-        }
-        else{
-            this.button2.data.set('numIngredients', localStorage.getItem('numRaisins'));
-        }
-        if(localStorage.getItem('numM&Ms') == null){
-            this.button3.data.set('numIngredients', this.maxMNMs);
-        }
-        else{
-            this.button3.data.set('numIngredients', localStorage.getItem('numM&Ms'));
-        }        
+                                        //LOCAL STORAGE I GOTTA FIX MY BAD
+                                        // if(localStorage.getItem('numPeanuts') == null){
+                                        //     this.button1.data.set('numIngredients', this.maxPeanuts);
+                                        // }
+                                        // else{
+                                        //     this.button1.data.set('numIngredients', localStorage.getItem('numPeanuts'));
+                                        // }
+                                        // if(localStorage.getItem('numRaisins') == null){
+                                        //     this.button2.data.set('numIngredients', this.maxRaisins);
+                                        // }
+                                        // else{
+                                        //     this.button2.data.set('numIngredients', localStorage.getItem('numRaisins'));
+                                        // }
+                                        // if(localStorage.getItem('numM&Ms') == null){
+                                        //     this.button3.data.set('numIngredients', this.maxMNMs);
+                                        // }
+                                        // else{
+                                        //     this.button3.data.set('numIngredients', localStorage.getItem('numM&Ms'));
+                                        // }        
         
 
         //Refill button for each dispenser
-        this.dispOneRefill = this.add.circle(330, 100, 10, 0x0000FF).setOrigin(0.5, 0.5);
-        this.dispTwoRefill = this.add.circle(450, 100, 10, 0x0000FF).setOrigin(0.5, 0.5);
-        this.dispThreeRefill = this.add.circle(570, 100, 10, 0x0000FF).setOrigin(0.5, 0.6);
-        this.refillButtons = this.add.group();
-        this.refillButtons.addMultiple([this.dispOneRefill, this.dispTwoRefill, this.dispThreeRefill]); //Make refill button group
+        // this.dispOneRefill = this.add.circle(330, 100, 10, 0x0000FF).setOrigin(0.5, 0.5);
+        // this.dispTwoRefill = this.add.circle(450, 100, 10, 0x0000FF).setOrigin(0.5, 0.5);
+        // this.dispThreeRefill = this.add.circle(570, 100, 10, 0x0000FF).setOrigin(0.5, 0.6);
+
+        // this.refillButtons = this.add.group();
+
+        // this.refillButtons.addMultiple([this.dispOneRefill, this.dispTwoRefill, this.dispThreeRefill]);
 
         //Make all refill buttons interactable
-        for(let b of this.refillButtons.getChildren()) {
-            b.setInteractive({
-                draggable: false,
-                useHandCursor: true
-            });
-            b.setDataEnabled();
-            b.data.set('priceToRefill', 0);
+        // for(let b of this.refillButtons.getChildren()) {
+        //     b.setInteractive({
+        //         draggable: false,
+        //         useHandCursor: true
+        //     });
+        //     b.setDataEnabled();
+        //     b.data.set('priceToRefill', 0);
 
-            b.on('pointerover',() => {
-                let priceText = this.add.text(b.x - 10, b.y - 50, 'this item costs $' + b.getData('priceToRefill') + ' to refill', this.defaultTextConfig);
-                priceText.setScale(0.5);
-                this.time.delayedCall(2000, () => {
-                    priceText.destroy();
-                });
-            });
-        }
-        if(localStorage.getItem('refillOne$') != null){
-            this.dispOneRefill.setData('priceToRefill', localStorage.getItem('refillOne$'));
-        }
-        if(localStorage.getItem('refillTwo$') != null){
-            this.dispTwoRefill.setData('priceToRefill', localStorage.getItem('refillTwo$'));
-        }
-        if(localStorage.getItem('refillThree$') != null){
-            this.dispThreeRefill.setData('priceToRefill', localStorage.getItem('refillThree$'));
-        }
-
-        this.dispOneRefill.data.set('dispenser', this.button1);
-        this.dispTwoRefill.data.set('dispenser', this.button2);
-        this.dispThreeRefill.data.set('dispenser', this.button3);
+        //     b.on('pointerover',() => {
+        //         let priceText = this.add.text(b.x - 10, b.y - 50, 'this item costs $' + b.getData('priceToRefill') + ' to refill', this.defaultTextConfig);
+        //         priceText.setScale(0.5);
+        //         this.time.delayedCall(2000, () => {
+        //             priceText.destroy();
+        //         });
+        //     });
+        // }                    
+                                        //LOCAL STORAGE I GOTTA FIX MY BAD
+                                        // if(localStorage.getItem('refillOne$') != null){
+                                        //     this.dispOneRefill.setData('priceToRefill', localStorage.getItem('refillOne$'));
+                                        // }
+                                        // if(localStorage.getItem('refillTwo$') != null){
+                                        //     this.dispTwoRefill.setData('priceToRefill', localStorage.getItem('refillTwo$'));
+                                        // }
+                                        // if(localStorage.getItem('refillThree$') != null){
+                                        //     this.dispThreeRefill.setData('priceToRefill', localStorage.getItem('refillThree$'));
+                                        // }
 
         this.inform = this.cache.json.get('bag_physics');
         this.bag = this.matter.add.image(400, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
@@ -251,24 +262,21 @@ class Play extends Phaser.Scene {
             this.clickTarget = null;
             this.clickOff();
         });
-        // this.input.on('pointerover',(pointer, gameObject, event) => {
-        //     this.hoverOn(gameObject);
-        // });
 
         //ingredients physics group
-        this.ingredients = this.matter.add.sprite({
-            classType: Phaser.Physics.Matter.Sprite,
-            defaultKey: null,
-            defaultFrame: null,
-            active: true,
-            maxSize: -1,
-            runChildUpdate: false,
-            createCallback: null,
-            removeCallback: null,
-            createMultipleCallback: null,
-        });
+        // this.ingredients = this.matter.add.sprite({
+        //     classType: Phaser.Physics.Matter.Sprite,
+        //     defaultKey: null,
+        //     defaultFrame: null,
+        //     active: true,
+        //     maxSize: -1,
+        //     runChildUpdate: false,
+        //     createCallback: null,
+        //     removeCallback: null,
+        //     createMultipleCallback: null,
+        // });
 
-        this.ingHolder = this.add.group();
+        // this.ingHolder = this.add.group();
         //this.ingHolder.setCollisionGroup(1);
 
         // this.physics.add.collider(this.ingredients, this.ingredients);
@@ -305,60 +313,53 @@ class Play extends Phaser.Scene {
 
 
         if(!this.isPaused){
-            this.dispOneMeter.height = (this.button1.getData('numIngredients') / this.maxPeanuts) * 75;
-            localStorage.setItem('meterOneHeight', this.dispOneMeter.height);
-            this.dispTwoMeter.height = (this.button2.getData('numIngredients') / this.maxRaisins) * 75;
-            localStorage.setItem('meterTwoHeight', this.dispTwoMeter.height);
-            this.dispThreeMeter.height = (this.button3.getData('numIngredients') / this.maxMNMs) * 75;
-            localStorage.setItem('meterThreeHeight', this.dispThreeMeter.height);
+            // this.dispOneMeter.height = (this.button1.getData('numIngredients') / this.maxPeanuts) * 75;
+            // this.dispTwoMeter.height = (this.button2.getData('numIngredients') / this.maxRaisins) * 75;
+            // this.dispThreeMeter.height = (this.button3.getData('numIngredients') / this.maxMNMs) * 75;
 
-            if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0 && this.clickTarget.getData('numIngredients') > 0) {
-                this.sound.play('dispense');
-                let spawnedIngredient;
-                if(this.clickTarget == this.button1) {
-                    this.button1.setData('numIngredients', (this.button1.getData('numIngredients')) - 1);
-                    this.dispOneRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxPeanuts - (this.button1.getData('numIngredients')))) * 0.0029));
-                    localStorage.setItem('refillOne$', this.dispOneRefill.getData('priceToRefill'));
-                    localStorage.setItem('numPeanuts', this.button1.getData('numIngredients'));
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'peanut'/*, this.container*/).setOrigin(0.5,0.5).setBounce();
-                } else if(this.clickTarget == this.button2) {
-                    this.button2.setData('numIngredients', (this.button2.getData('numIngredients')) - 1);
-                    this.dispTwoRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxRaisins - (this.button2.getData('numIngredients')))) * 0.0023));
-                    localStorage.setItem('refillTwo$', this.dispTwoRefill.getData('priceToRefill'));
-                    localStorage.setItem('numRaisins', this.button2.getData('numIngredients'));
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'raisin'/*, this.container*/).setOrigin(0.5,0.5);
-                } else if(this.clickTarget == this.button3) {
-                    this.button3.setData('numIngredients', (this.button3.getData('numIngredients')) - 1);
-                    this.dispThreeRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxMNMs - (this.button3.getData('numIngredients')))) * 0.056));
-                    localStorage.setItem('refillThree$', this.dispThreeRefill.getData('priceToRefill'));
-                    localStorage.setItem('numM&Ms', this.button3.getData('numIngredients'));
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, 'm&m'/*, this.container*/).setOrigin(0.5,0.5);
-                } /*else {
-                    // Spawn random ingredient
-                    console.log(this.clickTarget);
-                    spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', null, this.ingredientTypeArray[Math.floor(Math.random()*this.ingredientTypeArray.length)], this.container).setOrigin(0,0);
-                }*/
-                //Add ingredient to ingredient group and change hitbox to circle
+                                    //LOCAL STORAGE I GOTTA FIX MY BAD
+                                    // localStorage.setItem('meterOneHeight', this.dispOneMeter.height);
+                                    // localStorage.setItem('meterTwoHeight', this.dispTwoMeter.height);
+                                    // localStorage.setItem('meterThreeHeight', this.dispThreeMeter.height);
+
+            if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0) {
+                for(let d of this.dispenseButtons.getChildren()) {
+                    if(d == this.clickTarget) {
+                        let dispPrefab = this.clickTarget.getData('prefab');
+                        dispPrefab.spawnIngredient();
+                    }
+                }
+
+                // let spawnedIngredient;
+                // if(this.clickTarget == this.button1) {
+                    // this.button1.setData('numIngredients', (this.button1.getData('numIngredients')) - 1);
+                    // this.dispOneRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxPeanuts - (this.button1.getData('numIngredients')))) * 0.0029));
+                    // localStorage.setItem('refillOne$', this.dispOneRefill.getData('priceToRefill'));
+                    // localStorage.setItem('numPeanuts', this.button1.getData('numIngredients'));
+                    // spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', 'peanut'/*, this.container*/).setOrigin(0.5,0.5);
+                // } else if(this.clickTarget == this.button2) {
+                    // this.button2.setData('numIngredients', (this.button2.getData('numIngredients')) - 1);
+                    // this.dispTwoRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxRaisins - (this.button2.getData('numIngredients')))) * 0.0023));
+                    // localStorage.setItem('refillTwo$', this.dispTwoRefill.getData('priceToRefill'));
+                    // localStorage.setItem('numRaisins', this.button2.getData('numIngredients'));
+                    // spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle','raisin'/*, this.container*/).setOrigin(0.5,0.5);
+                // } else if(this.clickTarget == this.button3) {
+                    // this.button3.setData('numIngredients', (this.button3.getData('numIngredients')) - 1);
+                    // this.dispThreeRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxMNMs - (this.button3.getData('numIngredients')))) * 0.056));
+                    // localStorage.setItem('refillThree$', this.dispThreeRefill.getData('priceToRefill'));
+                    // localStorage.setItem('numM&Ms', this.button3.getData('numIngredients'));
+                    // spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', 'm&m'/*, this.container*/).setOrigin(0.5,0.5);
+                // }
+
                 //spawnedIngredient.setCollisionGroup(1);
-                // this.ingHolder.add(spawnedIngredient);
-                // spawnedIngredient.body.setSlop(0);
-                // spawnedIngredient.body.setBounce(0);
 
-                // let ingredientHitBox = spawnedIngredient.body;
-                // ingredientHitBox.setCircle(spawnedIngredient.height/2);
-                // spawnedIngredient.body.collideWorldBounds = true; //Stay within the game frame
-                console.log('ingredients left = ' + this.clickTarget.getData('numIngredients'));
-                spawnedIngredient.body.slop = 0;
-                spawnedIngredient.body.restitution = 0;
-                spawnedIngredient.setCircle();
-                spawnedIngredient.body.density = 0;
-                this.ingHolder.add(spawnedIngredient);
             }
 
             //Calculate bag value and weight when on the scale
             if(this.bag.x > 800 && !this.priceCalculated) {
                 this.priceCalculated = true;
-                console.log('bag on scale');
+
+                //Calculate which ingredients are in the bag, then add them to an array
                 let bagContentsArray = [];
                 for(let i of this.ingHolder.getChildren()) {
                     if(i.x > this.bag.x - (this.bag.width / 2) && i.x < this.bag.x + (this.bag.width / 2) && i.y > this.bag.y - (this.bag.height/2) && i.y < this.bag.y + (this.bag.height/2)) {
@@ -366,21 +367,22 @@ class Play extends Phaser.Scene {
                     }
                 }
                 
+                //Use the array to calculate the bag's weight and price
                 let value = parseFloat(this.calculatePrice(bagContentsArray));
                 let weight = parseFloat(this.calculateWeight(bagContentsArray));
+
+                //Display bag's price and weight
                 let weightText = this.add.text(700, 350, 'this bag weighs ' + weight + 'g', this.defaultTextConfig).setOrigin(0.5,0.5);
                 let valueText = this.add.text(700, 380, 'this bag is worth $' + value, this.defaultTextConfig).setOrigin(0.5,0.5);
                 weightText.setScale(0.5);
                 valueText.setScale(0.5);
+
+                //After the player gets a chance to read everything, reset bag and ingredients
                 this.time.delayedCall(2000, () => {
                     weightText.destroy();
                     valueText.destroy();
                     this.getCash(value);
                     this.ingHolder.clear(true, true);
-                    // for(let i of this.ingHolder.getChildren()){
-                    //     i.body.destroy();
-                    //     i.destroy();
-                    // }
                     this.bag.setPosition(400, 400);
                     this.priceCalculated = false;
                 });
@@ -427,25 +429,16 @@ class Play extends Phaser.Scene {
 
     }
 
-    // collided() {
-    //     //console.log('collision occured');
-    // }
-
     clickOn(gObj) {
-        console.log('button clicked');
+
         // let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
         // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
-        // for(let r of this.refillButtons.getChildren()) {
-        //     if(gObj == r) {
-        //         buyIngredients(gObj);
-        //     }
-        // }
         
         if(gObj == this.playMenu) {
             this.scene.launch("playMenuScene");
         }
             
-        for(let b of this.buttons.getChildren()) {
+        for(let b of this.dispenseButtons.getChildren()) {
             if(gObj == b) {
                 this.spawnIngredientLoop = true;
             }
@@ -453,7 +446,15 @@ class Play extends Phaser.Scene {
 
         for(let r of this.refillButtons.getChildren()) {
             if(gObj == r) {
-                this.buyIngredients(r);
+                let dispPrefab = gObj.getData('prefab');
+                if(dispPrefab.ingredientType == 'empty') {
+                    let priceText = this.scene.add.text(440, 265, 'this dispenser is empty', this.scene.defaultTextConfig).setScale(0.5).setOrigin(0.5,0.5);
+                    this.time.delayedCall(2000, () => {
+                        priceText.destroy();
+                    });
+                } else {
+                    this.buyIngredients(gObj);
+                }
                 
             }
         }
@@ -464,38 +465,10 @@ class Play extends Phaser.Scene {
         this.spawnIngredientLoop = false;
     }
 
-    // hoverOn(gObj) {
-    //     console.log(gObj);
-    //     let priceText;
-    //     if(gObj == this.dispOneRefill) {
-    //         priceText = this.add.text(this.dispOneRefill.x,this.dispOneRefill.y, 'this item costs $' /*+ b.getData('priceToRefill')*/, this.defaultTextConfig);
-    //         priceText.setScale(0.5);
-    //         console.log('disp1refill');
-    //     } else if(gObj == this.dispTwoRefill) {
-    //         priceText = this.add.text(this.dispTwoRefill.x,this.dispTwoRefill.y, 'this item costs $' /*+ b.getData('priceToRefill')*/, this.defaultTextConfig);
-    //         priceText.setScale(0.5);
-    //     } else if(gObj == this.dispThreeRefill) {
-    //         priceText = this.add.text(this.dispThreeRefill.x,this.dispThreeRefill.y, 'this item costs $' /*+ b.getData('priceToRefill')*/, this.defaultTextConfig);
-    //         priceText.setScale(0.5);
-    //     }  
-        
-    // }
-
     //Calculates money made from selling trail mix bag
     //Mix will be an array of the weight of each ingredient contained in the bag: [peanuts, raisins, m&ms, almonds] 
     // sellMix(mix){
     //     this.money += (0.0214 * mix[0] + 0.0208 * mix[1] / 0.5 + 0.0745 * mix[2] / 1.1 + 0.0465 * mix[3] / 1.3);         
-    // }
-
-    //Calculates the total weight of the trail mix bag and percentage of each ingredient in bag
-    //Mix will be an array of the weight of each ingredient contained in the bag: [peanuts, raisins, m&ms, almonds] 
-    // weightAndPercentage(mix){
-    //     let totalWeight = mix[0] + mix[1] + mix[2] + mix[3];
-    //     console.log("Total weight of bag: " + totalWeight);
-    //     console.log("Peanut %: " + mix[0] / totalWeight);
-    //     console.log("Raisin %: " + mix[1] / totalWeight);
-    //     console.log("M&M %: " + mix[2] / totalWeight);
-    //     console.log("Almond %: " + mix[3] / totalWeight);
     // }
 
     // makePauseMenu() {
@@ -506,6 +479,7 @@ class Play extends Phaser.Scene {
     //Call this method when spending any amount of money
     spendCash(spent) {
         this.money -= spent;
+        console.log('money spent');
         this.money = this.money.toFixed(2);
         this.money = Number.parseFloat(this.money);
         this.moneyText.setText('Money: $'+ this.money);
@@ -541,27 +515,32 @@ class Play extends Phaser.Scene {
         return bagWeight;
     }
 
-
+    //Refill a dispenser to max
     buyIngredients(gObj) {
-        let priceToBuy = gObj.getData('priceToRefill');
-        if(this.money - priceToBuy > 0) {
+        let dispPrefab = gObj.getData('prefab');
+        let priceToBuy = dispPrefab.priceToRefill;
+        if(this.money > priceToBuy) {
             this.spendCash(priceToBuy);
-            let disp = gObj.getData('dispenser');
-            disp.setData('numIngredients', disp.getData('maxIngredients'));
-            gObj.setData('priceToRefill', 0);
-            console.log(disp.getData('numIngredients'));
-            console.log(disp.getData('maxIngredients'));
+            dispPrefab.numIngredients = dispPrefab.maxIngredients;
+            dispPrefab.priceToRefill = 0;
+            dispPrefab.refillMeter.height = 75;
         } else {
             this.insufficientFunds(priceToBuy);
         }
     }
 
+    //Call when the user doesn't have enough cash to cover an ingredient refill transaction
     insufficientFunds(price) {
         let insFundText = this.add.text(game.config.width/2-50, game.config.height/2-100, 'You do not have enough funds, you need $' + price + ' to purchase', this.defaultTextConfig).setOrigin(0.5,0.5);
         insFundText.setScale(0.4);
         this.time.delayedCall(2000, () => {
             insFundText.destroy();
         });
+    }
+
+    createDispenser(x, y, initType) {
+        let newDispenser = new Dispenser(this, x, y, (initType == null) ? 'empty' : initType);
+        return newDispenser;
     }
 
 }
