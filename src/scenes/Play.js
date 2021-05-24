@@ -38,6 +38,23 @@ class Play extends Phaser.Scene {
             this.money = parseFloat(localStorage.getItem('money'));
         }
         
+        //Initialize Upgrade Array
+        this.upgradesArray = [['dispenser I', 250], 
+            ['dispenser II', 500], 
+            ['bag 2x', 100], 
+            ['bag 4x', 1000], 
+            ['bag 8x', 10000], 
+            ['bag 16x', 100000], 
+            ['lobby I', 100000], 
+            ['lobby II', 250000], 
+            ['lobby III', 500000]];
+        
+        this.upgradesAcquiredArray = [];
+
+        //Keep track of multipliers
+        this.bagMultiplier = 1;
+        this.contractMultiplier = 1;
+        this.lobbyMultiplier = 1;
 
        /* if(baseCache.exists('money')){
             this.money = baseCache.get('money');
@@ -494,15 +511,9 @@ class Play extends Phaser.Scene {
     //     this.money += (0.0214 * mix[0] + 0.0208 * mix[1] / 0.5 + 0.0745 * mix[2] / 1.1 + 0.0465 * mix[3] / 1.3);         
     // }
 
-    // makePauseMenu() {
-    //     this.paused = true;
-    //     this.add.rectangle(game.config.width / 2, game.config.height / 2, )
-    // }
-
     //Call this method when spending any amount of money
     spendCash(spent) {
         this.money -= spent;
-        console.log('money spent');
         this.money = this.money.toFixed(2);
         this.money = Number.parseFloat(this.money);
         this.moneyText.setText('Money: $'+ this.money);
@@ -524,6 +535,7 @@ class Play extends Phaser.Scene {
         for(let c of contents) {
             bagValue += c.value;
         }
+        bagValue *= this.bagMultiplier * this.lobbyMultiplier;
         bagValue = bagValue.toFixed(2);
         return bagValue;
     }
@@ -552,6 +564,44 @@ class Play extends Phaser.Scene {
         }
     }
 
+    //Purchase Upgrades
+    buyUpgrades(upgradeStr) {
+        let i = 0;
+        for(let u of this.upgradesArray) {
+            if(u[0] == upgradeStr) {
+                let price = u[1];
+                if(this.money >= price){
+                    this.spendCash(price);
+                    if(upgradeStr == 'dispenser I') {
+                        // this.createDispenser(x, y); add x and y when ready
+                    } else if(upgradeStr == 'dispenser II') {
+                        // this.createDispenser(x, y); add x and y when ready
+                    } else if(upgradeStr == 'bag 2x') {
+                        this.bagMultiplier = 2;
+                    } else if(upgradeStr == 'bag 4x') {
+                        this.bagMultiplier = 4;
+                    } else if(upgradeStr == 'bag 8x') {
+                        this.bagMultiplier = 8;
+                    } else if(upgradeStr == 'bag 16x') {
+                        this.bagMultiplier = 16;
+                    } else if(upgradeStr == 'lobby I') {
+                        this.lobbyMultiplier = 2;
+                    } else if(upgradeStr == 'lobby II') {
+                        this.lobbyMultiplier = 4;
+                    } else if(upgradeStr == 'lobby III') {
+                        this.lobbyMultiplier = 8;
+                    }
+                    this.upgradesArray.splice(i, 1);
+                    this.upgradesAcquiredArray.push(u);
+                } else {
+                    this.insufficientFunds(price)
+                }
+            }
+            i++;
+        }
+    }
+
+
     //Call when the user doesn't have enough cash to cover an ingredient refill transaction
     insufficientFunds(price) {
         let insFundText = this.add.text(game.config.width/2-50, game.config.height/2-100, 'You do not have enough funds, you need $' + price + ' to purchase', this.defaultTextConfig).setOrigin(0.5,0.5);
@@ -567,11 +617,3 @@ class Play extends Phaser.Scene {
     }
 
 }
-
-
-
-// Matter ideas
-// Matter.Body.translate(body, translation) // Moves a body by a given vector relative to its current position, without imparting any velocity.
-// body.restitution // A Number that defines the restitution (elasticity) of the body. The value is always positive and is in the range (0, 1). A value of 0 means collisions may be perfectly inelastic and no bouncing may occur. A value of 0.8 means the body may bounce back with approximately 80% of its kinetic energy. Note that collision response is based on pairs of bodies, and that restitution values are combined with the following formula:
-// body.sleepThreshold //A Number that defines the number of updates in which this body must have near-zero velocity before it is set as sleeping by the Matter.Sleeping module (if sleeping is enabled by the engine).
-// body.slop //A Number that specifies a tolerance on how far a body is allowed to 'sink' or rotate into other bodies. Avoid changing this value unless you understand the purpose of slop in physics engines. The default should generally suffice, although very large bodies may require larger values for stable stacking.
