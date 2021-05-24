@@ -121,23 +121,19 @@ class Play extends Phaser.Scene {
         this.MNMDispenser = new Dispenser(this, 490, 0, 'm&m');
         this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
 
-        if(localStorage.getItem('numPeanuts') == null){
-            this.peanutDispenser.numIngredients = this.maxPeanuts;
-            localStorage.setItem('numPeanuts', this.peanutDispenser.numIngredients)
-        }
+     /*   if(localStorage.getItem('numPeanuts') == null){
+            localStorage.setItem('numPeanuts', this.peanutDispenser.numIngredients);
+        }   
         if(localStorage.getItem('numRaisins') == null){
-            this.raisinDispenser.numIngredients = this.maxRaisins;
             localStorage.setItem('numRaisins', this.raisinDispenser.numIngredients)
         }
         if(localStorage.getItem('numM&Ms') == null){
-            this.MNMDispenser.numIngredients = this.maxMNMs;
             localStorage.setItem('numM&Ms', this.MNMDispenser.numIngredients)
-        }       
+        }      
         if(localStorage.getItem('numAlmonds') == null){
-            this.almondDispenser.numIngredients = this.maxAlmonds;
             localStorage.setItem('numAlmonds', this.almondDispenser.numIngredients)
         }
-
+        */
 
 
        // for(let i = 0; i < 4; i++) {
@@ -455,7 +451,7 @@ class Play extends Phaser.Scene {
             if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
                 for(let i of this.ingHolder.getChildren()){
                     if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                        // console.log("right called");
+                    //    console.log("right called");
                         i.setVelocity(7,0)
                     }
                 }
@@ -467,7 +463,7 @@ class Play extends Phaser.Scene {
                 this.bag.setVelocity(-7, 0);
                 for(let i of this.ingHolder.getChildren()){
                     if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                        // console.log("left called");
+                    //    console.log("left called");
                         i.setVelocity(-7,0);
                     }
                 }
@@ -489,7 +485,7 @@ class Play extends Phaser.Scene {
             this.bag.setVelocity(0,0);
             for(let i of this.ingHolder.getChildren()){
                 if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                    // console.log("left called");
+                //    console.log("left called");
                     i.setVelocity(0,0);
                 }
             }
