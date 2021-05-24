@@ -89,6 +89,18 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             
             this.scene.sound.play('dispense');
             this.numIngredients--;
+            
+            if(this.ingredientType == 'peanut') {
+                localStorage.setItem('numPeanuts',this.numIngredients)
+            } else if(this.ingredientType == 'raisin') {
+                localStorage.setItem('numRaisins',this.numIngredients)
+            } else if(this.ingredientType == 'm&m') {
+                localStorage.setItem('numM&Ms',this.numIngredients)
+            } else if(this.ingredientType == 'almond') {
+                localStorage.setItem('numAlmonds',this.numIngredients)
+            }
+
+            
 
             //Update spawnedIngredient matter physics config
             spawnedIngredient.body.slop = 0;
