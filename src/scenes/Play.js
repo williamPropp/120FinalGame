@@ -87,7 +87,7 @@ class Play extends Phaser.Scene {
         this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
         //Menu
-        this.playMenu = this.add.rectangle(10, 100, 220, 100, 0x000000).setOrigin(0 ,0);
+        this.playMenu = this.add.rectangle(10, 100, 170, 100, 0x000000).setOrigin(0 ,0);
         this.playMenu.setInteractive({
             useHandCursor: true
         });
@@ -257,7 +257,16 @@ class Play extends Phaser.Scene {
         this.scaleChart = this.add.rectangle(game.config.width - 225, 550, game.config.width/5, game.config.height/4, 0x808080).setOrigin(0 ,0);
         this.tube = this.add.rectangle(780, 0, 120, 330, 0xadd8e6).setOrigin(0 ,0);
         this.tracker = this.add.rectangle(725, 50, 225, 250, 0xC4A484).setOrigin(0 ,0);
-        this.contract = this.add.image(735, 60, 'contract').setOrigin(0 ,0);
+
+        //Current Contract Info
+        this.contractBg = this.add.rectangle(735, 60, 205, 230, 0xFFFFFF).setOrigin(0 ,0);
+
+        this.currentContract = this.add.text(840, 100, contractInfo[0], this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
+        this.ingOne = this.add.text(840, 140, contractInfo[1], this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingTwo = this.add.text(840, 180, contractInfo[2], this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingThree = this.add.text(840, 220, contractInfo[3], this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingFour = this.add.text(840, 260, contractInfo[4], this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
         this.matter.add.image(this.floor);
@@ -348,6 +357,12 @@ class Play extends Phaser.Scene {
         //How many frames have elapsed since the start of the scene
         this.frameCount++;
         //console.log(this.bag.x - this.bag.width/2);
+
+        this.currentContract.text = contractInfo[0];
+        this.ingOne.text = contractInfo[1];
+        this.ingTwo.text = contractInfo[2];
+        this.ingThree.text = contractInfo[3];
+        this.ingFour.text = contractInfo[4];
 
 
         if(!this.isPaused){
@@ -507,7 +522,12 @@ class Play extends Phaser.Scene {
         // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
         
         if(gObj == this.playMenu) {
-            this.scene.launch("playMenuScene");
+            if(this.scene.isSleeping("playMenuScene")){
+                this.scene.wake("playMenuScene");
+            }
+            else {
+                this.scene.launch("playMenuScene");
+            }
             this.scene.pause('playScene');
         }
             
