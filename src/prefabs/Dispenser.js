@@ -44,17 +44,18 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             });
         });
 
-
+        //Add pointers to buttons as data so the prefab's data can be referenced when they're clicked
         this.dispenseButton.setDataEnabled();
         this.refillButton.setDataEnabled();
         this.dispenseButton.setData('prefab', this);
         this.refillButton.setData('prefab', this);
 
-
+        //Add components to respective groups
         this.scene.refillButtons.add(this.refillButton);
         this.scene.dispenseButtons.add(this.dispenseButton); 
         this.scene.dispenserArray.push(this);
 
+        //Refill Meter
         this.refillMeterBacking = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x000000).setOrigin(0.5, 1);
         this.refillMeter = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
 
@@ -85,7 +86,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             }
 
             //Spawn Ingredient
-            spawnedIngredient = new Ingredient(this.scene, this.x, this.y, 'circle'/*typeString*/, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
+            spawnedIngredient = new Ingredient(this.scene, this.x, this.y + 200 + (Math.floor(Math.random()*50)), 'circle'/*typeString*/, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
             
             this.scene.sound.play('dispense');
             this.numIngredients--;

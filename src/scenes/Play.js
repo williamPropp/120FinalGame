@@ -412,12 +412,22 @@ class Play extends Phaser.Scene {
                 //Use the array to calculate the bag's weight and price
                 let value = parseFloat(this.calculatePrice(bagContentsArray));
                 let weight = parseFloat(this.calculateWeight(bagContentsArray));
+                let percentages = this.calculatePercentages(bagContentsArray);
 
                 //Display bag's price and weight
                 let weightText = this.add.text(700, 350, 'this bag weighs ' + weight + 'g', this.defaultTextConfig).setOrigin(0.5,0.5);
                 let valueText = this.add.text(700, 380, 'this bag is worth $' + value, this.defaultTextConfig).setOrigin(0.5,0.5);
                 weightText.setScale(0.5);
                 valueText.setScale(0.5);
+
+                let percentageOffset = 30;
+                for(let p of percentages) {
+                    let percentText = this.add.text(850, 580 + (percentageOffset * percentages.indexOf(p)), p[0] + ' : ' + p[1] + '%', this.defaultTextConfig).setOrigin(0.5,0.5);
+                    percentText.setScale(0.5);
+                    this.time.delayedCall(2000, () => {
+                        percentText.destroy();
+                    });
+                }
 
                 //After the player gets a chance to read everything, reset bag and ingredients
                 this.time.delayedCall(2000, () => {
@@ -434,7 +444,7 @@ class Play extends Phaser.Scene {
                     });
                     for(let i of this.ingHolder.getChildren()){
                         if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                            console.log("left called");
+                            // console.log("left called");
                             i.setVelocity(0,-20);
                         }
                     }
@@ -445,7 +455,7 @@ class Play extends Phaser.Scene {
             if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
                 for(let i of this.ingHolder.getChildren()){
                     if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                        console.log("right called");
+                        // console.log("right called");
                         i.setVelocity(7,0)
                     }
                 }
@@ -457,7 +467,7 @@ class Play extends Phaser.Scene {
                 this.bag.setVelocity(-7, 0);
                 for(let i of this.ingHolder.getChildren()){
                     if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                        console.log("left called");
+                        // console.log("left called");
                         i.setVelocity(-7,0);
                     }
                 }
@@ -479,7 +489,7 @@ class Play extends Phaser.Scene {
             this.bag.setVelocity(0,0);
             for(let i of this.ingHolder.getChildren()){
                 if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                    console.log("left called");
+                    // console.log("left called");
                     i.setVelocity(0,0);
                 }
             }
@@ -559,9 +569,43 @@ class Play extends Phaser.Scene {
         for(let c of contents) {
             bagValue += c.value;
         }
-        bagValue *= this.bagMultiplier * this.lobbyMultiplier;
+        bagValue *= this.bagMultiplier * this.lobbyMultiplier * this.contractMultiplier;
         bagValue = bagValue.toFixed(2);
         return bagValue;
+    }
+
+    //Calculate the percentages of ingredients in a bag, return a 2 dimensional array in the form [[type1 string, % of type1 in the bag], [type2 string, # of type2 in the bag]...etc]
+    calculatePercentages(contents) {
+        let typeArray = [];
+        //let typeData = []; //Array with two elements, typeData[0] = type string, typeData[1] = number of items of the same type
+        let first = contents[0];
+        let firstData = [first.type, 0];
+        typeArray.push(firstData);
+        for(let c of contents) {
+            let maybeAdd; 
+            let i = 0;
+            for(let t of typeArray) {
+                if(c.type == t[0]) {
+                    t[1] += 1;
+                } else {
+                    maybeAdd = c.type;
+                    if(i == typeArray.length-1) {
+                        let typeData = [maybeAdd, 0]; //Array with two elements, typeData[0] = type string, typeData[1] = number of items of the same type
+                        typeArray.push(typeData);
+                    }
+                }
+                i++;
+            }
+           
+        }
+        let totalContents = contents.length;
+        for(let n of typeArray) {
+            let num = n[1];
+            let percent = (num / totalContents) * 100;
+            percent = percent.toFixed(1);
+            n[1] = percent;
+        }
+        return typeArray;
     }
 
     //Calculate the weight of a bag
