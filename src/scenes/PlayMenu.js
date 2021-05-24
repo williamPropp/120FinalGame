@@ -37,7 +37,7 @@ class PlayMenu extends Phaser.Scene {
         //Text Arrays
         this.companyNames = ['Scam Co.', 'Capital Inc', 'Extor Shun Ltd']
         this.multChanges = ['x1.1', 'x1.2', 'x0.9']
-        this.ingredients = ['Raisins', 'Nuts', 'M&Ms', '']
+        this.ingredients = ['Peanuts', 'Raisins', 'M&Ms', 'Almonds']
 
         //Define keys
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
@@ -50,7 +50,6 @@ class PlayMenu extends Phaser.Scene {
             this.scene.resume('playScene');
         }
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
-            console.log(this.company);
             // console.log(gameObject);
             // console.log(event);
             this.company.text = this.companyNames[2];
@@ -60,6 +59,7 @@ class PlayMenu extends Phaser.Scene {
             this.ingThree.text = this.ingredients[2];
             this.ingFour.text = this.ingredients[3];
             this.upgradeOne.text = 'Next One'
+            contractInfo = ['Contract', this.ingOne._text, this.ingTwo._text, this.ingThree._text, this.ingFour._text]
         });
     }
 

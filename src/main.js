@@ -31,6 +31,8 @@ let game = new Phaser.Game(config);
 
 let keySPACE, keyLEFT, keyRIGHT, keyESC;
 
+let contractInfo = ['Motivation','You invested all','your money in','this. Good luck', 'lol']
+
 // Often used locations coordinates
 let screenWidth = game.config.width;
 let screenHeight = game.config.height;
