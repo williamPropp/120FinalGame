@@ -405,7 +405,7 @@ class Play extends Phaser.Scene {
                     }
                 }
                 
-                //Use the array to calculate the bag's weight and price
+                //Use the array to calculate the bag's weight, price and ingredient percents
                 let value = parseFloat(this.calculatePrice(bagContentsArray));
                 let weight = parseFloat(this.calculateWeight(bagContentsArray));
                 let percentages = this.calculatePercentages(bagContentsArray);
@@ -416,13 +416,16 @@ class Play extends Phaser.Scene {
                 weightText.setScale(0.5);
                 valueText.setScale(0.5);
 
+                //Display bag's ingredient percents
                 let percentageOffset = 30;
-                for(let p of percentages) {
-                    let percentText = this.add.text(850, 580 + (percentageOffset * percentages.indexOf(p)), p[0] + ' : ' + p[1] + '%', this.defaultTextConfig).setOrigin(0.5,0.5);
-                    percentText.setScale(0.5);
-                    this.time.delayedCall(2000, () => {
-                        percentText.destroy();
-                    });
+                if(percentages != null) {
+                    for(let p of percentages) {
+                        let percentText = this.add.text(850, 580 + (percentageOffset * percentages.indexOf(p)), p[0] + ' : ' + p[1] + '%', this.defaultTextConfig).setOrigin(0.5,0.5);
+                        percentText.setScale(0.5);
+                        this.time.delayedCall(2000, () => {
+                            percentText.destroy();
+                        });
+                    }
                 }
 
                 //After the player gets a chance to read everything, reset bag and ingredients
@@ -572,6 +575,11 @@ class Play extends Phaser.Scene {
 
     //Calculate the percentages of ingredients in a bag, return a 2 dimensional array in the form [[type1 string, % of type1 in the bag], [type2 string, # of type2 in the bag]...etc]
     calculatePercentages(contents) {
+        
+        if(contents.length == 0) {
+            console.log('empty');
+            return null;
+        }
         let typeArray = [];
         //let typeData = []; //Array with two elements, typeData[0] = type string, typeData[1] = number of items of the same type
         let first = contents[0];
