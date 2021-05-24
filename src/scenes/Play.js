@@ -99,9 +99,33 @@ class Play extends Phaser.Scene {
         this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond'];
         this.dispenserArray = [];
 
-        for(let i = 0; i < 4; i++) {
-            this.createDispenser(250 + (120 * i), 0, this.ingredientTypeArray[i]);
+        this.peanutDispenser = new Dispenser(this, 250, 0, 'peanut');
+        this.raisinDispenser = new Dispenser(this, 370, 0, 'raisin');
+        this.MNMDispenser = new Dispenser(this, 490, 0, 'm&m');
+        this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
+
+        if(localStorage.getItem('numPeanuts') == null){
+            this.peanutDispenser.numIngredients = this.maxPeanuts;
+            localStorage.setItem('numPeanuts', this.peanutDispenser.numIngredients)
         }
+        if(localStorage.getItem('numRaisins') == null){
+            this.raisinDispenser.numIngredients = this.maxRaisins;
+            localStorage.setItem('numRaisins', this.raisinDispenser.numIngredients)
+        }
+        if(localStorage.getItem('numM&Ms') == null){
+            this.MNMDispenser.numIngredients = this.maxMNMs;
+            localStorage.setItem('numM&Ms', this.MNMDispenser.numIngredients)
+        }       
+        if(localStorage.getItem('numAlmonds') == null){
+            this.almondDispenser.numIngredients = this.maxAlmonds;
+            localStorage.setItem('numAlmonds', this.almondDispenser.numIngredients)
+        }
+
+
+
+       // for(let i = 0; i < 4; i++) {
+       //     this.createDispenser(250 + (120 * i), 0, this.ingredientTypeArray[i]);
+       // }
 
         //Meters to gauge how full a dispenser is
         // this.dispOneMeter = this.add.rectangle(300, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
@@ -561,10 +585,10 @@ class Play extends Phaser.Scene {
         });
     }
 
-    createDispenser(x, y, initType) {
-        let newDispenser = new Dispenser(this, x, y, (initType == null) ? 'empty' : initType);
-        return newDispenser;
-    }
+ //   createDispenser(x, y, initType) {
+ //       let newDispenser = new Dispenser(this, x, y, (initType == null) ? 'empty' : initType);
+ //       return newDispenser;
+ //   }
 
 }
 
