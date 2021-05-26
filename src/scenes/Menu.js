@@ -16,11 +16,18 @@ class Menu extends Phaser.Scene {
         this.playText = this.add.text(game.config.width/2, game.config.height/2, 'Play', this.textConfig).setOrigin(0.5,0.5);
         this.optionsButton = this.add.rectangle(game.config.width/2, game.config.height/2 + 100, game.config.width/6, game.config.height/12, 0x0000FF).setOrigin(0.5,0.5);
         this.optionsText = this.add.text(game.config.width/2, game.config.height/2 + 100, 'Options', this.textConfig).setOrigin(0.5,0.5);
+        this.tutorialButton = this.add.rectangle(game.config.width/2, game.config.height/2 + 200, game.config.width/6, game.config.height/12, 0x5F20FF).setOrigin(0.5,0.5);
+        this.optionsText = this.add.text(game.config.width/2, game.config.height/2 + 200, 'Tutorial', this.textConfig).setOrigin(0.5,0.5);
+        
         this.playButton.setInteractive({
             draggable: false,
             useHandCursor: true
         });
         this.optionsButton.setInteractive({
+            draggable: false,
+            useHandCursor: true
+        });
+        this.tutorialButton.setInteractive({
             draggable: false,
             useHandCursor: true
         });
@@ -42,6 +49,9 @@ class Menu extends Phaser.Scene {
             this.scene.start("playScene");
         } else if(gObj == this.optionsButton) {
             this.scene.start("optionsScene");
-        }
+        } else if(gObj == this.tutorialButton) {
+            this.scene.start("tutorialScene");
+        }    
+
     }
 }
