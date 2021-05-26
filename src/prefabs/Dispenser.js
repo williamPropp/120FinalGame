@@ -59,9 +59,6 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.refillMeterBacking = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x000000).setOrigin(0.5, 1);
         this.refillMeter = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
 
-        //Load Sprite
-        this.scene.load.image('cir', './assets/circle.png');
-
         //Load Audio
         this.scene.load.audio('dispense', './assets/dispenserNoise.mp3');
         this.scene.load.audio('emptyDispenser', './assets/dispenserEmpty.mp3');
@@ -129,22 +126,24 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         let spawnedIngredient;
         let typeString;
 
-        if(this.ingredientType == 'empty') {
-            this.sound.play('emptyDispenser');
+        if(this.ingredientType == 'empty' || this.numIngredients < 1) {
+            this.scene.sound.play('emptyDispenser');
         } else {
             //Select correct sprite to load for spawnIngredient
             if(this.ingredientType == 'peanut') {
-                typeString = 'cir'; // typeString = 'peanut';
+                typeString = 'circle'; // typeString = 'peanut';
             } else if(this.ingredientType == 'raisin') {
-                typeString = 'cir'; // typeString = 'raisin';
+                typeString = 'circle'; // typeString = 'raisin';
             } else if(this.ingredientType == 'm&m') {
-                typeString = 'cir'; // typeString = 'm&m';
+                // this.scene.load.image('m&m', './assets/m&m.png');
+                typeString = 'm&m';
+                // typeString = 'cir'; // typeString = 'm&m';
             } else if(this.ingredientType == 'almond') {
-                typeString = 'cir'; // typeString = 'almond';
+                typeString = 'circle'; // typeString = 'almond';
             }
 
             //Spawn Ingredient
-            spawnedIngredient = new Ingredient(this.scene, this.x, this.y + 200 + (Math.floor(Math.random()*50)), 'circle'/*typeString*/, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
+            spawnedIngredient = new Ingredient(this.scene, this.x, this.y + 200 + (Math.floor(Math.random()*50)), /*'circle'*/typeString, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
             
             this.scene.sound.play('dispense');
             this.numIngredients--;

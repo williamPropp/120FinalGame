@@ -14,7 +14,7 @@ let config = {
             }
         },
         matter: {
-            debug: true,
+            debug: false,
             gravity: { y: 10 },
             setBounds: {
                 left: true,

@@ -13,7 +13,9 @@ class Play extends Phaser.Scene {
         this.load.image('base', 'bagBase.png');
         this.load.atlas('bag_info', 'bag.png', 'bagIcon.json');
         this.load.json('bag_physics', 'bag.json');
-        this.load.image('conveyor', 'conveyor.png');
+        // this.load.image('conveyorBelt', 'conveyor.png');
+        this.load.spritesheet('conveyor', 'conveyorSpritesheet.png', {frameWidth: 831, frameHeight: 123, startFrame: 0, endFrame: 2});
+        this.load.image('m&m', 'm&m.png');
         this.load.audio('dispense', 'dispenserNoise.mp3');
         this.load.audio('emptyDispenser', 'dispenserEmpty.mp3');
     }
@@ -24,7 +26,7 @@ class Play extends Phaser.Scene {
         this.matter.world.setBounds(0, 0, 960, 720);
         this.matter.world.setGravity(0, 1); 
         this.frameCount = 0;
-        this.flowRate = 5; //How often in frames to spawn Ingredients
+        this.flowRate = 4; //How often in frames to spawn Ingredients
         this.money;
         this.binWeight = 1000; //How many grams of ingredients can fit in one dispenser
         this.lift = false; //for sell action
@@ -66,9 +68,9 @@ class Play extends Phaser.Scene {
         */
 
         //Add boolean flags
-        this.paused = false;
         this.spawnIngredientLoop = false;
         this.priceCalculated = false;
+        this.contractEnabled = false;
 
         //Add music to the scene
         // this.soundtrack = this.sound.add('soundtrack', {
@@ -93,7 +95,13 @@ class Play extends Phaser.Scene {
         });
         this.playMenu.setDataEnabled;
 
-        this.conveyor = this.matter.add.image(250, 500, 'conveyor').setIgnoreGravity(true).setStatic(true);
+        
+        this.anims.create({ key: 'conveyorRight', frames: this.anims.generateFrameNumbers('conveyor', { start: 0, end: 2, first: 0}), frameRate: 12 });
+        this.anims.create({ key: 'conveyorLeft', frames: this.anims.generateFrameNumbers('conveyor', { start: 2, end: 0, first: 0}), frameRate: 12 });
+        // this.conveyor = this.matter.add.image(305, 500, 'conveyorBelt').setIgnoreGravity(true).setStatic(true);
+        this.conveyorBelt = this.matter.add.image(305, 510, 'conveyor').setIgnoreGravity(true).setStatic(true);
+
+        //this.conveyor.setScale(2);
         //this.matter.add.image(this.conveyor);//.body.setImmovable(true).setAllowGravity(false);
 
         this.ingredients = this.matter.add.sprite({
@@ -121,7 +129,9 @@ class Play extends Phaser.Scene {
         this.MNMDispenser = new Dispenser(this, 490, 0, 'm&m');
         this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
 
-     /*   if(localStorage.getItem('numPeanuts') == null){
+     /*   
+
+        if(localStorage.getItem('numPeanuts') == null){
             localStorage.setItem('numPeanuts', this.peanutDispenser.numIngredients);
         }   
         if(localStorage.getItem('numRaisins') == null){
@@ -133,7 +143,8 @@ class Play extends Phaser.Scene {
         if(localStorage.getItem('numAlmonds') == null){
             localStorage.setItem('numAlmonds', this.almondDispenser.numIngredients)
         }
-        */
+
+    */
 
 
        // for(let i = 0; i < 4; i++) {
@@ -364,8 +375,6 @@ class Play extends Phaser.Scene {
         this.ingThree.text = contractInfo[3];
         this.ingFour.text = contractInfo[4];
 
-
-        if(!this.isPaused){
             // this.dispOneMeter.height = (this.button1.getData('numIngredients') / this.maxPeanuts) * 75;
             // this.dispTwoMeter.height = (this.button2.getData('numIngredients') / this.maxRaisins) * 75;
             // this.dispThreeMeter.height = (this.button3.getData('numIngredients') / this.maxMNMs) * 75;
@@ -375,119 +384,130 @@ class Play extends Phaser.Scene {
                                     // localStorage.setItem('meterTwoHeight', this.dispTwoMeter.height);
                                     // localStorage.setItem('meterThreeHeight', this.dispThreeMeter.height);
 
-            if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0) {
-                for(let d of this.dispenseButtons.getChildren()) {
-                    if(d == this.clickTarget) {
-                        let dispPrefab = this.clickTarget.getData('prefab');
-                        dispPrefab.spawnIngredient();
-                    }
-                }
-
-                // let spawnedIngredient;
-                // if(this.clickTarget == this.button1) {
-                    // this.button1.setData('numIngredients', (this.button1.getData('numIngredients')) - 1);
-                    // this.dispOneRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxPeanuts - (this.button1.getData('numIngredients')))) * 0.0029));
-                    // localStorage.setItem('refillOne$', this.dispOneRefill.getData('priceToRefill'));
-                    // localStorage.setItem('numPeanuts', this.button1.getData('numIngredients'));
-                    // spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', 'peanut'/*, this.container*/).setOrigin(0.5,0.5);
-                // } else if(this.clickTarget == this.button2) {
-                    // this.button2.setData('numIngredients', (this.button2.getData('numIngredients')) - 1);
-                    // this.dispTwoRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxRaisins - (this.button2.getData('numIngredients')))) * 0.0023));
-                    // localStorage.setItem('refillTwo$', this.dispTwoRefill.getData('priceToRefill'));
-                    // localStorage.setItem('numRaisins', this.button2.getData('numIngredients'));
-                    // spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle','raisin'/*, this.container*/).setOrigin(0.5,0.5);
-                // } else if(this.clickTarget == this.button3) {
-                    // this.button3.setData('numIngredients', (this.button3.getData('numIngredients')) - 1);
-                    // this.dispThreeRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxMNMs - (this.button3.getData('numIngredients')))) * 0.056));
-                    // localStorage.setItem('refillThree$', this.dispThreeRefill.getData('priceToRefill'));
-                    // localStorage.setItem('numM&Ms', this.button3.getData('numIngredients'));
-                    // spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', 'm&m'/*, this.container*/).setOrigin(0.5,0.5);
-                // }
-
-                //spawnedIngredient.setCollisionGroup(1);
-
-            }
-
-            //Calculate bag value and weight when on the scale
-            if(this.bag.x > 840 && !this.priceCalculated) {
-                this.priceCalculated = true;
-
-                //Calculate which ingredients are in the bag, then add them to an array
-                let bagContentsArray = [];
-                for(let i of this.ingHolder.getChildren()) {
-                    if(i.x > this.bag.x - (this.bag.width / 2) && i.x < this.bag.x + (this.bag.width / 2) && i.y > this.bag.y - (this.bag.height/2) && i.y < this.bag.y + (this.bag.height/2)) {
-                        bagContentsArray.push(i);
-                    }
-                }
-                
-                //Use the array to calculate the bag's weight, price and ingredient percents
-                let value = parseFloat(this.calculatePrice(bagContentsArray));
-                let weight = parseFloat(this.calculateWeight(bagContentsArray));
-                let percentages = this.calculatePercentages(bagContentsArray);
-
-                //Display bag's price and weight
-                let weightText = this.add.text(700, 350, 'this bag weighs ' + weight + 'g', this.defaultTextConfig).setOrigin(0.5,0.5);
-                let valueText = this.add.text(700, 380, 'this bag is worth $' + value, this.defaultTextConfig).setOrigin(0.5,0.5);
-                weightText.setScale(0.5);
-                valueText.setScale(0.5);
-
-                //Display bag's ingredient percents
-                let percentageOffset = 30;
-                if(percentages != null) {
-                    for(let p of percentages) {
-                        let percentText = this.add.text(850, 580 + (percentageOffset * percentages.indexOf(p)), p[0] + ' : ' + p[1] + '%', this.defaultTextConfig).setOrigin(0.5,0.5);
-                        percentText.setScale(0.5);
-                        this.time.delayedCall(2000, () => {
-                            percentText.destroy();
-                        });
-                    }
-                }
-
-                //After the player gets a chance to read everything, reset bag and ingredients
-                this.time.delayedCall(2000, () => {
-                    weightText.destroy();
-                    valueText.destroy();
-                    this.lift = true;
-                    this.bag.setVelocity(0, -20);
-                    this.time.delayedCall(550, () => {
-                        this.getCash(value);
-                        this.ingHolder.clear(true, true);
-                        this.bag.setPosition(200, 400);
-                        this.priceCalculated = false;
-                        this.lift = false;
-                    });
-                    for(let i of this.ingHolder.getChildren()){
-                        if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                            // console.log("left called");
-                            i.setVelocity(0,-20);
-                        }
-                    }
-                });
-            }
-
-            //Move the bag right
-            if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-                for(let i of this.ingHolder.getChildren()){
-                    if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                    //    console.log("right called");
-                        i.setVelocity(7,0)
-                    }
-                }
-                this.bag.setVelocity(7, 0);
-            }
-
-            //Move the bag left
-            if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-                this.bag.setVelocity(-7, 0);
-                for(let i of this.ingHolder.getChildren()){
-                    if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                    //    console.log("left called");
-                        i.setVelocity(-7,0);
-                    }
+        if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0) {
+            for(let d of this.dispenseButtons.getChildren()) {
+                if(d == this.clickTarget) {
+                    let dispPrefab = this.clickTarget.getData('prefab');
+                    dispPrefab.spawnIngredient();
                 }
             }
+
+            // let spawnedIngredient;
+            // if(this.clickTarget == this.button1) {
+                // this.button1.setData('numIngredients', (this.button1.getData('numIngredients')) - 1);
+                // this.dispOneRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxPeanuts - (this.button1.getData('numIngredients')))) * 0.0029));
+                // localStorage.setItem('refillOne$', this.dispOneRefill.getData('priceToRefill'));
+                // localStorage.setItem('numPeanuts', this.button1.getData('numIngredients'));
+                // spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', 'peanut'/*, this.container*/).setOrigin(0.5,0.5);
+            // } else if(this.clickTarget == this.button2) {
+                // this.button2.setData('numIngredients', (this.button2.getData('numIngredients')) - 1);
+                // this.dispTwoRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxRaisins - (this.button2.getData('numIngredients')))) * 0.0023));
+                // localStorage.setItem('refillTwo$', this.dispTwoRefill.getData('priceToRefill'));
+                // localStorage.setItem('numRaisins', this.button2.getData('numIngredients'));
+                // spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle','raisin'/*, this.container*/).setOrigin(0.5,0.5);
+            // } else if(this.clickTarget == this.button3) {
+                // this.button3.setData('numIngredients', (this.button3.getData('numIngredients')) - 1);
+                // this.dispThreeRefill.setData('priceToRefill', Math.ceil((Math.abs(this.maxMNMs - (this.button3.getData('numIngredients')))) * 0.056));
+                // localStorage.setItem('refillThree$', this.dispThreeRefill.getData('priceToRefill'));
+                // localStorage.setItem('numM&Ms', this.button3.getData('numIngredients'));
+                // spawnedIngredient = new Ingredient(this, this.clickTarget.x+((Math.floor(Math.random()*25)-12)), this.clickTarget.y, 'circle', 'm&m'/*, this.container*/).setOrigin(0.5,0.5);
+            // }
+
+            //spawnedIngredient.setCollisionGroup(1);
 
         }
+
+        //Calculate bag value and weight when on the scale
+        if(this.bag.x > 840 && !this.priceCalculated) {
+            this.priceCalculated = true;
+
+            //Calculate which ingredients are in the bag, then add them to an array
+            let bagContentsArray = [];
+            for(let i of this.ingHolder.getChildren()) {
+                if(i.x > this.bag.x - (this.bag.width / 2) && i.x < this.bag.x + (this.bag.width / 2) && i.y > this.bag.y - (this.bag.height/2) && i.y < this.bag.y + (this.bag.height/2)) {
+                    bagContentsArray.push(i);
+                }
+            }
+            
+            //Use the array to calculate the bag's ingredient percents, weight, and price
+            let percentages = this.calculatePercentages(bagContentsArray);
+            let value = parseFloat(this.calculatePrice(bagContentsArray, percentages));
+            let weight = parseFloat(this.calculateWeight(bagContentsArray));
+            
+
+            //Display bag's price and weight
+            let weightText = this.add.text(700, 350, (Number.isNaN(weight)) ? ('this bag is empty') : ('this bag weighs ' + weight + 'g'), this.defaultTextConfig).setOrigin(0.5,0.5);
+            let valueText = this.add.text(700, 380, (Number.isNaN(value)) ? ('this bag is worth $0') : ('this bag is worth $' + value), this.defaultTextConfig).setOrigin(0.5,0.5);
+            weightText.setScale(0.5);
+            valueText.setScale(0.5);
+
+            //Display bag's ingredient percents
+            let percentageOffset = 30;
+            if(percentages != null) {
+                for(let p of percentages) {
+                    let percentText = this.add.text(850, 580 + (percentageOffset * percentages.indexOf(p)), p[0] + ' : ' + p[1] + '%', this.defaultTextConfig).setOrigin(0.5,0.5);
+                    percentText.setScale(0.5);
+                    this.time.delayedCall(2000, () => {
+                        percentText.destroy();
+                    });
+                }
+            }
+
+            //After the player gets a chance to read everything, reset bag and ingredients
+            this.time.delayedCall(2000, () => {
+                weightText.destroy();
+                valueText.destroy();
+                this.lift = true;
+                this.bag.setVelocity(0, -20);
+                this.time.delayedCall(550, () => {
+                    this.getCash(value);
+                    this.ingHolder.clear(true, true);
+                    this.bag.setPosition(200, 400);
+                    this.priceCalculated = false;
+                    this.lift = false;
+                });
+                for(let i of this.ingHolder.getChildren()){
+                    if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                        // console.log("left called");
+                        i.setVelocity(0,-20);
+                    }
+                }
+            });
+        }
+
+        //Move the bag right
+        if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+            for(let i of this.ingHolder.getChildren()){
+                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                //    console.log("right called");
+                    i.setVelocity(7,0)
+                }
+            }
+            this.bag.setVelocity(7, 0);
+            let conveyorAnim = this.add.sprite(305, 510, 'conveyor');
+            conveyorAnim.anims.play('conveyorRight');
+            this.time.delayedCall(2500, () => {
+                conveyorAnim.destroy();
+            })
+        }
+
+        //Move the bag left
+        if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.bag.setVelocity(-7, 0);
+            let conveyorAnim = this.add.sprite(305, 510, 'conveyor');
+            conveyorAnim.anims.play('conveyorLeft');
+            this.time.delayedCall(2500, () => {
+                conveyorAnim.destroy();
+            })
+            for(let i of this.ingHolder.getChildren()){
+                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                //    console.log("left called");
+                    i.setVelocity(-7,0);
+                    
+                }
+            }
+        }
+
             // for(let i of this.ingredients.getChildren()){
             //     if(this.container.body.hitTest(i.x,i.y) == true) {
             //         i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
@@ -582,64 +602,109 @@ class Play extends Phaser.Scene {
         localStorage.setItem('money', this.money);
     }
 
-    //Calculate the price of a bag
-    calculatePrice(contents) {
-        let bagValue = 0;
-        for(let c of contents) {
-            bagValue += c.value;
-        }
-        bagValue *= this.bagMultiplier * this.lobbyMultiplier * this.contractMultiplier;
-        bagValue = bagValue.toFixed(2);
-        return bagValue;
-    }
-
-    //Calculate the percentages of ingredients in a bag, return a 2 dimensional array in the form [[type1 string, % of type1 in the bag], [type2 string, # of type2 in the bag]...etc]
-    calculatePercentages(contents) {
-        
+    //Calculate the weight of a bag
+    calculateWeight(contents) {
         if(contents.length == 0) {
             console.log('empty');
             return null;
         }
-        let typeArray = [];
-        //let typeData = []; //Array with two elements, typeData[0] = type string, typeData[1] = number of items of the same type
-        let first = contents[0];
-        let firstData = [first.type, 0];
-        typeArray.push(firstData);
-        for(let c of contents) {
-            let maybeAdd; 
-            let i = 0;
-            for(let t of typeArray) {
-                if(c.type == t[0]) {
-                    t[1] += 1;
-                } else {
-                    maybeAdd = c.type;
-                    if(i == typeArray.length-1) {
-                        let typeData = [maybeAdd, 0]; //Array with two elements, typeData[0] = type string, typeData[1] = number of items of the same type
-                        typeArray.push(typeData);
-                    }
-                }
-                i++;
-            }
-           
-        }
-        let totalContents = contents.length;
-        for(let n of typeArray) {
-            let num = n[1];
-            let percent = (num / totalContents) * 100;
-            percent = percent.toFixed(1);
-            n[1] = percent;
-        }
-        return typeArray;
-    }
-
-    //Calculate the weight of a bag
-    calculateWeight(contents) {
         let bagWeight = 0;
         for(let c of contents) {
             bagWeight += c.weight;
         }
         bagWeight = bagWeight.toFixed(1);
         return bagWeight;
+    }
+
+    //Calculate the price of a bag
+    calculatePrice(contents, percents) {
+        //If the bad is empty, return null
+        if(contents.length == 0) {
+            return null;
+
+        //Do contract logic if a contract is active
+        } else if(this.contractEnabled) {
+            console.log('implement contracts')
+
+        //Calculate freeform bag value
+        } else {
+            let bagValue = 0;
+            for(let c of contents) {
+                bagValue += c.value;
+            }
+
+            //Reward precise ratios in a bag (1/2, 1/3, 1/4, 1/5), and penalize less than 3 ingredients used
+            let varietyMultiplier = 1;
+            let percentsArray = [];
+            for (let p of percents) {
+                percentsArray.push(p[1]);
+            }
+            if(percentsArray.length < 3) {
+                varietyMultiplier = 0.5;
+            } else {
+                varietyMultiplier += 0.25;
+                let bonusArray = [50,33,25,20];
+                for(let u of percentsArray) {
+                    for(let b of bonusArray) {
+                        if(b >= (u - 3) && b <= (u + 3)) {
+                            varietyMultiplier += 0.25;
+                        }
+                    }
+                }
+            }
+            //If the bag isn't filled enough, there will be a large penalty to the bag's value
+            let filledMultiplier = 1;
+            if(contents.length < 15) {
+                filledMultiplier = 0.1;
+                console.log("bag isn't filled enough");
+            } else if(contents.length < 25) {
+                filledMultiplier = 0.5;
+            }
+            //Multiply base value by the multipliers
+            bagValue *= this.bagMultiplier * this.lobbyMultiplier * varietyMultiplier * filledMultiplier;
+            bagValue = bagValue.toFixed(2);
+            return bagValue;
+        }
+    }
+
+    //Calculate the percentages of ingredients in a bag, return a 2 dimensional array in the form [[type1 string, % of type1 in the bag], [type2 string, # of type2 in the bag]...etc]
+    calculatePercentages(contents) {
+
+        if(contents.length == 0) {
+            return null;
+        } else {
+            let typeArray = [];
+            let first = contents[0];
+            let firstData = [first.type, 0];
+            typeArray.push(firstData);
+            for(let c of contents) {
+                let maybeAdd; 
+                let i = 0;
+                for(let t of typeArray) {
+                    if(c.type == t[0]) {
+                        t[1] += 1;
+                    } else {
+                        maybeAdd = c.type;
+                        if(i == typeArray.length-1) {
+                            let typeData = [maybeAdd, 0]; //Array with two elements, typeData[0] = type string, typeData[1] = number of items of the same type
+                            typeArray.push(typeData);
+                        }
+                    }
+                    i++;
+                }
+            }
+
+            let totalContents = contents.length;
+
+            for(let n of typeArray) {
+                let num = n[1];
+                let percent = (num / totalContents) * 100;
+                percent = percent.toFixed(1);
+                n[1] = percent;
+            }
+
+            return typeArray;
+        }
     }
 
     //Refill a dispenser to max
@@ -692,7 +757,6 @@ class Play extends Phaser.Scene {
             i++;
         }
     }
-
 
     //Call when the user doesn't have enough cash to cover an ingredient refill transaction
     insufficientFunds(price) {
