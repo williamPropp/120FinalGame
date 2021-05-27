@@ -5,11 +5,7 @@ class PlayMenu extends Phaser.Scene {
     }
 
     init(sceneData) {
-        this.upgradesArray = sceneData.upgrades;
-        this.upgradesAcquiredArray = sceneData.upgradesAcquired;
-        this.dispenserArray = sceneData.dispensers;
-        this.money = sceneData.money;
-        console.log(this.upgradesArray);
+        this.scenePointer = sceneData.scene;
     }
 
     preload() {
@@ -26,6 +22,7 @@ class PlayMenu extends Phaser.Scene {
 
     create() {
         console.log('play menu');
+        console.log(this.scenePointer.money);
         this.pauseMenu = this.add.image(121, 50, 'manilla').setOrigin(0, 0);
         this.currentTab = 'main';
 
@@ -229,7 +226,7 @@ class PlayMenu extends Phaser.Scene {
         this.input.on('gameobjectup', (pointer, gameObject, event) => {
             this.clickAction = false;
         });
-        console.log(this.money);
+        // console.log(this.money);
     }
 
     makeContract() {

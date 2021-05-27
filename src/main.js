@@ -14,7 +14,7 @@ let config = {
             }
         },
         matter: {
-            debug: false,
+            debug: true,
             gravity: { y: 10 },
             setBounds: {
                 left: true,
@@ -49,10 +49,10 @@ let contractInfo = ['Motivation','You invested all','your money in','this. Good 
 
 
 // Often used locations coordinates
-// let screenWidth = game.config.width;
-// let screenHeight = game.config.height;
-// let screenCenterX = game.config.width / 2;
-// let screenCenterY = game.config.height / 2;
+let screenWidth = game.config.width;
+let screenHeight = game.config.height;
+let screenCenterX = game.config.width / 2;
+let screenCenterY = game.config.height / 2;
 
 //Cheat Code Booleans
 let moneyCheat = false;

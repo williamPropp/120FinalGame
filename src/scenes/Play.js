@@ -548,10 +548,7 @@ class Play extends Phaser.Scene {
             }
             else {
                 let sceneData = {
-                    money: this.money,
-                    upgrades: this.upgradesArray,
-                    upgradesAcquired : this.upgradesAcquiredArray,
-                    dispensers: this.dispenserArray,
+                    scene: this,
                 };
                 this.scene.launch("playMenuScene", sceneData);
             }
