@@ -4,6 +4,14 @@ class PlayMenu extends Phaser.Scene {
 
     }
 
+    init(sceneData) {
+        this.upgradesArray = sceneData.upgrades;
+        this.upgradesAcquiredArray = sceneData.upgradesAcquired;
+        this.dispenserArray = sceneData.dispensers;
+        this.money = sceneData.money;
+        console.log(this.upgradesArray);
+    }
+
     preload() {
         //Load all assets
         this.load.path = './assets/';
@@ -79,6 +87,7 @@ class PlayMenu extends Phaser.Scene {
         this.input.on('gameobjectup', (pointer, gameObject, event) => {
             this.clickAction = false;
         });
+        console.log(this.money);
     }
 
 }

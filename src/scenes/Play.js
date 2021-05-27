@@ -16,6 +16,7 @@ class Play extends Phaser.Scene {
         // this.load.image('conveyorBelt', 'conveyor.png');
         this.load.spritesheet('conveyor', 'conveyorSpritesheet.png', {frameWidth: 831, frameHeight: 123, startFrame: 0, endFrame: 2});
         this.load.image('m&m', 'm&m.png');
+        this.load.image('almond', 'almond.png');
         this.load.audio('dispense', 'dispenserNoise.mp3');
         this.load.audio('emptyDispenser', 'dispenserEmpty.mp3');
     }
@@ -546,7 +547,13 @@ class Play extends Phaser.Scene {
                 this.scene.wake("playMenuScene");
             }
             else {
-                this.scene.launch("playMenuScene");
+                let sceneData = {
+                    money: this.money,
+                    upgrades: this.upgradesArray,
+                    upgradesAcquired : this.upgradesAcquiredArray,
+                    dispensers: this.dispenserArray,
+                };
+                this.scene.launch("playMenuScene", sceneData);
             }
             this.scene.pause('playScene');
         }

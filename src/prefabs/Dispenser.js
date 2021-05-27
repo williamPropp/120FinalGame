@@ -139,7 +139,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
                 typeString = 'm&m';
                 // typeString = 'cir'; // typeString = 'm&m';
             } else if(this.ingredientType == 'almond') {
-                typeString = 'circle'; // typeString = 'almond';
+                typeString = 'almond'; // typeString = 'almond';
             }
 
             //Spawn Ingredient

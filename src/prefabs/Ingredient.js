@@ -51,8 +51,9 @@ class Ingredient extends Phaser.Physics.Matter.Sprite {
         //     this.price = 0.028;
         //     this.value = 0.0465;
         // }
-        this.setTint(this.color);
-
+        if(this.type != 'almond') {
+            this.setTint(this.color);
+        }
     }
 
 }
