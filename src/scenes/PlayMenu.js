@@ -18,13 +18,21 @@ class PlayMenu extends Phaser.Scene {
         this.load.image('red', 'TabRed.png');
         this.load.image('green', 'TabGreen.png');
         this.load.image('blue', 'TabBlue.png');
+        this.load.image('sign','sign.png');
     }
 
     create() {
         console.log('play menu');
         console.log(this.scenePointer.money);
         this.pauseMenu = this.add.image(121, 50, 'manilla').setOrigin(0, 0);
+        this.signature = this.add.image(game.config.width/1.37, 550, 'sign').setOrigin(.5, 0);
+        this.signature.setInteractive({
+            useHandCursor: true
+        });
+        this.signature.setDataEnabled;
+        this.signature.alpha = 0;
         this.currentTab = 'main';
+        this.element = -1;
 
         //tab setup
         this.mainTab = this.add.image(83, game.config.height/9, 'plain').setOrigin(0, 0);
@@ -54,9 +62,21 @@ class PlayMenu extends Phaser.Scene {
             useHandCursor: true
         });
         this.postIt.setDataEnabled;
-        this.postItTwo = this.add.image(300, 70, 'post').setOrigin(0, 0).setTint(0xFAF28C);;
-        this.postItThree = this.add.image(150, 240, 'post').setOrigin(0, 0).setTint(0xFAF28C);;
-        this.postItFour = this.add.image(300, 240, 'post').setOrigin(0, 0).setTint(0xFAF28C);;
+        this.postItTwo = this.add.image(300, 70, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        this.postItTwo.setInteractive({
+            useHandCursor: true
+        });
+        this.postItTwo.setDataEnabled;
+        this.postItThree = this.add.image(150, 240, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        this.postItThree.setInteractive({
+            useHandCursor: true
+        });
+        this.postItThree.setDataEnabled;
+        this.postItFour = this.add.image(300, 240, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        this.postItFour.setInteractive({
+            useHandCursor: true
+        });
+        this.postItFour.setDataEnabled;
         this.postHolder = this.add.group();
         this.postHolder.addMultiple([this.postIt, this.postItTwo,this.postItThree, this.postItFour]);
         for(let i of this.postHolder.getChildren()){
@@ -67,9 +87,7 @@ class PlayMenu extends Phaser.Scene {
         //Text Arrays
         this.intros = ['Welcome Young','Capitalist!','Use the tabs on the side','to navigate our files.','Click on sticky notes','to see more info!']
         this.contractInfo = ['Motivation','You invested all','your money in','this. Good luck', 'lol']
-        this.contracts = ['Offer 1','Offer 2','Offer 3','Offer 4','Offer 5','Offer 6'];
-        this.upgrades = ['Contracts', 'Marketing', 'Farmers', 'Exploitation', 'Raisins', 'Files'];
-        this.companyNames = ['Scam Co.', 'Capital Inc', 'Extore Shun TM', 'Rob Airy co']
+        this.companyNames = ['Scam Co.', 'Capital Inc', 'Extore Shun TM', 'Rob Airy co', 'Incorporated Inc', 'Big Mix TM']
         this.multChanges = ['x1.1', 'x1.2', 'x0.9']
         this.ingredients = ['Peanuts', 'Raisins', 'M&Ms', 'Almonds']
         this.percentages = []
@@ -92,11 +110,66 @@ class PlayMenu extends Phaser.Scene {
         this.noteHolder = this.add.group();
         this.noteHolder.addMultiple([this.noteOne,this.noteTwo,this.noteThree,this.noteFour]) 
 
+        //upgrade objs
+        this.openContracts = {
+            postName: 'Contracts',
+            infoName: 'Sell your labor!',
+            cost: 5,
+            priceTag: 'Price: $5',
+            infoOne: 'Pay this fee to',
+            infoTwo: 'open up the world',
+            infoThree: 'of being a sellout!',
+        }
+        this.bag2x = {
+            postName: 'bag 2x',
+            infoName: 'Fill twice as much!',
+            cost: 10,
+            priceTag: 'Price: $20',
+            infoOne: 'With new deep pocket',
+            infoTwo: 'technology your bags are',
+            infoThree: 'bigger but the same size',
+        }
+        this.bag4x = {
+            postName: 'bag 4x',
+            infoName: 'Fill 4x as much!',
+            cost: 50,
+            priceTag: 'Price: $50',
+            infoOne: 'Warp reality to your',
+            infoTwo: 'will and redefine the',
+            infoThree: 'causal trail mix bag',
+        }
+        this.bag8x = {
+            postName: 'bag 8x',
+            infoName: 'Fill 8x as much!',
+            cost: 500,
+            priceTag: 'Price: $500',
+            infoOne: 'A spacial rift in an',
+            infoTwo: 'unstable trail mix bag',
+            infoThree: 'lets you stuff more in',
+        }
+        this.bag16x = {
+            postName: 'bag 16x',
+            infoName: 'Fill 16x as much!',
+            cost: 5000,
+            priceTag: 'Price: $5,000',
+            infoOne: 'A pocket dimension in',
+            infoTwo: 'the palm of you hand,',
+            infoThree: 'and you used it for this?',
+        }
+
+        this.upgrades = [this.openContracts, this.bag2x,this.bag4x,this.bag8x,this.bag16x];
+        this.contracts = [];
+
         //Define keys
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 
     update() {
+        if(this.contracts.length < 5){
+            this.makeContract();
+        }
+
+
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
             this.scene.sleep('playMenuScene');
             this.scene.resume('playScene');
@@ -111,6 +184,7 @@ class PlayMenu extends Phaser.Scene {
             if(gameObject == this.mainTab && this.clickAction == false) {
                 console.log('Main!!');
                 this.currentTab= 'main';
+                this.signature.alpha = 0;
                 for(let i of this.postHolder.getChildren()){
                     //i.setTint(0xFAF28C);
                     i.alpha = 0;
@@ -130,6 +204,7 @@ class PlayMenu extends Phaser.Scene {
             if(gameObject == this.upgradeTab && this.clickAction == false) {
                 console.log('Upgrade!!');
                 this.currentTab= 'upgrades';
+                this.signature.alpha = 0;
                 for(let i of this.postHolder.getChildren()){
                     i.alpha = 1;
                     i.setTint(0x00fe2d);
@@ -137,7 +212,7 @@ class PlayMenu extends Phaser.Scene {
                 this.count = 0;
                 for(let i of this.noteHolder.getChildren()){
                     i.alpha = 1;
-                    i.text = this.upgrades[this.count];
+                    i.text = this.upgrades[this.count].postName;
                     this.count++;
                 }
                 this.company.text = 'Time to Upgrade';
@@ -151,6 +226,7 @@ class PlayMenu extends Phaser.Scene {
             if(gameObject == this.contractTab && this.clickAction == false) {
                 console.log('Contract!!');
                 this.currentTab= 'contracts';
+                this.signature.alpha = 0;
                 for(let i of this.postHolder.getChildren()){
                     i.alpha = 1;
                     i.setTint(0xFF1493);
@@ -158,7 +234,7 @@ class PlayMenu extends Phaser.Scene {
                 this.count = 0;
                 for(let i of this.noteHolder.getChildren()){
                     i.alpha = 1;
-                    i.text = this.contracts[this.count];
+                    i.text = this.contracts[this.count].postName;
                     this.count++;
                 }
                 this.company.text = 'A few Contracts';
@@ -171,6 +247,7 @@ class PlayMenu extends Phaser.Scene {
             if(gameObject == this.buyTab && this.clickAction == false) {
                 console.log('Buy!!');  
                 this.currentTab= 'buy';
+                this.signature.alpha = 0;
                 for(let i of this.postHolder.getChildren()){
                     i.alpha = 1;
                     i.setTint(0x0dd5fc);
@@ -190,36 +267,187 @@ class PlayMenu extends Phaser.Scene {
             }
 
             //post-it clicks
-            if(gameObject == this.postIt && this.clickAction == false && this.currentTab == 'upgrades') {
+            if(gameObject == this.postIt && this.clickAction == false) {
+                this.element = 0;
+                this.signature.alpha = 1;
                 // this.company.text = this.companyNames[2];
                 // this.multiplier.text = this.multChanges[1];
                 // this.ingOne.text = this.ingredients[0];
                 // this.ingTwo.text = this.ingredients[1];
                 // this.ingThree.text = this.ingredients[2];
                 // this.ingFour.text = this.ingredients[3];
-                this.upgrades.shift();
-                console.log(this.upgrades);
-                this.noteOne.text = this.upgrades[0];
-                this.noteTwo.text = this.upgrades[1];
-                this.noteThree.text = this.upgrades[2];
-                this.noteFour.text = this.upgrades[3];
-                this.clickAction = true;
+                if (this.currentTab == 'upgrades') {
+                    this.getUpgrades(this.element);
+                    // this.upgrades.shift();
+                    // console.log(this.upgrades);
+                    // this.noteOne.text = this.upgrades[0].postName;
+                    // this.noteTwo.text = this.upgrades[1].postName;
+                    // this.noteThree.text = this.upgrades[3].postName;
+                    // this.noteFour.text = this.upgrades[4].postName;
+                    // this.clickAction = true;
+                }
+                else if(this.currentTab == 'contracts'){
+                    this.contracts.shift();
+                    console.log(this.contracts);
+                    this.noteOne.text = this.contracts[0];
+                    this.noteTwo.text = this.contracts[1];
+                    this.noteThree.text = this.contracts[2];
+                    this.noteFour.text = this.contracts[3];
+                    this.clickAction = true;
+                }
+                else if(this.currentTab == 'buy'){
+                    this.clickAction = true;
+                }
+
             }
-            if(gameObject == this.postIt && this.clickAction == false && this.currentTab == 'contracts') {
+
+            if(gameObject == this.postItTwo && this.clickAction == false) {
+                this.element = 1;
+                this.signature.alpha = 1;
                 // this.company.text = this.companyNames[2];
                 // this.multiplier.text = this.multChanges[1];
                 // this.ingOne.text = this.ingredients[0];
                 // this.ingTwo.text = this.ingredients[1];
                 // this.ingThree.text = this.ingredients[2];
                 // this.ingFour.text = this.ingredients[3];
-                this.upgrades.shift();
-                console.log(this.upgrades);
-                this.noteOne.text = this.upgrades[0];
-                this.noteTwo.text = this.upgrades[1];
-                this.noteThree.text = this.upgrades[2];
-                this.noteFour.text = this.upgrades[3];
+                if (this.currentTab == 'upgrades') {
+                    this.getUpgrades(this.element);
+                    // this.upgrades.shift();
+                    // console.log(this.upgrades);
+                    // this.noteOne.text = this.upgrades[0].postName;
+                    // this.noteTwo.text = this.upgrades[1].postName;
+                    // this.noteThree.text = this.upgrades[3].postName;
+                    // this.noteFour.text = this.upgrades[4].postName;
+                    // this.clickAction = true;
+                }
+                else if(this.currentTab == 'contracts'){
+                    this.contracts.shift();
+                    console.log(this.contracts);
+                    this.noteOne.text = this.contracts[0];
+                    this.noteTwo.text = this.contracts[1];
+                    this.noteThree.text = this.contracts[2];
+                    this.noteFour.text = this.contracts[3];
+                    this.clickAction = true;
+                }
+                else if(this.currentTab == 'buy'){
+                    this.clickAction = true;
+                }
+
+            }
+            if(gameObject == this.postItThree && this.clickAction == false) {
+                this.element = 2;
+                this.signature.alpha = 1;
+                // this.company.text = this.companyNames[2];
+                // this.multiplier.text = this.multChanges[1];
+                // this.ingOne.text = this.ingredients[0];
+                // this.ingTwo.text = this.ingredients[1];
+                // this.ingThree.text = this.ingredients[2];
+                // this.ingFour.text = this.ingredients[3];
+                if (this.currentTab == 'upgrades') {
+                    this.getUpgrades(this.element);
+                    // this.upgrades.shift();
+                    // console.log(this.upgrades);
+                    // this.noteOne.text = this.upgrades[0].postName;
+                    // this.noteTwo.text = this.upgrades[1].postName;
+                    // this.noteThree.text = this.upgrades[3].postName;
+                    // this.noteFour.text = this.upgrades[4].postName;
+                    // this.clickAction = true;
+                }
+                else if(this.currentTab == 'contracts'){
+                    this.contracts.shift();
+                    console.log(this.contracts);
+                    this.noteOne.text = this.contracts[0];
+                    this.noteTwo.text = this.contracts[1];
+                    this.noteThree.text = this.contracts[2];
+                    this.noteFour.text = this.contracts[3];
+                    this.clickAction = true;
+                }
+                else if(this.currentTab == 'buy'){
+                    this.clickAction = true;
+                }
+
+            }
+            if(gameObject == this.postItFour && this.clickAction == false) {
+                this.element = 3;
+                this.signature.alpha = 1;
+                // this.company.text = this.companyNames[2];
+                // this.multiplier.text = this.multChanges[1];
+                // this.ingOne.text = this.ingredients[0];
+                // this.ingTwo.text = this.ingredients[1];
+                // this.ingThree.text = this.ingredients[2];
+                // this.ingFour.text = this.ingredients[3];
+                if (this.currentTab == 'upgrades') {
+                    this.getUpgrades(this.element);
+                    // this.upgrades.shift();
+                    // console.log(this.upgrades);
+                    // this.noteOne.text = this.upgrades[0].postName;
+                    // this.noteTwo.text = this.upgrades[1].postName;
+                    // this.noteThree.text = this.upgrades[3].postName;
+                    // this.noteFour.text = this.upgrades[4].postName;
+                    // this.clickAction = true;
+                }
+                else if(this.currentTab == 'contracts'){
+                    this.contracts.shift();
+                    console.log(this.contracts);
+                    this.noteOne.text = this.contracts[0];
+                    this.noteTwo.text = this.contracts[1];
+                    this.noteThree.text = this.contracts[2];
+                    this.noteFour.text = this.contracts[3];
+                    this.clickAction = true;
+                }
+                else if(this.currentTab == 'buy'){
+                    this.clickAction = true;
+                }
+            }
+            if(gameObject == this.signature && this.clickAction == false) {
+                console.log('Signing!')
+                if(this.currentTab == 'upgrades') {
+                    console.log('upgrading!!')
+                    if(this.scenePointer.money > this.upgrades[this.element].cost){
+                        console.log(this.scenePointer.money);
+                        this.scenePointer.money -= this.upgrades[this.element].cost;
+                        console.log(this.scenePointer.money);
+                        this.upgrades.splice(this.element, 1);
+                        this.company.text = 'Time to Upgrade';
+                        this.multiplier.text = 'your factory';
+                        this.ingOne.text = 'Line your pockets';
+                        this.ingTwo.text = 'with cash to buy';
+                        this.ingThree.text = 'even more money!';
+                        this.ingFour.text = 'No matter the price...';
+                        this.signature.alpha = 0;
+                    }
+                    if(this.upgrades.length > 0) {
+                        console.log('1 true');
+                        this.noteOne.text = this.upgrades[0].postName;
+                    }
+                    else{
+                        this.noteOne.text = '';
+                    }
+                    if(this.upgrades.length > 1) {
+                        console.log('2 true');
+                        this.noteTwo.text = this.upgrades[1].postName;
+                    }
+                    else{
+                        this.noteTwo.text = '';
+                    }
+                    if(this.upgrades.length > 2) {
+                        console.log('3 true');
+                        this.noteThree.text = this.upgrades[2].postName;
+                    }
+                    else{
+                        this.noteThree.text = '';
+                    }
+                    if(this.upgrades.length > 3) {
+                        console.log('4 true');
+                        this.noteFour.text = this.upgrades[3].postName;
+                    }
+                    else{
+                        this.noteFour.text = '';
+                    }
+                }
                 this.clickAction = true;
             }
+
             this.clickAction = true;
             this.contractInfo = ['Contract', this.ingOne._text, this.ingTwo._text, this.ingThree._text, this.ingFour._text]
         });
@@ -229,11 +457,46 @@ class PlayMenu extends Phaser.Scene {
         // console.log(this.money);
     }
 
+    getUpgrades(element) {
+        console.log(element);
+        this.company.text = this.upgrades[element].postName;
+        this.multiplier.text = this.upgrades[element].infoName;
+        this.ingOne.text = this.upgrades[element].priceTag;
+        this.ingTwo.text = this.upgrades[element].infoOne;
+        this.ingThree.text = this.upgrades[element].infoTwo;
+        this.ingFour.text = this.upgrades[element].infoThree;
+    }
+
     makeContract() {
-        percentOne = math.random() * 10;
-        percentTwo = math.random() * 10;
-        percentThree = math.random() * 10;
-        percentFOur = math.random() * 10;
+        this.percentOne = Math.ceil((Math.random() * 100) / 5) * 5;
+        if(this.percentOne > 50) {
+            this.percentOne = 50;
+        }
+        this.percentTwo = Math.ceil((Math.random() * 100) / 5) * 5;
+        if(100 - this.percentOne < this.percentTwo) {
+            this.percentTwo = Math.ceil((100 - this.percentOne)/3/5)*5;
+        }
+        this.percentThree = Math.ceil((Math.random() * 100) / 5) * 5;
+        if(100 - this.percentOne - this.percentTwo < this.percentThree) {
+            this.percentThree = Math.ceil((100 - this.percentOne - this.percentTwo)/3/5)*5;;
+        }
+        this.percentFour = 100 - this.percentOne - this.percentTwo - this.percentThree;
+        console.log(this.percentOne, this.percentTwo, this.percentThree, this.percentFour);
+        this.madeContract = {
+            postName: this.companyNames[1],
+            infoName: 'An Offical Contract',
+            multiplier: 1.0,
+            priceTag: this.multiplier[2],
+            infoOne: 'With new deep pocket',
+            infoTwo: 'technology your bags are',
+            infoThree: 'bigger but the same size',
+            percentOne: this.percentOne,
+            percentTwo: this.percentTwo,
+            percentThree: this.percentThree,
+            percentFour: this.percentFour
+        }
+        this.contracts.push(this.madeContract);
+        console.log(this.madeContract.postName);
     }
 
 }
