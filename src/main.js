@@ -31,10 +31,6 @@ let game = new Phaser.Game(config);
 
 let keySPACE, keyLEFT, keyRIGHT, keyESC;
 
-//lists of contracts and upgrades
-let contractInfo = ['Motivation','You invested all','your money in','this. Good luck', 'lol']
-let upgrades = ['Contracts', 'Marketing', 'Farmers', 'Exploitation', 'Raisins', 'Files'];
-
 // Often used locations coordinates
 let screenWidth = game.config.width;
 let screenHeight = game.config.height;

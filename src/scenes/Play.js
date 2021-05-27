@@ -272,11 +272,11 @@ class Play extends Phaser.Scene {
         //Current Contract Info
         this.contractBg = this.add.rectangle(735, 60, 205, 230, 0xFFFFFF).setOrigin(0 ,0);
 
-        this.currentContract = this.add.text(840, 100, contractInfo[0], this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
-        this.ingOne = this.add.text(840, 140, contractInfo[1], this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingTwo = this.add.text(840, 180, contractInfo[2], this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingThree = this.add.text(840, 220, contractInfo[3], this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingFour = this.add.text(840, 260, contractInfo[4], this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.currentContract = this.add.text(840, 100, 'this.contractInfo[0]', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
+        this.ingOne = this.add.text(840, 140, 'this.contractInfo[1]', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingTwo = this.add.text(840, 180, 'this.contractInfo[2]', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingThree = this.add.text(840, 220, 'this.contractInfo[3]', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingFour = this.add.text(840, 260, 'this.contractInfo[4]', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
 
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
@@ -369,11 +369,11 @@ class Play extends Phaser.Scene {
         this.frameCount++;
         //console.log(this.bag.x - this.bag.width/2);
 
-        this.currentContract.text = contractInfo[0];
-        this.ingOne.text = contractInfo[1];
-        this.ingTwo.text = contractInfo[2];
-        this.ingThree.text = contractInfo[3];
-        this.ingFour.text = contractInfo[4];
+        this.currentContract.text = 'contractInfo[0]';
+        this.ingOne.text = 'contractInfo[1]';
+        this.ingTwo.text = 'contractInfo[2]';
+        this.ingThree.text = 'contractInfo[3]';
+        this.ingFour.text = 'contractInfo[4]';
 
             // this.dispOneMeter.height = (this.button1.getData('numIngredients') / this.maxPeanuts) * 75;
             // this.dispTwoMeter.height = (this.button2.getData('numIngredients') / this.maxRaisins) * 75;
