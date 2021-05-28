@@ -287,13 +287,14 @@ class PlayMenu extends Phaser.Scene {
                     // this.clickAction = true;
                 }
                 else if(this.currentTab == 'contracts'){
-                    this.contracts.shift();
-                    console.log(this.contracts);
-                    this.noteOne.text = this.contracts[0];
-                    this.noteTwo.text = this.contracts[1];
-                    this.noteThree.text = this.contracts[2];
-                    this.noteFour.text = this.contracts[3];
-                    this.clickAction = true;
+                    this.getContracts(this.element);
+                    // this.contracts.shift();
+                    // console.log(this.contracts);
+                    // this.noteOne.text = this.contracts[0].postName;
+                    // this.noteTwo.text = this.contracts[1].postName;
+                    // this.noteThree.text = this.contracts[2].postName;
+                    // this.noteFour.text = this.contracts[3].postName;
+                    // this.clickAction = true;
                 }
                 else if(this.currentTab == 'buy'){
                     this.clickAction = true;
@@ -321,13 +322,7 @@ class PlayMenu extends Phaser.Scene {
                     // this.clickAction = true;
                 }
                 else if(this.currentTab == 'contracts'){
-                    this.contracts.shift();
-                    console.log(this.contracts);
-                    this.noteOne.text = this.contracts[0];
-                    this.noteTwo.text = this.contracts[1];
-                    this.noteThree.text = this.contracts[2];
-                    this.noteFour.text = this.contracts[3];
-                    this.clickAction = true;
+                    this.getContracts(this.element);
                 }
                 else if(this.currentTab == 'buy'){
                     this.clickAction = true;
@@ -354,13 +349,7 @@ class PlayMenu extends Phaser.Scene {
                     // this.clickAction = true;
                 }
                 else if(this.currentTab == 'contracts'){
-                    this.contracts.shift();
-                    console.log(this.contracts);
-                    this.noteOne.text = this.contracts[0];
-                    this.noteTwo.text = this.contracts[1];
-                    this.noteThree.text = this.contracts[2];
-                    this.noteFour.text = this.contracts[3];
-                    this.clickAction = true;
+                    this.getContracts(this.element);
                 }
                 else if(this.currentTab == 'buy'){
                     this.clickAction = true;
@@ -387,13 +376,7 @@ class PlayMenu extends Phaser.Scene {
                     // this.clickAction = true;
                 }
                 else if(this.currentTab == 'contracts'){
-                    this.contracts.shift();
-                    console.log(this.contracts);
-                    this.noteOne.text = this.contracts[0];
-                    this.noteTwo.text = this.contracts[1];
-                    this.noteThree.text = this.contracts[2];
-                    this.noteFour.text = this.contracts[3];
-                    this.clickAction = true;
+                    this.getContracts(this.element);
                 }
                 else if(this.currentTab == 'buy'){
                     this.clickAction = true;
@@ -417,29 +400,60 @@ class PlayMenu extends Phaser.Scene {
                         this.signature.alpha = 0;
                     }
                     if(this.upgrades.length > 0) {
-                        console.log('1 true');
                         this.noteOne.text = this.upgrades[0].postName;
                     }
                     else{
                         this.noteOne.text = '';
                     }
                     if(this.upgrades.length > 1) {
-                        console.log('2 true');
                         this.noteTwo.text = this.upgrades[1].postName;
                     }
                     else{
                         this.noteTwo.text = '';
                     }
                     if(this.upgrades.length > 2) {
-                        console.log('3 true');
                         this.noteThree.text = this.upgrades[2].postName;
                     }
                     else{
                         this.noteThree.text = '';
                     }
                     if(this.upgrades.length > 3) {
-                        console.log('4 true');
                         this.noteFour.text = this.upgrades[3].postName;
+                    }
+                    else{
+                        this.noteFour.text = '';
+                    }
+                }
+                else if (this.currentTab == 'contracts') {
+                    console.log('contracting!!')
+                    this.contracts.splice(this.element, 1);
+                    this.company.text = 'A few Contracts';
+                    this.multiplier.text = 'came in the mail';
+                    this.ingOne.text = 'Sell the fruits of your';
+                    this.ingTwo.text = 'labor up the ladder!';
+                    this.ingThree.text = 'Ethical deals til';
+                    this.ingFour.text = 'coprate gets their way';
+                    this.signature.alpha = 0;
+                    if(this.upgrades.length > 0) {
+                        this.noteOne.text = this.contracts[0].postName;
+                    }
+                    else{
+                        this.noteOne.text = '';
+                    }
+                    if(this.upgrades.length > 1) {
+                        this.noteTwo.text = this.contracts[1].postName;
+                    }
+                    else{
+                        this.noteTwo.text = '';
+                    }
+                    if(this.upgrades.length > 2) {
+                        this.noteThree.text = this.contracts[2].postName;
+                    }
+                    else{
+                        this.noteThree.text = '';
+                    }
+                    if(this.upgrades.length > 3) {
+                        this.noteFour.text = this.contracts[3].postName;
                     }
                     else{
                         this.noteFour.text = '';
@@ -466,6 +480,15 @@ class PlayMenu extends Phaser.Scene {
         this.ingThree.text = this.upgrades[element].infoTwo;
         this.ingFour.text = this.upgrades[element].infoThree;
     }
+    getContracts(element) {
+        console.log(element);
+        this.company.text = this.contracts[element].postName;
+        this.multiplier.text = this.contracts[element].infoName;
+        this.ingOne.text = this.contracts[element].multiplier;
+        this.ingTwo.text = this.contracts[element].infoOne;
+        this.ingThree.text = this.contracts[element].infoTwo;
+        this.ingFour.text = this.contracts[element].infoThree;
+    }
 
     makeContract() {
         this.percentOne = Math.ceil((Math.random() * 100) / 5) * 5;
@@ -482,21 +505,54 @@ class PlayMenu extends Phaser.Scene {
         }
         this.percentFour = 100 - this.percentOne - this.percentTwo - this.percentThree;
         console.log(this.percentOne, this.percentTwo, this.percentThree, this.percentFour);
+
+        //set company name
+        this.usedCompanies = [];
+        this.openCompanies = [];
+        this.currentCompany = '';
+        for(let i = 0; i < this.contracts.length; i++){
+            this.usedCompanies.push(this.contracts[i].postName);
+        }
+        for(let i = 0; i < this.companyNames.length; i++) {
+            if(!this.usedCompanies.includes(this.companyNames[i])) {
+                this.currentCompany = this.companyNames[i];
+                break;
+            }
+        }
+
+
+        // this.tempName = this.companyNames[0];
+        // for(i = 0; i < this.companyNames.length; i++) {
+        //     this.tempName = this.companyNames[i];
+        //     if(tempName == this.contracts[i].postName) {
+
+        //     }
+        // }
+
+        console.log(this.infoWriter);
+
         this.madeContract = {
-            postName: this.companyNames[1],
+            postName: this.currentCompany,
             infoName: 'An Offical Contract',
             multiplier: 1.0,
             priceTag: this.multiplier[2],
-            infoOne: 'With new deep pocket',
-            infoTwo: 'technology your bags are',
-            infoThree: 'bigger but the same size',
+            infoOne: '',
+            infoTwo: '',
+            infoThree: '',
             percentOne: this.percentOne,
             percentTwo: this.percentTwo,
             percentThree: this.percentThree,
             percentFour: this.percentFour
         }
+        
         this.contracts.push(this.madeContract);
         console.log(this.madeContract.postName);
+    }
+
+    ingPercents(percent, elem) {
+        this.infoWriter = percent.toString();
+        this.infoWriter = this.infoWriter.concat(' ', this.ingredients[0]);
+        return this.infoWriter
     }
 
 }
