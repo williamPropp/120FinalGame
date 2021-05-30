@@ -20,6 +20,8 @@ class Play extends Phaser.Scene {
         this.load.image('raisin', 'raisin.png');
         this.load.audio('dispense', 'dispenserNoise.mp3');
         this.load.audio('emptyDispenser', 'dispenserEmpty.mp3');
+        this.load.image('scale', 'scale.png');
+        this.load.image('files', 'files.png');
     }
 
     create() {
@@ -88,10 +90,10 @@ class Play extends Phaser.Scene {
         //Keep track of clickTarget globally
         this.clickTarget;
         
-        this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
+        this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xf0f0f0).setOrigin(0 ,0);
 
         //Menu
-        this.playMenu = this.add.rectangle(10, 100, 170, 100, 0x000000).setOrigin(0 ,0);
+        this.playMenu = this.add.image(10, 100, 'files').setOrigin(0 ,0);
         this.playMenu.setInteractive({
             useHandCursor: true
         });
@@ -129,7 +131,7 @@ class Play extends Phaser.Scene {
         this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
 
         this.inform = this.cache.json.get('bag_physics');
-        this.bag = this.matter.add.image(200, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
+        this.bag = this.matter.add.image(100, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
         //this.bag.setCollisionGroup(1);
         //this.bag.setDensity(.5);
         //this.bag.setBounce(.5);
@@ -142,20 +144,19 @@ class Play extends Phaser.Scene {
         // this.bagOut.setData('gravityEnabled','false');
         // this.bagIn.setData('gravityEnabled','false');
 
-        this.scale = this.add.rectangle(game.config.width - 120, 489, game.config.width/4, game.config.height/10, 0x808080).setOrigin(0 ,0);
+        this.scale = this.add.image(game.config.width - 120, 580, 'scale').setOrigin(0, 0);
         this.matter.add.gameObject(this.scale).setIgnoreGravity(true).setStatic(true);
-        this.scaleChart = this.add.rectangle(game.config.width - 225, 550, game.config.width/5, game.config.height/4, 0x808080).setOrigin(0 ,0);
         this.tube = this.add.rectangle(780, 0, 120, 330, 0xadd8e6).setOrigin(0 ,0);
         this.tracker = this.add.rectangle(725, 50, 225, 250, 0xC4A484).setOrigin(0 ,0);
 
         //Current Contract Info
         this.contractBg = this.add.rectangle(735, 60, 205, 230, 0xFFFFFF).setOrigin(0 ,0);
 
-        this.currentContract = this.add.text(840, 100, 'this.contractInfo[0]', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
-        this.ingOne = this.add.text(840, 140, 'this.contractInfo[1]', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingTwo = this.add.text(840, 180, 'this.contractInfo[2]', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingThree = this.add.text(840, 220, 'this.contractInfo[3]', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingFour = this.add.text(840, 260, 'this.contractInfo[4]', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.currentContract = this.add.text(840, 100, 'Motivation', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
+        this.ingOne = this.add.text(840, 140, 'Your life savings were', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingTwo = this.add.text(840, 180, 'spent opening this up.', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingThree = this.add.text(840, 220, 'It better have been', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingFour = this.add.text(840, 260, 'worth it...', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
 
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
@@ -206,11 +207,11 @@ class Play extends Phaser.Scene {
         //How many frames have elapsed since the start of the scene
         this.frameCount++;
 
-        this.currentContract.text = 'contractInfo[0]';
-        this.ingOne.text = 'contractInfo[1]';
-        this.ingTwo.text = 'contractInfo[2]';
-        this.ingThree.text = 'contractInfo[3]';
-        this.ingFour.text = 'contractInfo[4]';
+        // this.currentContract.text = 'contractInfo[0]';
+        // this.ingOne.text = 'contractInfo[1]';
+        // this.ingTwo.text = 'contractInfo[2]';
+        // this.ingThree.text = 'contractInfo[3]';
+        // this.ingFour.text = 'contractInfo[4]';
 
         if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0) {
             for(let d of this.dispenseButtons.getChildren()) {
@@ -266,7 +267,7 @@ class Play extends Phaser.Scene {
                 this.time.delayedCall(550, () => {
                     this.getCash(value);
                     this.ingHolder.clear(true, true);
-                    this.bag.setPosition(200, 400);
+                    this.bag.setPosition(100, 400);
                     this.priceCalculated = false;
                     this.lift = false;
                 });

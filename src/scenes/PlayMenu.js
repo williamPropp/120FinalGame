@@ -535,7 +535,7 @@ class PlayMenu extends Phaser.Scene {
             postName: this.currentCompany,
             infoName: 'An Offical Contract',
             multiplier: 1.0,
-            priceTag: this.multiplier[2],
+            multTag: this.multiplier[2],
             infoOne: '',
             infoTwo: '',
             infoThree: '',
@@ -547,12 +547,6 @@ class PlayMenu extends Phaser.Scene {
         
         this.contracts.push(this.madeContract);
         console.log(this.madeContract.postName);
-    }
-
-    ingPercents(percent, elem) {
-        this.infoWriter = percent.toString();
-        this.infoWriter = this.infoWriter.concat(' ', this.ingredients[0]);
-        return this.infoWriter
     }
 
 }
