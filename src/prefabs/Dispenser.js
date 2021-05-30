@@ -143,7 +143,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             }
 
             //Spawn Ingredient
-            spawnedIngredient = new Ingredient(this.scene, this.x, this.y + 200 + (Math.floor(Math.random()*50)), /*'circle'*/typeString, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
+            spawnedIngredient = new Ingredient(this.scene, this.x + (Math.floor(Math.random()*10) - 5), this.y + 200 + (Math.floor(Math.random()*50)), /*'circle'*/typeString, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
             
             this.scene.sound.play('dispense');
             this.numIngredients--;

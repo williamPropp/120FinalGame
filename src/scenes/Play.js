@@ -28,7 +28,7 @@ class Play extends Phaser.Scene {
         this.matter.world.setBounds(0, 0, 960, 720);
         this.matter.world.setGravity(0, 1); 
         this.frameCount = 0;
-        this.flowRate = 4; //How often in frames to spawn Ingredients
+        this.flowRate = 2; //How often in frames to spawn Ingredients
         this.money;
         this.binWeight = 1000; //How many grams of ingredients can fit in one dispenser
         this.lift = false; //for sell action
@@ -98,8 +98,8 @@ class Play extends Phaser.Scene {
         this.playMenu.setDataEnabled;
 
         
-        this.anims.create({ key: 'conveyorRight', frames: this.anims.generateFrameNumbers('conveyor', { start: 0, end: 2, first: 0}), frameRate: 12 });
-        this.anims.create({ key: 'conveyorLeft', frames: this.anims.generateFrameNumbers('conveyor', { start: 2, end: 0, first: 0}), frameRate: 12 });
+        this.anims.create({ key: 'conveyorLeft', frames: this.anims.generateFrameNumbers('conveyor', { start: 0, end: 2, first: 0}), frameRate: 12 });
+        this.anims.create({ key: 'conveyorRight', frames: this.anims.generateFrameNumbers('conveyor', { start: 2, end: 0, first: 0}), frameRate: 12 });
         // this.conveyor = this.matter.add.image(305, 500, 'conveyorBelt').setIgnoreGravity(true).setStatic(true);
         this.conveyorBelt = this.matter.add.image(305, 510, 'conveyor').setIgnoreGravity(true).setStatic(true);
 
@@ -264,7 +264,7 @@ class Play extends Phaser.Scene {
                 this.lift = true;
                 this.bag.setVelocity(0, -20);
                 this.time.delayedCall(550, () => {
-                    this.getCash(value);
+                    this.getCash((Number.isNaN(value) ? 0 : value));
                     this.ingHolder.clear(true, true);
                     this.bag.setPosition(200, 400);
                     this.priceCalculated = false;
@@ -381,7 +381,6 @@ class Play extends Phaser.Scene {
     }
 
     clickOff() {
-        //console.log('click over');
         this.spawnIngredientLoop = false;
     }
 
@@ -393,7 +392,11 @@ class Play extends Phaser.Scene {
 
     //Call this method when spending any amount of money
     spendCash(spent) {
-        this.money -= spent;
+        if(Number.isNaN(spent)) {
+            console.log('NaN passed to spendCash() in play scene')
+        } else {
+            this.money -= gained;
+        }
         this.money = this.money.toFixed(2);
         this.money = Number.parseFloat(this.money);
         this.moneyText.setText('Money: $'+ this.money);
@@ -402,6 +405,11 @@ class Play extends Phaser.Scene {
 
     //Call this method when gaining any amount of money
     getCash(gained) {
+        if(Number.isNaN(gained)) {
+            console.log('NaN passed to getCash() in play scene')
+        } else {
+            this.money += gained;
+        }
         this.money += gained;
         this.money = this.money.toFixed(2);
         this.money = Number.parseFloat(this.money);
@@ -412,7 +420,6 @@ class Play extends Phaser.Scene {
     //Calculate the weight of a bag
     calculateWeight(contents) {
         if(contents.length == 0) {
-            console.log('empty');
             return null;
         }
         let bagWeight = 0;
@@ -463,7 +470,6 @@ class Play extends Phaser.Scene {
             let filledMultiplier = 1;
             if(contents.length < 15) {
                 filledMultiplier = 0.1;
-                console.log("bag isn't filled enough");
             } else if(contents.length < 25) {
                 filledMultiplier = 0.5;
             }
