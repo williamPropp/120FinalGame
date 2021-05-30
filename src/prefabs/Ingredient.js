@@ -19,7 +19,7 @@ class Ingredient extends Phaser.Physics.Matter.Sprite {
         this.insideBag = false;
         this.bagQuery = true;
 
-        if(this.type != 'almond') {
+        if(this.type == 'm&m') {
             this.setTint(this.color);
         }
     }

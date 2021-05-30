@@ -131,9 +131,9 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         } else {
             //Select correct sprite to load for spawnIngredient
             if(this.ingredientType == 'peanut') {
-                typeString = 'circle'; // typeString = 'peanut';
+                typeString = 'peanut'; // typeString = 'peanut';
             } else if(this.ingredientType == 'raisin') {
-                typeString = 'circle'; // typeString = 'raisin';
+                typeString = 'raisin'; // typeString = 'raisin';
             } else if(this.ingredientType == 'm&m') {
                 // this.scene.load.image('m&m', './assets/m&m.png');
                 typeString = 'm&m';

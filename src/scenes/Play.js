@@ -16,6 +16,8 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('conveyor', 'conveyorSpritesheet.png', {frameWidth: 831, frameHeight: 123, startFrame: 0, endFrame: 2});
         this.load.image('m&m', 'm&m.png');
         this.load.image('almond', 'almond.png');
+        this.load.image('peanut', 'peanut.png');
+        this.load.image('raisin', 'raisin.png');
         this.load.audio('dispense', 'dispenserNoise.mp3');
         this.load.audio('emptyDispenser', 'dispenserEmpty.mp3');
     }
