@@ -54,6 +54,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.scene.refillButtons.add(this.refillButton);
         this.scene.dispenseButtons.add(this.dispenseButton); 
         this.scene.dispenserArray.push(this);
+        
 
         //Refill Meter
         this.refillMeterBacking = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x000000).setOrigin(0.5, 1);
