@@ -90,7 +90,7 @@ class PlayMenu extends Phaser.Scene {
         this.companyNames = ['Scam Co.', 'Capital Inc', 'Nuts TM', 'Rob Airy co', 'Small Mix Inc', 'Big Mix TM']
         this.multChanges = [0.7, 0.8, 0.9, 1.1, 1.2, 1.3]
         this.openIng = ['Peanuts', 'Raisins', 'M&Ms', 'Almonds']
-        this.percentages = []
+        this.ingredients = []
 
         //Text Configs
         this.upgradeConfig = { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#00000000', color: '#000000', align: 'center' };
@@ -369,6 +369,7 @@ class PlayMenu extends Phaser.Scene {
                 }
                 else if (this.currentTab == 'contracts') {
                     console.log('contracting!!')
+                    contractInfo = this.contracts[this.element];
                     this.contracts.splice(this.element, 1);
                     this.boldOne.text = 'A few Contracts';
                     this.boldTwo.text = 'came in the mail';
@@ -462,7 +463,6 @@ class PlayMenu extends Phaser.Scene {
                 break;
             }
         }
-        console.log(this.infoWriter);
         this.multi = this.multChanges[Math.floor(Math.random() * this.multChanges.length)]
         this.madeContract = {
             postName: this.currentCompany,
@@ -476,8 +476,10 @@ class PlayMenu extends Phaser.Scene {
             percentOne: this.percentOne,
             percentTwo: this.percentTwo,
             percentThree: this.percentThree,
-            percentFour: this.percentFour
+            percentFour: this.percentFour,
+            ammount: (Math.floor(Math.random() * 20) + 5).toString().concat(' Left')
         }
+        console.log('ammount: ' + this.madeContract.ammount);
         this.usedIng = []
         for (let i = 0; i < 4; i++) {
             this.ing = this.openIng[Math.floor(Math.random() * this.openIng.length)]

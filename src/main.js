@@ -32,7 +32,14 @@ let game = new Phaser.Game(config);
 let keySPACE, keyLEFT, keyRIGHT, keyESC;
 
 //lists of contracts and upgrades
-let contractInfo = ['Motivation','You invested all','your money in','this. Good luck', 'lol'];
+let contractInfo = {
+    postName: this.currentCompany,
+    infoOne: 'Your life savings were',
+    infoTwo: 'spent opening this up.',
+    infoThree: 'It better have been',
+    infoFour: 'worth it...',
+    ammount: 'Motivation'
+};
 // this.upgradesArray = [['dispenser I', 250], 
 //             ['dispenser II', 500], 
 //             ['bag 2x', 100], 
