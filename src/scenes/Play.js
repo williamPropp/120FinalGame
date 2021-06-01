@@ -152,11 +152,11 @@ class Play extends Phaser.Scene {
         //Current Contract Info
         this.contractBg = this.add.rectangle(735, 60, 205, 230, 0xFFFFFF).setOrigin(0 ,0);
 
-        this.currentContract = this.add.text(840, 100, 'Motivation', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
-        this.ingOne = this.add.text(840, 140, 'Your life savings were', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingTwo = this.add.text(840, 180, 'spent opening this up.', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingThree = this.add.text(840, 220, 'It better have been', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingFour = this.add.text(840, 260, 'worth it...', this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.currentContract = this.add.text(840, 100, contractInfo.ammount, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
+        this.ingOne = this.add.text(840, 140, contractInfo.infoOne, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingTwo = this.add.text(840, 180, contractInfo.infoTwo, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingThree = this.add.text(840, 220, contractInfo.infoThree, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingFour = this.add.text(840, 260, contractInfo.infoFour, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
 
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
@@ -184,7 +184,7 @@ class Play extends Phaser.Scene {
         // });
 
         //Add UI element to keep track on the player's money
-        this.moneyText = this.add.text(10, 20, 'Bank: $'+this.money, this.defaultTextConfig);
+        this.moneyText = this.add.text(10, 5, 'Bank: $'+this.money, this.defaultTextConfig);
         
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
             this.clickTarget = gameObject;
@@ -204,14 +204,17 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+
+        this.playMenu.alpha = 1;
+
         //How many frames have elapsed since the start of the scene
         this.frameCount++;
 
-        // this.currentContract.text = 'contractInfo[0]';
-        // this.ingOne.text = 'contractInfo[1]';
-        // this.ingTwo.text = 'contractInfo[2]';
-        // this.ingThree.text = 'contractInfo[3]';
-        // this.ingFour.text = 'contractInfo[4]';
+        this.currentContract.text = contractInfo.ammount;
+        this.ingOne.text = contractInfo.infoOne;
+        this.ingTwo.text = contractInfo.infoTwo;
+        this.ingThree.text = contractInfo.infoThree;
+        this.ingFour.text = contractInfo.infoFour;
 
         if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0) {
             for(let d of this.dispenseButtons.getChildren()) {
@@ -348,12 +351,14 @@ class Play extends Phaser.Scene {
         
         if(gObj == this.playMenu) {
             if(this.scene.isSleeping("playMenuScene")){
+                this.playMenu.alpha = 0;
                 this.scene.wake("playMenuScene");
             }
             else {
                 let sceneData = {
                     scene: this,
                 };
+                this.playMenu.alpha = 0;
                 this.scene.launch("playMenuScene", sceneData);
             }
             this.scene.pause('playScene');
@@ -400,7 +405,7 @@ class Play extends Phaser.Scene {
         }
         this.money = this.money.toFixed(2);
         this.money = Number.parseFloat(this.money);
-        this.moneyText.setText('Money: $'+ this.money);
+        this.moneyText.setText('Bank: $'+ this.money);
         localStorage.setItem('money', this.money);
     }
 
