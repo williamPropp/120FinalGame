@@ -7,14 +7,14 @@ let config = {
     physics: {
         default: 'matter',
         arcade: {
-            debug: true,
+            debug: false,
             gravity: {
                 x: 0.01,
                 y: 0
             }
         },
         matter: {
-            debug: true,
+            debug: false,
             gravity: { y: 10 },
             setBounds: {
                 left: true,

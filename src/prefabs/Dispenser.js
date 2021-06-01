@@ -19,6 +19,8 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.refillButton = this.scene.add.circle(this.x + 30, this.y + 150, 10, 0x0000FF).setOrigin(0.5,0.5);
         this.ingredientText = this.scene.add.text(this.x, this.y + 235, this.ingredientType + ((this.ingredientType == 'empty') ? '' : 's'), this.scene.defaultTextConfig).setOrigin(0.5,0.5);
         this.ingredientText.setScale(0.5);
+        this.priceText = this.scene.add.text(440, 265, 'init text', this.scene.defaultTextConfig).setScale(0.5).setOrigin(0.5,0.5);
+        this.priceText.setVisible(false);
 
         //Make dispenser and refill buttons interactable
         this.dispenseButton.setInteractive({
@@ -31,17 +33,23 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         });
         this.refillButton.on('pointerover',() => {
             let priceStr;
-            if(this.priceToRefill == null) {
-                priceStr = 'this dispenser is empty';
+            if(this.priceToRefill == 0) {
+                priceStr = 'this dispenser is full';
             } else {
-                priceStr = 'this item costs $' + this.priceToRefill + ' to refill';
+                priceStr = 'this dispenser costs $' + this.priceToRefill + ' to refill';
             }
 
-            let priceText = this.scene.add.text(440, 265, 'this item costs $' + this.priceToRefill + ' to refill', this.scene.defaultTextConfig).setScale(0.5).setOrigin(0.5,0.5);
+            this.priceText.setText(priceStr);
+            this.priceText.setVisible(true);
+            // let priceText = this.scene.add.text(440, 265, 'init text', this.scene.defaultTextConfig).setScale(0.5).setOrigin(0.5,0.5);
             // priceText.setScale(0.5);
-            this.scene.time.delayedCall(2000, () => {
-                priceText.destroy();
-            });
+            // this.scene.time.delayedCall(2000, () => {
+            //     priceText.destroy();
+            // });
+        });
+
+        this.refillButton.on('pointerout', () => {
+            this.priceText.setVisible(false);
         });
 
         //Add pointers to buttons as data so the prefab's data can be referenced when they're clicked
@@ -182,19 +190,28 @@ class Dispenser extends Phaser.GameObjects.Sprite {
 
     changeType(newType) {
         this.ingredientType = newType;
-        if(newType == 'peanut') {
-            // this.scene.load.image('peanut', './assets/peanut.png');
-            this.maxIngredients = this.scene.maxPeanuts;
-        } else if(newType == 'raisin') {
-            // this.scene.load.image('raisin', './assets/raisin.png');
-            this.maxIngredients = this.scene.maxRaisins;
-        } else if(newType == 'm&m') {
-            // this.scene.load.image('m&m', './assets/m&m.png');
-            this.maxIngredients = this.scene.maxMNMS;
-        } else if(newType == 'almond') {
-            // this.scene.load.image('almond', './assets/almond.png');
-            this.maxIngredients = this.scene.maxAlmonds;
-        }
+        let newWeight = this.getIngredientData(newType, 'weight');
+        let newPrice = this.getIngredientData(newType, 'price');
+
+        this.ingredientType = newType;
+        this.maxIngredients = Math.round(this.scene.binWeight / newWeight);
+        this.numIngredients = this.maxIngredients;
+        this.priceToRefill = newPrice * this.numIngredients;
+
+
+        // if(newType == 'peanut') {
+        //     this.scene.load.image('peanut', './assets/peanut.png');
+        //     this.maxIngredients = this.scene.maxPeanuts;
+        // } else if(newType == 'raisin') {
+        //     this.scene.load.image('raisin', './assets/raisin.png');
+        //     this.maxIngredients = this.scene.maxRaisins;
+        // } else if(newType == 'm&m') {
+        //     this.scene.load.image('m&m', './assets/m&m.png');
+        //     this.maxIngredients = this.scene.maxMNMS;
+        // } else if(newType == 'almond') {
+        //     this.scene.load.image('almond', './assets/almond.png');
+        //     this.maxIngredients = this.scene.maxAlmonds;
+        // }
     }
 
     getIngredientData(type, data) {

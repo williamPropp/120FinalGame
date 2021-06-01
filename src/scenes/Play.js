@@ -30,7 +30,7 @@ class Play extends Phaser.Scene {
         this.matter.world.setBounds(0, 0, 960, 720);
         this.matter.world.setGravity(0, 1); 
         this.frameCount = 0;
-        this.flowRate = 2; //How often in frames to spawn Ingredients
+        this.flowRate = 5; //How often in frames to spawn Ingredients
         this.money;
         this.binWeight = 1000; //How many grams of ingredients can fit in one dispenser
         this.lift = false; //for sell action
@@ -396,7 +396,7 @@ class Play extends Phaser.Scene {
         if(Number.isNaN(spent)) {
             console.log('NaN passed to spendCash() in play scene')
         } else {
-            this.money -= gained;
+            this.money -= spent;
         }
         this.money = this.money.toFixed(2);
         this.money = Number.parseFloat(this.money);
