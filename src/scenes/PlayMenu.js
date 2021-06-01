@@ -87,20 +87,22 @@ class PlayMenu extends Phaser.Scene {
         //Text Arrays
         this.intros = ['Welcome Young','Capitalist!','Use the tabs on the side','to navigate our files.','Click on sticky notes','to see more info!']
         this.contractInfo = ['Motivation','You invested all','your money in','this. Good luck', 'lol']
-        this.companyNames = ['Scam Co.', 'Capital Inc', 'Extore Shun TM', 'Rob Airy co', 'Incorporated Inc', 'Big Mix TM']
-        this.multChanges = ['x1.1', 'x1.2', 'x0.9']
-        this.ingredients = ['Peanuts', 'Raisins', 'M&Ms', 'Almonds']
+        this.companyNames = ['Scam Co.', 'Capital Inc', 'Nuts TM', 'Rob Airy co', 'Small Mix Inc', 'Big Mix TM']
+        this.multChanges = [0.7, 0.8, 0.9, 1.1, 1.2, 1.3]
+        this.openIng = ['Peanuts', 'Raisins', 'M&Ms', 'Almonds']
         this.percentages = []
 
-        //All Text
+        //Text Configs
         this.upgradeConfig = { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#00000000', color: '#000000', align: 'center' };
         this.nameConfig = { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#00000000', color: '#000000', align: 'center' };
         this.ingConfig = { fontFamily: 'Helvetica', fontSize: '30px', backgroundColor: '#00000000', color: '#000000', align: 'center' };
-        this.company  = this.add.text(game.config.width/1.37, game.config.height/4, this.intros[0], this.nameConfig).setOrigin(0.5,0.5);
-        this.multiplier = this.add.text(game.config.width/1.37, game.config.height/3, this.intros[1], this.nameConfig).setOrigin(0.5,0.5);
-        this.ingOne  = this.add.text(game.config.width/1.37, game.config.height/2.3, this.intros[2], this.ingConfig).setOrigin(0.5,0.5);
-        this.ingTwo  = this.add.text(game.config.width/1.37, game.config.height/1.95, this.intros[3], this.ingConfig).setOrigin(0.5,0.5);
-        this.ingThree  = this.add.text(game.config.width/1.37, game.config.height/1.7, this.intros[4], this.ingConfig).setOrigin(0.5,0.5);
+
+        //All Text
+        this.boldOne  = this.add.text(game.config.width/1.37, game.config.height/4, this.intros[0], this.nameConfig).setOrigin(0.5,0.5);
+        this.boldTwo = this.add.text(game.config.width/1.37, game.config.height/3, this.intros[1], this.nameConfig).setOrigin(0.5,0.5);
+        this.lineOne  = this.add.text(game.config.width/1.37, game.config.height/2.3, this.intros[2], this.ingConfig).setOrigin(0.5,0.5);
+        this.lineTwo  = this.add.text(game.config.width/1.37, game.config.height/1.95, this.intros[3], this.ingConfig).setOrigin(0.5,0.5);
+        this.lineThree  = this.add.text(game.config.width/1.37, game.config.height/1.7, this.intros[4], this.ingConfig).setOrigin(0.5,0.5);
         this.ingFour  = this.add.text(game.config.width/1.37, game.config.height/1.5, this.intros[5], this.ingConfig).setOrigin(0.5,0.5);
         this.noteOne  = this.add.text(game.config.width/4.5, game.config.height/6, '', this.upgradeConfig).setOrigin(0.5,0.5);
         this.noteTwo  = this.add.text(game.config.width/2.65, game.config.height/6, '', this.upgradeConfig).setOrigin(0.5,0.5);
@@ -193,11 +195,11 @@ class PlayMenu extends Phaser.Scene {
                     //i.setTint(0xFAF28C);
                     i.alpha = 0;
                 }
-                this.company.text = this.intros[0];
-                this.multiplier.text = this.intros[1];
-                this.ingOne.text = this.intros[2];
-                this.ingTwo.text = this.intros[3];
-                this.ingThree.text = this.intros[4];
+                this.boldOne.text = this.intros[0];
+                this.boldTwo.text = this.intros[1];
+                this.lineOne.text = this.intros[2];
+                this.lineTwo.text = this.intros[3];
+                this.lineThree.text = this.intros[4];
                 this.ingFour.text = this.intros[5];
 
             }
@@ -215,11 +217,11 @@ class PlayMenu extends Phaser.Scene {
                     i.text = this.upgrades[this.count].postName;
                     this.count++;
                 }
-                this.company.text = 'Time to Upgrade';
-                this.multiplier.text = 'your factory';
-                this.ingOne.text = 'Line your pockets';
-                this.ingTwo.text = 'with cash to buy';
-                this.ingThree.text = 'even more money!';
+                this.boldOne.text = 'Time to Upgrade';
+                this.boldTwo.text = 'your factory';
+                this.lineOne.text = 'Line your pockets';
+                this.lineTwo.text = 'with cash to buy';
+                this.lineThree.text = 'even more money!';
                 this.ingFour.text = 'No matter the price...';
 
             }
@@ -237,11 +239,11 @@ class PlayMenu extends Phaser.Scene {
                     i.text = this.contracts[this.count].postName;
                     this.count++;
                 }
-                this.company.text = 'A few Contracts';
-                this.multiplier.text = 'came in the mail';
-                this.ingOne.text = 'Sell the fruits of your';
-                this.ingTwo.text = 'labor up the ladder!';
-                this.ingThree.text = 'Ethical deals til';
+                this.boldOne.text = 'A few Contracts';
+                this.boldTwo.text = 'came in the mail';
+                this.lineOne.text = 'Sell the fruits of your';
+                this.lineTwo.text = 'labor up the ladder!';
+                this.lineThree.text = 'Ethical deals til';
                 this.ingFour.text = 'coprate gets their way';
             }
             if(gameObject == this.buyTab && this.clickAction == false) {
@@ -255,14 +257,14 @@ class PlayMenu extends Phaser.Scene {
                 this.count = 0;
                 for(let i of this.noteHolder.getChildren()){
                     i.alpha = 1;
-                    i.text = this.ingredients[this.count];
+                    i.text = this.openIng[this.count];
                     this.count++;
                 }
-                this.company.text = 'Restock at your';
-                this.multiplier.text = 'leisure';
-                this.ingOne.text = 'The finest ingrdients';
-                this.ingTwo.text = 'one can buy! ';
-                this.ingThree.text = 'Or at least for someone ';
+                this.boldOne.text = 'Restock at your';
+                this.boldTwo.text = 'leisure';
+                this.lineOne.text = 'The finest ingrdients';
+                this.lineTwo.text = 'one can buy! ';
+                this.lineThree.text = 'Or at least for someone ';
                 this.ingFour.text = 'with your budget!';
             }
 
@@ -270,31 +272,11 @@ class PlayMenu extends Phaser.Scene {
             if(gameObject == this.postIt && this.clickAction == false) {
                 this.element = 0;
                 this.signature.alpha = 1;
-                // this.company.text = this.companyNames[2];
-                // this.multiplier.text = this.multChanges[1];
-                // this.ingOne.text = this.ingredients[0];
-                // this.ingTwo.text = this.ingredients[1];
-                // this.ingThree.text = this.ingredients[2];
-                // this.ingFour.text = this.ingredients[3];
                 if (this.currentTab == 'upgrades') {
                     this.getUpgrades(this.element);
-                    // this.upgrades.shift();
-                    // console.log(this.upgrades);
-                    // this.noteOne.text = this.upgrades[0].postName;
-                    // this.noteTwo.text = this.upgrades[1].postName;
-                    // this.noteThree.text = this.upgrades[3].postName;
-                    // this.noteFour.text = this.upgrades[4].postName;
-                    // this.clickAction = true;
                 }
                 else if(this.currentTab == 'contracts'){
                     this.getContracts(this.element);
-                    // this.contracts.shift();
-                    // console.log(this.contracts);
-                    // this.noteOne.text = this.contracts[0].postName;
-                    // this.noteTwo.text = this.contracts[1].postName;
-                    // this.noteThree.text = this.contracts[2].postName;
-                    // this.noteFour.text = this.contracts[3].postName;
-                    // this.clickAction = true;
                 }
                 else if(this.currentTab == 'buy'){
                     this.clickAction = true;
@@ -305,21 +287,8 @@ class PlayMenu extends Phaser.Scene {
             if(gameObject == this.postItTwo && this.clickAction == false) {
                 this.element = 1;
                 this.signature.alpha = 1;
-                // this.company.text = this.companyNames[2];
-                // this.multiplier.text = this.multChanges[1];
-                // this.ingOne.text = this.ingredients[0];
-                // this.ingTwo.text = this.ingredients[1];
-                // this.ingThree.text = this.ingredients[2];
-                // this.ingFour.text = this.ingredients[3];
                 if (this.currentTab == 'upgrades') {
                     this.getUpgrades(this.element);
-                    // this.upgrades.shift();
-                    // console.log(this.upgrades);
-                    // this.noteOne.text = this.upgrades[0].postName;
-                    // this.noteTwo.text = this.upgrades[1].postName;
-                    // this.noteThree.text = this.upgrades[3].postName;
-                    // this.noteFour.text = this.upgrades[4].postName;
-                    // this.clickAction = true;
                 }
                 else if(this.currentTab == 'contracts'){
                     this.getContracts(this.element);
@@ -332,21 +301,8 @@ class PlayMenu extends Phaser.Scene {
             if(gameObject == this.postItThree && this.clickAction == false) {
                 this.element = 2;
                 this.signature.alpha = 1;
-                // this.company.text = this.companyNames[2];
-                // this.multiplier.text = this.multChanges[1];
-                // this.ingOne.text = this.ingredients[0];
-                // this.ingTwo.text = this.ingredients[1];
-                // this.ingThree.text = this.ingredients[2];
-                // this.ingFour.text = this.ingredients[3];
                 if (this.currentTab == 'upgrades') {
                     this.getUpgrades(this.element);
-                    // this.upgrades.shift();
-                    // console.log(this.upgrades);
-                    // this.noteOne.text = this.upgrades[0].postName;
-                    // this.noteTwo.text = this.upgrades[1].postName;
-                    // this.noteThree.text = this.upgrades[3].postName;
-                    // this.noteFour.text = this.upgrades[4].postName;
-                    // this.clickAction = true;
                 }
                 else if(this.currentTab == 'contracts'){
                     this.getContracts(this.element);
@@ -359,21 +315,8 @@ class PlayMenu extends Phaser.Scene {
             if(gameObject == this.postItFour && this.clickAction == false) {
                 this.element = 3;
                 this.signature.alpha = 1;
-                // this.company.text = this.companyNames[2];
-                // this.multiplier.text = this.multChanges[1];
-                // this.ingOne.text = this.ingredients[0];
-                // this.ingTwo.text = this.ingredients[1];
-                // this.ingThree.text = this.ingredients[2];
-                // this.ingFour.text = this.ingredients[3];
                 if (this.currentTab == 'upgrades') {
                     this.getUpgrades(this.element);
-                    // this.upgrades.shift();
-                    // console.log(this.upgrades);
-                    // this.noteOne.text = this.upgrades[0].postName;
-                    // this.noteTwo.text = this.upgrades[1].postName;
-                    // this.noteThree.text = this.upgrades[3].postName;
-                    // this.noteFour.text = this.upgrades[4].postName;
-                    // this.clickAction = true;
                 }
                 else if(this.currentTab == 'contracts'){
                     this.getContracts(this.element);
@@ -391,11 +334,11 @@ class PlayMenu extends Phaser.Scene {
                         this.scenePointer.money -= this.upgrades[this.element].cost;
                         console.log(this.scenePointer.money);
                         this.upgrades.splice(this.element, 1);
-                        this.company.text = 'Time to Upgrade';
-                        this.multiplier.text = 'your factory';
-                        this.ingOne.text = 'Line your pockets';
-                        this.ingTwo.text = 'with cash to buy';
-                        this.ingThree.text = 'even more money!';
+                        this.boldOne.text = 'Time to Upgrade';
+                        this.boldTwo.text = 'your factory';
+                        this.lineOne.text = 'Line your pockets';
+                        this.lineTwo.text = 'with cash to buy';
+                        this.lineThree.text = 'even more money!';
                         this.ingFour.text = 'No matter the price...';
                         this.signature.alpha = 0;
                     }
@@ -427,11 +370,11 @@ class PlayMenu extends Phaser.Scene {
                 else if (this.currentTab == 'contracts') {
                     console.log('contracting!!')
                     this.contracts.splice(this.element, 1);
-                    this.company.text = 'A few Contracts';
-                    this.multiplier.text = 'came in the mail';
-                    this.ingOne.text = 'Sell the fruits of your';
-                    this.ingTwo.text = 'labor up the ladder!';
-                    this.ingThree.text = 'Ethical deals til';
+                    this.boldOne.text = 'A few Contracts';
+                    this.boldTwo.text = 'came in the mail';
+                    this.lineOne.text = 'Sell the fruits of your';
+                    this.lineTwo.text = 'labor up the ladder!';
+                    this.lineThree.text = 'Ethical deals til';
                     this.ingFour.text = 'coprate gets their way';
                     this.signature.alpha = 0;
                     if(this.upgrades.length > 0) {
@@ -463,7 +406,7 @@ class PlayMenu extends Phaser.Scene {
             }
 
             this.clickAction = true;
-            this.contractInfo = ['Contract', this.ingOne._text, this.ingTwo._text, this.ingThree._text, this.ingFour._text]
+            this.contractInfo = ['Contract', this.lineOne._text, this.lineTwo._text, this.lineThree._text, this.ingFour._text]
         });
         this.input.on('gameobjectup', (pointer, gameObject, event) => {
             this.clickAction = false;
@@ -473,21 +416,21 @@ class PlayMenu extends Phaser.Scene {
 
     getUpgrades(element) {
         console.log(element);
-        this.company.text = this.upgrades[element].postName;
-        this.multiplier.text = this.upgrades[element].infoName;
-        this.ingOne.text = this.upgrades[element].priceTag;
-        this.ingTwo.text = this.upgrades[element].infoOne;
-        this.ingThree.text = this.upgrades[element].infoTwo;
+        this.boldOne.text = this.upgrades[element].postName;
+        this.boldTwo.text = this.upgrades[element].infoName;
+        this.lineOne.text = this.upgrades[element].priceTag;
+        this.lineTwo.text = this.upgrades[element].infoOne;
+        this.lineThree.text = this.upgrades[element].infoTwo;
         this.ingFour.text = this.upgrades[element].infoThree;
     }
     getContracts(element) {
         console.log(element);
-        this.company.text = this.contracts[element].postName;
-        this.multiplier.text = this.contracts[element].infoName;
-        this.ingOne.text = this.contracts[element].multiplier;
-        this.ingTwo.text = this.contracts[element].infoOne;
-        this.ingThree.text = this.contracts[element].infoTwo;
-        this.ingFour.text = this.contracts[element].infoThree;
+        this.boldOne.text = this.contracts[element].postName;
+        this.boldTwo.text = this.contracts[element].multiplier;
+        this.lineOne.text = this.contracts[element].infoOne;
+        this.lineTwo.text = this.contracts[element].infoTwo;
+        this.lineThree.text = this.contracts[element].infoThree;
+        this.ingFour.text = this.contracts[element].infoFour;
     }
 
     makeContract() {
@@ -519,32 +462,53 @@ class PlayMenu extends Phaser.Scene {
                 break;
             }
         }
-
-
-        // this.tempName = this.companyNames[0];
-        // for(i = 0; i < this.companyNames.length; i++) {
-        //     this.tempName = this.companyNames[i];
-        //     if(tempName == this.contracts[i].postName) {
-
-        //     }
-        // }
-
         console.log(this.infoWriter);
-
+        this.multi = this.multChanges[Math.floor(Math.random() * this.multChanges.length)]
         this.madeContract = {
             postName: this.currentCompany,
             infoName: 'An Offical Contract',
-            multiplier: 1.0,
-            multTag: this.multiplier[2],
+            multiplier: this.multi.toString().concat( ' Multiplier'),
+            multTag: this.multi,
             infoOne: '',
             infoTwo: '',
             infoThree: '',
+            infoFour: '',
             percentOne: this.percentOne,
             percentTwo: this.percentTwo,
             percentThree: this.percentThree,
             percentFour: this.percentFour
         }
-        
+        this.usedIng = []
+        for (let i = 0; i < 4; i++) {
+            this.ing = this.openIng[Math.floor(Math.random() * this.openIng.length)]
+            if(!this.usedIng.includes(this.ing)) {
+                if(this.madeContract.infoOne == '') {
+                    this.madeContract.infoOne = this.percentOne.toString().concat('% ', this.ing);
+                    this.usedIng.push(this.ing);
+                }
+                else if (this.madeContract.infoTwo == '') {
+                    this.madeContract.infoTwo = this.percentTwo.toString().concat('% ', this.ing);
+                    this.usedIng.push(this.ing);
+                }
+                else if(this.madeContract.infoTwo == '') {
+                    this.madeContract.infoTwo = this.percentTwo.toString().concat('% ', this.ing);
+                    this.usedIng.push(this.ing);
+                }
+                else if(this.madeContract.infoThree == '') {
+                    this.madeContract.infoThree = this.percentThree.toString().concat('% ', this.ing);
+                    this.usedIng.push(this.ing);
+                }
+                else if (this.madeContract.infoFour == ''){
+                    this.madeContract.infoFour = this.percentFour.toString().concat('% ', this.ing);
+                    this.usedIng.push(this.ing);
+                }
+            }
+            else {
+                i--;
+            }
+
+
+        }
         this.contracts.push(this.madeContract);
         console.log(this.madeContract.postName);
     }

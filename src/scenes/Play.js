@@ -184,7 +184,7 @@ class Play extends Phaser.Scene {
         // });
 
         //Add UI element to keep track on the player's money
-        this.moneyText = this.add.text(10, 20, 'Money: $'+this.money, this.defaultTextConfig);
+        this.moneyText = this.add.text(10, 20, 'Bank: $'+this.money, this.defaultTextConfig);
         
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
             this.clickTarget = gameObject;
