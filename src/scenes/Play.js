@@ -132,10 +132,17 @@ class Play extends Phaser.Scene {
         this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond'];
         this.dispenserArray = [];
 
-        this.peanutDispenser = new Dispenser(this, 250, 0, 'peanut');
-        this.raisinDispenser = new Dispenser(this, 370, 0, 'raisin');
-        this.MNMDispenser = new Dispenser(this, 490, 0, 'm&m');
-        this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
+        //Initialize player money based on previous gameplay
+        if(localStorage.getItem('dispenserArray') == null){
+            this.peanutDispenser = new Dispenser(this, 250, 0, 'peanut');
+            this.raisinDispenser = new Dispenser(this, 370, 0, 'raisin');
+            this.MNMDispenser = new Dispenser(this, 490, 0, 'm&m');
+            //this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
+        }
+        else{
+            //create dispensers from dispenser array
+        }
+                
 
         this.inform = this.cache.json.get('bag_physics');
         this.bag = this.matter.add.image(100, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });

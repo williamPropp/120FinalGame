@@ -74,62 +74,62 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.scene.load.audio('dispense', './assets/dispenserNoise.mp3');
         this.scene.load.audio('emptyDispenser', './assets/dispenserEmpty.mp3');
 
-        if(this.ingredientType == 'peanut'){
-            if(localStorage.getItem('heightPeanuts') == null){
-                localStorage.setItem('heightPeanuts', this.refillMeter.height);
-            }
-            else{
-                this.refillMeter.height = parseFloat(localStorage.getItem('heightPeanuts'));
-            }
-            if(localStorage.getItem('numPeanuts') == null){
-                localStorage.setItem('numPeanuts', this.numIngredients);
-            }
-            else{
-                this.numIngredients = parseInt(localStorage.getItem('numPeanuts'));
-            }
-        }
-        else if(this.ingredientType == 'raisin'){
-            if(localStorage.getItem('heightRaisins') == null){
-                localStorage.setItem('heightRaisins', this.refillMeter.height);
-            }
-            else{
-                this.refillMeter.height = parseFloat(localStorage.getItem('heightRaisins'));
-            }
-            if(localStorage.getItem('numRaisins') == null){
-                localStorage.setItem('numRaisins', this.numIngredients);
-            }
-            else{
-                this.numIngredients = parseInt(localStorage.getItem('numRaisins'));
-            }
-        }
-        else if(this.ingredientType == 'm&m'){
-            if(localStorage.getItem('heightM&Ms') == null){
-                localStorage.setItem('heightM&Ms', this.refillMeter.height);
-            }
-            else{
-                this.refillMeter.height = parseFloat(localStorage.getItem('heightM&Ms'));
-            }
-            if(localStorage.getItem('numM&Ms') == null){
-                localStorage.setItem('numM&Ms', this.numIngredients);
-            }
-            else{
-                this.numIngredients = parseInt(localStorage.getItem('numM&Ms'));
-            }
-        }
-        else if(this.ingredientType == 'almond'){
-            if(localStorage.getItem('heightAlmonds') == null){
-                localStorage.setItem('heightAlmonds', this.refillMeter.height);
-            }
-            else{
-                this.refillMeter.height = parseFloat(localStorage.getItem('heightAlmonds'));
-            }
-            if(localStorage.getItem('numAlmonds') == null){
-                localStorage.setItem('numAlmonds', this.numIngredients);
-            }
-            else{
-                this.numIngredients = parseInt(localStorage.getItem('numAlmonds'));
-            }
-        }
+    //     if(this.ingredientType == 'peanut'){
+    //         if(localStorage.getItem('heightPeanuts') == null){
+    //             localStorage.setItem('heightPeanuts', this.refillMeter.height);
+    //         }
+    //         else{
+    //             this.refillMeter.height = parseFloat(localStorage.getItem('heightPeanuts'));
+    //         }
+    //         if(localStorage.getItem('numPeanuts') == null){
+    //             localStorage.setItem('numPeanuts', this.numIngredients);
+    //         }
+    //         else{
+    //             this.numIngredients = parseInt(localStorage.getItem('numPeanuts'));
+    //         }
+    //     }
+    //     else if(this.ingredientType == 'raisin'){
+    //         if(localStorage.getItem('heightRaisins') == null){
+    //             localStorage.setItem('heightRaisins', this.refillMeter.height);
+    //         }
+    //         else{
+    //             this.refillMeter.height = parseFloat(localStorage.getItem('heightRaisins'));
+    //         }
+    //         if(localStorage.getItem('numRaisins') == null){
+    //             localStorage.setItem('numRaisins', this.numIngredients);
+    //         }
+    //         else{
+    //             this.numIngredients = parseInt(localStorage.getItem('numRaisins'));
+    //         }
+    //     }
+    //     else if(this.ingredientType == 'm&m'){
+    //         if(localStorage.getItem('heightM&Ms') == null){
+    //             localStorage.setItem('heightM&Ms', this.refillMeter.height);
+    //         }
+    //         else{
+    //             this.refillMeter.height = parseFloat(localStorage.getItem('heightM&Ms'));
+    //         }
+    //         if(localStorage.getItem('numM&Ms') == null){
+    //             localStorage.setItem('numM&Ms', this.numIngredients);
+    //         }
+    //         else{
+    //             this.numIngredients = parseInt(localStorage.getItem('numM&Ms'));
+    //         }
+    //     }
+    //     else if(this.ingredientType == 'almond'){
+    //         if(localStorage.getItem('heightAlmonds') == null){
+    //             localStorage.setItem('heightAlmonds', this.refillMeter.height);
+    //         }
+    //         else{
+    //             this.refillMeter.height = parseFloat(localStorage.getItem('heightAlmonds'));
+    //         }
+    //         if(localStorage.getItem('numAlmonds') == null){
+    //             localStorage.setItem('numAlmonds', this.numIngredients);
+    //         }
+    //         else{
+    //             this.numIngredients = parseInt(localStorage.getItem('numAlmonds'));
+    //         }
+    //     }
         
     }
 
