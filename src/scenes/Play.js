@@ -14,6 +14,7 @@ class Play extends Phaser.Scene {
         this.load.atlas('bag_info', 'bag.png', 'bagIcon.json');
         this.load.json('bag_physics', 'bag.json');
         this.load.spritesheet('conveyor', 'conveyorSpritesheet.png', {frameWidth: 831, frameHeight: 123, startFrame: 0, endFrame: 2});
+        this.load.image('bg', 'FactoryBG.png');
         this.load.image('m&m', 'm&m.png');
         this.load.image('almond', 'almond.png');
         this.load.image('peanut', 'peanut.png');
@@ -82,18 +83,21 @@ class Play extends Phaser.Scene {
         //Add music to the scene
         this.soundtrack = this.sound.add('soundtrack', {
             volume: 0.5,
-            //rate: 0.9,
+            // rate: 0.9,
             loop: true,
         });
         this.soundtrack.play();
 
         //Text configs
         this.defaultTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
+        this.whiteTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#00000033', color: '#FFFFFF', align: 'center'};
 
         //Keep track of clickTarget globally
         this.clickTarget;
         
-        this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xf0f0f0).setOrigin(0 ,0);
+        //Draw Background
+        this.bg = this.add.tileSprite(0, 0, screenWidth, game.config.height, 'bg').setOrigin(0 ,0);
+        // this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xf0f0f0).setOrigin(0 ,0);
 
         //Menu
         this.playMenu = this.add.image(10, 100, 'files').setOrigin(0 ,0);
@@ -191,8 +195,9 @@ class Play extends Phaser.Scene {
         // });
 
         //Add UI element to keep track on the player's money
-        this.moneyText = this.add.text(10, 5, 'Bank: $'+this.money, this.defaultTextConfig);
-        
+        // this.moneyText = this.add.text(10, 5, 'Bank: $'+this.money, this.whiteTextConfig);
+        this.moneyText = this.add.text(10, 5, 'Bank: $'+this.money, this.whiteTextConfig);
+
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
             this.clickTarget = gameObject;
             this.clickOn(gameObject);
