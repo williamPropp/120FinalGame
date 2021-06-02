@@ -5,6 +5,7 @@ class Ingredient extends Phaser.Physics.Matter.Sprite {
         //Add object to existing scene
         scene.add.existing(this);
         this.type = type;
+        this.scene = scene;
 
         //this.setCollisionGroup(1);
         //this.setDensity(.2); 
@@ -18,6 +19,8 @@ class Ingredient extends Phaser.Physics.Matter.Sprite {
         //Bag booleans
         this.insideBag = false;
         this.bagQuery = true;
+
+        this.scene.ingLayer.add([this]);
 
         if(this.type == 'm&m') {
             this.setTint(this.color);

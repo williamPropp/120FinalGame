@@ -19,7 +19,10 @@ class Play extends Phaser.Scene {
         this.load.image('peanut', 'peanut.png');
         this.load.image('raisin', 'raisin.png');
         this.load.audio('dispense', 'dispenserNoise.mp3');
+        this.load.audio('soundtrack', 'PlayTrack.mp3');
         this.load.audio('emptyDispenser', 'dispenserEmpty.mp3');
+        this.load.audio('shortHydraulic', 'hydraulic.mp3');
+        this.load.audio('tubeSuction', 'suction.mp3');
         this.load.image('scale', 'scale.png');
         this.load.image('files', 'files.png');
     }
@@ -77,12 +80,12 @@ class Play extends Phaser.Scene {
         this.contractEnabled = false;
 
         //Add music to the scene
-        // this.soundtrack = this.sound.add('soundtrack', {
-        //     volume: 0.3,
-        //     //rate: 0.9,
-        //     loop: true,
-        // });
-        // this.soundtrack.play();
+        this.soundtrack = this.sound.add('soundtrack', {
+            volume: 0.5,
+            //rate: 0.9,
+            loop: true,
+        });
+        this.soundtrack.play();
 
         //Text configs
         this.defaultTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
@@ -99,11 +102,15 @@ class Play extends Phaser.Scene {
         });
         this.playMenu.setDataEnabled;
 
-        
+        //Make conveyor belt
         this.anims.create({ key: 'conveyorLeft', frames: this.anims.generateFrameNumbers('conveyor', { start: 0, end: 2, first: 0}), frameRate: 12 });
         this.anims.create({ key: 'conveyorRight', frames: this.anims.generateFrameNumbers('conveyor', { start: 2, end: 0, first: 0}), frameRate: 12 });
-        // this.conveyor = this.matter.add.image(305, 500, 'conveyorBelt').setIgnoreGravity(true).setStatic(true);
         this.conveyorBelt = this.matter.add.image(305, 510, 'conveyor').setIgnoreGravity(true).setStatic(true);
+
+        //Make Render Layers
+        this.ingLayer = this.add.layer();
+        this.dispenserLayer = this.add.layer();
+        //this.ingLayer.add([this.player]);
 
         this.ingredients = this.matter.add.sprite({
             classType: Phaser.Physics.Matter.Sprite,
@@ -260,12 +267,15 @@ class Play extends Phaser.Scene {
                     });
                 }
             }
+            //Play suction sound
+            this.sound.play('tubeSuction');
 
             //After the player gets a chance to read everything, reset bag and ingredients
             this.time.delayedCall(2000, () => {
                 weightText.destroy();
                 valueText.destroy();
                 this.lift = true;
+                
                 this.bag.setVelocity(0, -20);
                 this.time.delayedCall(550, () => {
                     this.getCash((Number.isNaN(value) ? 0 : value));
@@ -276,7 +286,6 @@ class Play extends Phaser.Scene {
                 });
                 for(let i of this.ingHolder.getChildren()){
                     if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                        // console.log("left called");
                         i.setVelocity(0,-20);
                     }
                 }
@@ -291,6 +300,7 @@ class Play extends Phaser.Scene {
                     i.setVelocity(7,0)
                 }
             }
+            this.sound.play('shortHydraulic');
             this.bag.setVelocity(7, 0);
             let conveyorAnim = this.add.sprite(305, 510, 'conveyor');
             conveyorAnim.anims.play('conveyorRight');
@@ -301,6 +311,7 @@ class Play extends Phaser.Scene {
 
         //Move the bag left
         if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.sound.play('shortHydraulic');
             this.bag.setVelocity(-7, 0);
             let conveyorAnim = this.add.sprite(305, 510, 'conveyor');
             conveyorAnim.anims.play('conveyorLeft');
@@ -579,7 +590,7 @@ class Play extends Phaser.Scene {
 
     //Call when the user doesn't have enough cash to cover an ingredient refill transaction
     insufficientFunds(price) {
-        let insFundText = this.add.text(game.config.width/2-50, game.config.height/2-100, 'You do not have enough funds, you need $' + price + ' to purchase', this.defaultTextConfig).setOrigin(0.5,0.5);
+        let insFundText = this.add.text(game.config.width/2-50, game.config.height/2-75, 'You do not have enough funds, you need $' + price + ' to purchase', this.defaultTextConfig).setOrigin(0.5,0.5);
         insFundText.setScale(0.4);
         this.time.delayedCall(2000, () => {
             insFundText.destroy();

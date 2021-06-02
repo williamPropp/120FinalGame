@@ -22,6 +22,8 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.priceText = this.scene.add.text(440, 265, 'init text', this.scene.defaultTextConfig).setScale(0.5).setOrigin(0.5,0.5);
         this.priceText.setVisible(false);
 
+        this.scene.dispenserLayer.add([this]);
+
         //Make dispenser and refill buttons interactable
         this.dispenseButton.setInteractive({
             draggable: false,
