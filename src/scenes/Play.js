@@ -350,6 +350,7 @@ class Play extends Phaser.Scene {
 
         //Go back to menu when you press ESC
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
+            this.soundtrack.stop();
             this.scene.start("menuScene");
         }
 
