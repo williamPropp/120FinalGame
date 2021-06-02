@@ -29,7 +29,7 @@ let config = {
 
 let game = new Phaser.Game(config);
 
-let keySPACE, keyLEFT, keyRIGHT, keyESC;
+let keySPACE, keyLEFT, keyRIGHT, keyESC, keyD;
 
 //lists of contracts and upgrades
 let contractInfo = {

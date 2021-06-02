@@ -9,6 +9,7 @@ class Play extends Phaser.Scene {
         this.load.path = './assets/';
         this.load.image('circle', 'circle.png');
         this.load.image('contract', 'Contract.png');
+        this.load.image('bg', 'FactoryBG.png');
         this.load.image('wall', 'bagWall.png');
         this.load.image('base', 'bagBase.png');
         this.load.atlas('bag_info', 'bag.png', 'bagIcon.json');
@@ -48,7 +49,7 @@ class Play extends Phaser.Scene {
         }
         
         //Initialize Upgrade Array
-        this.upgradesArray = [['dispenser I', 250], 
+        this.upgradesArray = [['dispenser I', 20], 
             ['dispenser II', 500], 
             ['bag 2x', 100], 
             ['bag 4x', 1000], 
@@ -82,7 +83,7 @@ class Play extends Phaser.Scene {
         //Add music to the scene
         this.soundtrack = this.sound.add('soundtrack', {
             volume: 0.5,
-            //rate: 0.9,
+            rate: 0.9,
             loop: true,
         });
         this.soundtrack.play();
@@ -93,7 +94,8 @@ class Play extends Phaser.Scene {
         //Keep track of clickTarget globally
         this.clickTarget;
         
-        this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xf0f0f0).setOrigin(0 ,0);
+        // this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xf0f0f0).setOrigin(0 ,0);
+        this.bg = this.add.tileSprite(0, 0, screenWidth, game.config.height, 'bg').setOrigin(0 ,0);
 
         //Menu
         this.playMenu = this.add.image(10, 100, 'files').setOrigin(0 ,0);
@@ -132,15 +134,28 @@ class Play extends Phaser.Scene {
         this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond'];
         this.dispenserArray = [];
 
-        //Initialize player money based on previous gameplay
+        // this.peanutDispenser = new Dispenser(this, 250, 0, 'peanut');
+        // this.raisinDispenser = new Dispenser(this, 370, 0, 'raisin');
+        // this.MNMDispenser = new Dispenser(this, 490, 0, 'm&m');
+        // this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
+
+        // Initialize dispensers
         if(localStorage.getItem('dispenserArray') == null){
-            this.peanutDispenser = new Dispenser(this, 250, 0, 'peanut');
-            this.raisinDispenser = new Dispenser(this, 370, 0, 'raisin');
-            this.MNMDispenser = new Dispenser(this, 490, 0, 'm&m');
-            //this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
-        }
-        else{
+            this.dispenser1 = new Dispenser(this, 250, 0, 'peanut');
+            this.dispenser2 = new Dispenser(this, 370, 0, 'raisin');
+            this.dispenser3 = new Dispenser(this, 490, 0, 'm&m');
+            //this.dispenser4 = new Dispenser(this, 610, 0, 'almond'); //Maybe cut
+        } else {
             //create dispensers from dispenser array
+            // this.dispenserArray = localStorage.getItem('dispenserArray');
+            let jsonArray = this.parseJSONString('dispenserArray');
+            for(let d of jsonArray) {
+                let loadedDisp = new Dispenser(this, d.x, d.y, d.ingredientType);
+                loadedDisp.maxIngredients = d.maxIngredients;
+                loadedDisp.numIngredients = d.numIngredients;
+                loadedDisp.priceToRefill = d.priceToRefill;
+                loadedDisp.refillMeter.height = d.refillHeight;
+            }
         }
                 
 
@@ -206,7 +221,7 @@ class Play extends Phaser.Scene {
         });
         this.input.on('gameobjectup', (pointer, gameObject, event) => {
             this.clickTarget = null;
-            this.clickOff();
+            this.clickOff(gameObject);
         });
 
         //Define keys
@@ -214,6 +229,7 @@ class Play extends Phaser.Scene {
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     }
 
@@ -334,6 +350,10 @@ class Play extends Phaser.Scene {
             }
         }
 
+        if(Phaser.Input.Keyboard.JustDown(keyD)) {
+            this.buyUpgrades('dispenser I');
+        }
+
             // for(let i of this.ingredients.getChildren()){
             //     if(this.container.body.hitTest(i.x,i.y) == true) {
             //         i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
@@ -386,6 +406,7 @@ class Play extends Phaser.Scene {
         for(let b of this.dispenseButtons.getChildren()) {
             if(gObj == b) {
                 this.spawnIngredientLoop = true;
+
             }
         }
 
@@ -405,8 +426,28 @@ class Play extends Phaser.Scene {
         }
     }
 
-    clickOff() {
+    clickOff(gObj) {
         this.spawnIngredientLoop = false;
+
+        let updateLocal = false;
+        for(let b of this.dispenseButtons.getChildren()) {
+            if(gObj == b) {
+                updateLocal = true;
+            }
+        }
+        if(!updateLocal) {
+            for(let r of this.refillButtons.getChildren()) {
+                if(gObj == r) {
+                    updateLocal = true;
+                }
+            }
+        } else {
+            //Update localStorage values
+            let dispPrefab = gObj.getData('prefab');
+            let replacementJSON = dispPrefab.getDispenserData();
+            // newLocalJSON = JSON.stringify(newLocalJSON);
+            this.replaceJSONString('dispenserArray', dispPrefab.dispenserIndex, replacementJSON);
+        }
     }
 
     //Calculates money made from selling trail mix bag
@@ -569,8 +610,10 @@ class Play extends Phaser.Scene {
                     this.spendCash(price);
                     if(upgradeStr == 'dispenser I') {
                         // this.createDispenser(x, y); add x and y when ready
+                        /*let newDisp =*/ new Dispenser(this, 610, 0, 'empty');
                     } else if(upgradeStr == 'dispenser II') {
                         // this.createDispenser(x, y); add x and y when ready
+                        /*let newDisp = */new Dispenser(this, 730, 0, 'empty');
                     } else if(upgradeStr == 'bag 2x') {
                         this.bagMultiplier = 2;
                     } else if(upgradeStr == 'bag 4x') {
@@ -605,9 +648,57 @@ class Play extends Phaser.Scene {
         });
     }
 
- //   createDispenser(x, y, initType) {
- //       let newDispenser = new Dispenser(this, x, y, (initType == null) ? 'empty' : initType);
- //       return newDispenser;
- //   }
+    parseJSONString(localAddress, index) {
+        let jsonStr = localStorage.getItem(localAddress);
+        let jsonStrArray = jsonStr.split("\n");
+        if(index == null) {
+            let jsonArray = [];
+            for(let j of jsonStrArray) {
+                jsonArray.push(JSON.parse(j));
+            }
+            return jsonArray;
+        } else {
+            // console.log('jsonStrArray =' + jsonStrArray)
+            // console.log('jsonStrArray[index] = ' + jsonStrArray[index]);
+            // console.log('index = ' + index);
+            if(typeof(jsonStrArray) == 'string') {
+                return (JSON.parse(jsonStrArray));
+            } else if(typeof(jsonStrArray) == 'object') {
+                let jsonObj = jsonStrArray[index];
+                // console.log('jsonObj = ' + jsonObj)
+                return (JSON.parse(jsonObj));
+            }
+        }
+    }
+
+    replaceJSONString(localAddress, index, replacementObj) {
+        let jsonStr = localStorage.getItem(localAddress);
+        console.log('jsonStr : ' + jsonStr);
+        let jsonStrArray = jsonStr.split("\n");
+        // console.log('jsonStr type : ' + typeof(jsonStr));
+        // console.log('jsonStrArray type : ' + typeof(jsonStrArray));
+        console.log(index);
+        console.log('replacementObj type : ' + typeof(replacementObj));
+        console.log('jsonStrArray value : ' + jsonStrArray);
+        let replacementStr = /*((index == 0) ? '' : '\n') +*/ JSON.stringify(replacementObj);
+        console.log('replacementStr : ' + replacementStr);
+        jsonStrArray[index] = replacementStr;
+        // let stringOutput = JSON.stringify(jsonStrArray[0]);
+        let stringOutput = jsonStrArray[0];
+        jsonStrArray.splice(0,1);
+        if(jsonStrArray.length > 0) {
+            for(let s of jsonStrArray) {
+                stringOutput += '\n' + JSON.stringify(s);
+            }
+        }
+        localStorage.setItem(localAddress, stringOutput);
+        console.log('localStorage changed? ' + localStorage.getItem(localAddress));
+        // return stringOutput;
+    }
+
+//    createDispenser(x, y, initType) {
+//        let newDispenser = new Dispenser(this, x, y, (initType == null) ? 'empty' : initType);
+//        return newDispenser;
+//    }
 
 }

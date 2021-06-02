@@ -1,18 +1,56 @@
 class Dispenser extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, /*texture, */type) {
-        super(scene, x, y, /*texture, */type);
+    constructor(scene, x, y, /*texture, */type, index) {
+        super(scene, x, y, /*texture, */type, index);
 
         //Add object to existing scene
         scene.add.existing(this);
         
         //Dispenser data
         this.scene = scene;
-        // this.dispenserIndex; //Implement later (local storage list of dispensers as multidimensional array)
+        this.x = x;
+        this.y = y;
         this.ingredientType = (type == null) ? 'empty' : type;
-        this.maxIngredients = (this.ingredientType == 'empty') ? null : (Math.round(this.scene.binWeight / this.getIngredientData(this.ingredientType, 'weight')));
-        this.numIngredients = this.maxIngredients;
-        this.priceToRefill = (this.ingredientType == 'empty') ? null : 0;
 
+        this.scene.dispenserArray.push(this);
+        
+        console.log(this.scene.dispenserArray);
+        console.log(this.scene.dispenserArray.length - 1);
+        this.dispenserIndex = this.scene.dispenserArray.length - 1;
+
+        // if(localStorage.getItem('dispenserArray') == null) {
+        //     console.log('empty dispenser array');
+        // } else {
+        //     console.log('huh : ' + this.scene.parseJSONString('dispenserArray').length /*< this.dispenserIndex*/);
+        //     console.log('what');
+        // }
+
+        if(localStorage.getItem('dispenserArray') == null) {
+            this.initializeDispenser();
+
+            // this.maxIngredients = (this.ingredientType == 'empty') ? null : (Math.round(this.scene.binWeight / this.getIngredientData(this.ingredientType, 'weight')));
+            // this.numIngredients = this.maxIngredients;
+            // this.priceToRefill = (this.ingredientType == 'empty') ? null : 0;
+            // this.refillHeight = (this.ingredientType == 'empty') ? 0 : 75;
+        } else if((this.scene.parseJSONString('dispenserArray').length - 1) < this.dispenserIndex){
+            this.initializeDispenser();
+
+            // this.maxIngredients = (this.ingredientType == 'empty') ? null : (Math.round(this.scene.binWeight / this.getIngredientData(this.ingredientType, 'weight')));
+            // this.numIngredients = this.maxIngredients;
+            // this.priceToRefill = (this.ingredientType == 'empty') ? null : 0;
+            // this.refillHeight = (this.ingredientType == 'empty') ? 0 : 75;
+
+        } else {
+            let loadedDispData = this.scene.parseJSONString('dispenserArray', this.dispenserIndex);
+            this.maxIngredients = loadedDispData.maxIngredients;
+            this.numIngredients = loadedDispData.numIngredients;
+            this.priceToRefill = loadedDispData.priceToRefill;
+            this.refillHeight = loadedDispData.refillHeight;
+            console.log('MaxIng = ' + loadedDispData.maxIngredients);
+            console.log('NumIng = ' + loadedDispData.numIngredients);
+            console.log('PriceToRefill = ' + loadedDispData.priceToRefill);
+            console.log('refillHeight = ' + loadedDispData.refillHeight);
+        }
+        
         //Dispenser components
         this.dispenserFrame = this.scene.add.rectangle(this.x, this.y, 100, 250, 0xD3D3D3).setOrigin(0.5, 0);
         this.dispenseButton = this.scene.add.circle(this.x, this.y + 200, 25, 0xFF0000).setOrigin(0.5,0.5);
@@ -21,6 +59,8 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.ingredientText.setScale(0.5);
         this.priceText = this.scene.add.text(440, 265, 'init text', this.scene.defaultTextConfig).setScale(0.5).setOrigin(0.5,0.5);
         this.priceText.setVisible(false);
+        this.refillMeterBacking = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x000000).setOrigin(0.5, 1);
+        this.refillMeter = this.scene.add.rectangle(this.x, this.y + 150, 25, this.refillHeight, 0x00FF00).setOrigin(0.5, 1);;
 
         this.scene.dispenserLayer.add([this]);
 
@@ -63,74 +103,28 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         //Add components to respective groups
         this.scene.refillButtons.add(this.refillButton);
         this.scene.dispenseButtons.add(this.dispenseButton); 
-        this.scene.dispenserArray.push(this);
+
+        // this.scene.dispenserArray.push(this);
+        // this.dispenserIndex = this.scene.dispenserArray.length - 1;
+
+        if(localStorage.getItem('dispenserArray') == null) {
+            localStorage.setItem('dispenserArray', JSON.stringify(this.getDispenserData()));
+        } else {
+            let dispArrayString = localStorage.getItem('dispenserArray');
+            console.log('getDispData : ' + JSON.stringify(this.getDispenserData()));
+            console.log('getDispData type: ' + typeof(JSON.stringify(this.getDispenserData())));
+            dispArrayString += ('\n') + JSON.stringify(this.getDispenserData());
+            console.log('dispArrayString : ' + dispArrayString);
+            localStorage.setItem('dispenserArray', dispArrayString);
+        }
         
+    }
 
-        //Refill Meter
-        this.refillMeterBacking = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x000000).setOrigin(0.5, 1);
-        this.refillMeter = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
-
-        //Load Audio
-        this.scene.load.audio('dispense', './assets/dispenserNoise.mp3');
-        this.scene.load.audio('emptyDispenser', './assets/dispenserEmpty.mp3');
-
-    //     if(this.ingredientType == 'peanut'){
-    //         if(localStorage.getItem('heightPeanuts') == null){
-    //             localStorage.setItem('heightPeanuts', this.refillMeter.height);
-    //         }
-    //         else{
-    //             this.refillMeter.height = parseFloat(localStorage.getItem('heightPeanuts'));
-    //         }
-    //         if(localStorage.getItem('numPeanuts') == null){
-    //             localStorage.setItem('numPeanuts', this.numIngredients);
-    //         }
-    //         else{
-    //             this.numIngredients = parseInt(localStorage.getItem('numPeanuts'));
-    //         }
-    //     }
-    //     else if(this.ingredientType == 'raisin'){
-    //         if(localStorage.getItem('heightRaisins') == null){
-    //             localStorage.setItem('heightRaisins', this.refillMeter.height);
-    //         }
-    //         else{
-    //             this.refillMeter.height = parseFloat(localStorage.getItem('heightRaisins'));
-    //         }
-    //         if(localStorage.getItem('numRaisins') == null){
-    //             localStorage.setItem('numRaisins', this.numIngredients);
-    //         }
-    //         else{
-    //             this.numIngredients = parseInt(localStorage.getItem('numRaisins'));
-    //         }
-    //     }
-    //     else if(this.ingredientType == 'm&m'){
-    //         if(localStorage.getItem('heightM&Ms') == null){
-    //             localStorage.setItem('heightM&Ms', this.refillMeter.height);
-    //         }
-    //         else{
-    //             this.refillMeter.height = parseFloat(localStorage.getItem('heightM&Ms'));
-    //         }
-    //         if(localStorage.getItem('numM&Ms') == null){
-    //             localStorage.setItem('numM&Ms', this.numIngredients);
-    //         }
-    //         else{
-    //             this.numIngredients = parseInt(localStorage.getItem('numM&Ms'));
-    //         }
-    //     }
-    //     else if(this.ingredientType == 'almond'){
-    //         if(localStorage.getItem('heightAlmonds') == null){
-    //             localStorage.setItem('heightAlmonds', this.refillMeter.height);
-    //         }
-    //         else{
-    //             this.refillMeter.height = parseFloat(localStorage.getItem('heightAlmonds'));
-    //         }
-    //         if(localStorage.getItem('numAlmonds') == null){
-    //             localStorage.setItem('numAlmonds', this.numIngredients);
-    //         }
-    //         else{
-    //             this.numIngredients = parseInt(localStorage.getItem('numAlmonds'));
-    //         }
-    //     }
-        
+    initializeDispenser() {
+        this.maxIngredients = (this.ingredientType == 'empty') ? null : (Math.round(this.scene.binWeight / this.getIngredientData(this.ingredientType, 'weight')));
+        this.numIngredients = this.maxIngredients;
+        this.priceToRefill = (this.ingredientType == 'empty') ? null : 0;
+        this.refillHeight = (this.ingredientType == 'empty') ? 0 : 75;
     }
 
     spawnIngredient() {
@@ -173,24 +167,25 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             this.priceToRefill = Math.ceil(Math.abs(this.numIngredients - this.maxIngredients) * spawnedIngredient.price); //Update priceToRefill
             this.refillMeter.height = (this.numIngredients / this.maxIngredients) * 75; //Update refillMeter
 
-            if(this.ingredientType == 'peanut') {
-                localStorage.setItem('numPeanuts',this.numIngredients)
-                localStorage.setItem('heightPeanuts', this.refillMeter.height);
-            } 
-            else if(this.ingredientType == 'raisin') {
-                localStorage.setItem('numRaisins',this.numIngredients);
-                localStorage.setItem('heightRaisins', this.refillMeter.height);
-            } 
-            else if(this.ingredientType == 'm&m') {
-                localStorage.setItem('numM&Ms',this.numIngredients);
-                localStorage.setItem('heightM&Ms', this.refillMeter.height);
-            } 
-            else if(this.ingredientType == 'almond') {
-                localStorage.setItem('numAlmonds',this.numIngredients);
-                localStorage.setItem('heightAlmonds', this.refillMeter.height);
-            }
+            // if(this.ingredientType == 'peanut') {
+            //     localStorage.setItem('numPeanuts',this.numIngredients)
+            //     localStorage.setItem('heightPeanuts', this.refillMeter.height);
+            // } 
+            // else if(this.ingredientType == 'raisin') {
+            //     localStorage.setItem('numRaisins',this.numIngredients);
+            //     localStorage.setItem('heightRaisins', this.refillMeter.height);
+            // } 
+            // else if(this.ingredientType == 'm&m') {
+            //     localStorage.setItem('numM&Ms',this.numIngredients);
+            //     localStorage.setItem('heightM&Ms', this.refillMeter.height);
+            // } 
+            // else if(this.ingredientType == 'almond') {
+            //     localStorage.setItem('numAlmonds',this.numIngredients);
+            //     localStorage.setItem('heightAlmonds', this.refillMeter.height);
+            // }
 
         }
+
     }
 
     changeType(newType) {
@@ -260,6 +255,20 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             return ingValue;
         }
         
+    }
+
+    getDispenserData() {
+        let dispData = {
+            x: this.x,
+            y: this.y,
+            index: this.dispenserIndex,
+            ingredientType: this.ingredientType,
+            numIngredients: this.numIngredients,
+            maxIngredients: this.maxIngredients,
+            priceToRefill: this.priceToRefill,
+            refillHeight: this.refillMeter.height,
+        }
+        return dispData;
     }
 }
 
