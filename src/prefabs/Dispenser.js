@@ -137,6 +137,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         let spawnedIngredient;
         let typeString;
 
+        //If the dispenser is empty, play the empty sound
         if(this.ingredientType == 'empty' || this.numIngredients < 1) {
             this.scene.sound.play('emptyDispenser');
         } else {
@@ -156,9 +157,11 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             //Spawn Ingredient
             spawnedIngredient = new Ingredient(this.scene, this.x + (Math.floor(Math.random()*10) - 5), this.y + 200 + (Math.floor(Math.random()*50)), /*'circle'*/typeString, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
             
+            //Play Dispenser Sound
             this.scene.sound.play('dispense');
-            this.numIngredients--;
             
+            //Update numIngredients
+            this.numIngredients--;
 
             //Update spawnedIngredient matter physics config
             spawnedIngredient.body.slop = 0;
