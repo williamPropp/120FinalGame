@@ -28,6 +28,7 @@ class Tutorial extends Phaser.Scene {
         this.defaultTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
         this.quesTextConfig = {fontFamily: 'Arial', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center'};
         this.descriptionTextConfig = {fontFamily: 'Helvetica', fontSize: '16px', color: '#000000', align: 'center'};
+        this.whiteTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#00000033', color: '#FFFFFF', align: 'center'};
         this.playMenu = this.add.image(10, 100, 'files').setOrigin(0,0);
         this.conveyor = this.add.image(305, 510, 'conveyor');
         this.scale = this.add.image(724, 450, 'scale').setOrigin(0 ,0);
@@ -39,7 +40,7 @@ class Tutorial extends Phaser.Scene {
         this.contractBg = this.add.rectangle(735, 60, 205, 230, 0xFFFFFF).setOrigin(0 ,0);
         this.currentContract = this.add.text(840, 147, '', this.descriptionTextConfig).setOrigin(0.5,0.5).setScale(1,1);
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
-        this.moneyText = this.add.text(10, 20, 'Money: $0.00', this.defaultTextConfig);
+        
         
         this.ingredientArray = ['peanut', 'raisin', 'm&m', 'almond'];
         for(let i = 0; i < 4; i++){
@@ -51,7 +52,7 @@ class Tutorial extends Phaser.Scene {
             this.refillMeterBacking = this.add.rectangle(250 + i * 120, 150, 25, 75, 0x000000).setOrigin(0.5, 1);
             this.refillMeter = this.add.rectangle(250 + i * 120, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
         }
-        
+        this.moneyText = this.add.text(10, 5, 'Bank: $50.00', this.whiteTextConfig);
        
 
         //Icons

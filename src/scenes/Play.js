@@ -82,11 +82,18 @@ class Play extends Phaser.Scene {
 
         
         //Add music to the scene
-        this.soundtrack = this.sound.add('soundtrack', {
-            volume: 0.5,
-            // rate: 0.9,
-            loop: true,
-        });
+        if(localStorage.getItem('volume') == null){
+            this.soundtrack = this.sound.add('soundtrack', {
+                volume: 0.5,
+                loop: true,
+            });
+        } 
+        else{
+            this.soundtrack = this.sound.add('soundtrack', {
+                volume: parseFloat(localStorage.getItem('volume')),
+                loop: true,
+            });
+        }
         this.soundtrack.play();
 
         //Text configs
@@ -274,7 +281,13 @@ class Play extends Phaser.Scene {
                 }
             }
             //Play suction sound
-            this.sound.play('tubeSuction');
+            if(localStorage.getItem('volume') == null){
+                this.sound.play('tubeSuction');
+            } 
+            else{
+                this.sound.play('tubeSuction', {volume: parseFloat(localStorage.getItem('volume'))});
+            }
+            
 
             //After the player gets a chance to read everything, reset bag and ingredients
             this.time.delayedCall(2000, () => {
@@ -306,8 +319,13 @@ class Play extends Phaser.Scene {
                     i.setVelocity(7,0)
                 }
             }
-            this.sound.play('shortHydraulic');
-            this.bag.setVelocity(7, 0);
+            if(localStorage.getItem('volume') == null){
+                this.sound.play('shortHydraulic');
+            } 
+            else{
+                this.sound.play('shortHydraulic', {volume: parseFloat(localStorage.getItem('volume'))});
+            }
+                this.bag.setVelocity(7, 2);
             let conveyorAnim = this.add.sprite(305, 510, 'conveyor');
             conveyorAnim.anims.play('conveyorRight');
             this.time.delayedCall(2500, () => {
@@ -317,8 +335,13 @@ class Play extends Phaser.Scene {
 
         //Move the bag left
         if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-            this.sound.play('shortHydraulic');
-            this.bag.setVelocity(-7, 0);
+            if(localStorage.getItem('volume') == null){
+                this.sound.play('shortHydraulic');
+            } 
+            else{
+                this.sound.play('shortHydraulic', {volume: parseFloat(localStorage.getItem('volume'))});
+            }
+            this.bag.setVelocity(-7, 2);
             let conveyorAnim = this.add.sprite(305, 510, 'conveyor');
             conveyorAnim.anims.play('conveyorLeft');
             this.time.delayedCall(2500, () => {

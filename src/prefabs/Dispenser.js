@@ -139,7 +139,12 @@ class Dispenser extends Phaser.GameObjects.Sprite {
 
         //If the dispenser is empty, play the empty sound
         if(this.ingredientType == 'empty' || this.numIngredients < 1) {
-            this.scene.sound.play('emptyDispenser');
+            if(localStorage.getItem('volume') == null){
+                this.sound.play('emptyDispenser');
+            } 
+            else{
+                this.scene.sound.play('emptyDispenser', {volume: parseFloat(localStorage.getItem('volume'))});
+            }
         } else {
             //Select correct sprite to load for spawnIngredient
             if(this.ingredientType == 'peanut') {
@@ -158,7 +163,13 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             spawnedIngredient = new Ingredient(this.scene, this.x + (Math.floor(Math.random()*10) - 5), this.y + 200 + (Math.floor(Math.random()*50)), /*'circle'*/typeString, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
             
             //Play Dispenser Sound
-            this.scene.sound.play('dispense');
+            if(localStorage.getItem('volume') == null){
+                this.sound.play('dispense');
+            } 
+            else{
+                this.scene.sound.play('dispense', {volume: parseFloat(localStorage.getItem('volume'))});
+            }
+            
             
             //Update numIngredients
             this.numIngredients--;

@@ -77,6 +77,7 @@ class Options extends Phaser.Scene {
 
     update() {
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
+            this.soundtrack.stop();
             this.scene.start("menuScene");
         }
 
