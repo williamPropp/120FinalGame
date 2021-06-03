@@ -436,7 +436,7 @@ class Play extends Phaser.Scene {
         this.money += gained;
         this.money = this.money.toFixed(2);
         this.money = Number.parseFloat(this.money);
-        this.moneyText.setText('Money: $'+ this.money);
+        this.moneyText.setText('Bank: $'+ this.money);
         localStorage.setItem('money', this.money);
     }
 

@@ -10,6 +10,7 @@ class Menu extends Phaser.Scene {
         this.load.image('menuScreenBack', 'TitleScreenBack.png');
         this.load.image('menuScreenMid', 'TitleScreenMid.png');
         this.load.image('menuScreenFront', 'TitleScreenFront.png');
+        this.load.audio('soundtrackMenu', 'menuSoundtrack.mp3')
     }
 
     create() {
@@ -21,6 +22,13 @@ class Menu extends Phaser.Scene {
         this.titleScreenFront = this.add.tileSprite(0, 0, 960, 720, 'menuScreenFront').setOrigin(0,0);
 
         this.moveDirection = true;
+
+        this.menuSoundtrack = this.sound.add('soundtrackMenu', {
+            volume: 0.5,
+            loop: true,
+        });
+        this.menuSoundtrack.play();
+    
 
         this.pointerDown = false;
         this.textConfig = { fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center' };
@@ -43,7 +51,6 @@ class Menu extends Phaser.Scene {
             draggable: false,
             useHandCursor: true
         });
-    
         // }, this);
         this.input.on('gameobjectdown', function (pointer, gameObject) {
             // console.log('down');
@@ -74,10 +81,13 @@ class Menu extends Phaser.Scene {
 
     clickOn(gObj) {
         if(gObj == this.playButton) {
+            this.menuSoundtrack.stop();
             this.scene.start("playScene");
         } else if(gObj == this.optionsButton) {
+            this.menuSoundtrack.stop();
             this.scene.start("optionsScene");
         } else if(gObj == this.tutorialButton) {
+            this.menuSoundtrack.stop();
             this.scene.start("tutorialScene");
         }    
 
