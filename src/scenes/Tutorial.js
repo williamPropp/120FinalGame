@@ -18,15 +18,16 @@ class Tutorial extends Phaser.Scene {
         this.load.json('bag_physics', 'bag.json');
         this.load.image('files', 'files.png');
         this.load.image('scale', 'scale.png');
+        this.load.image('bg', 'FactoryBG.png');
     }
 
     create(){            
         
         //Create art assets
+        this.bg = this.add.tileSprite(0, 0, screenWidth, game.config.height, 'bg').setOrigin(0 ,0);
         this.defaultTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
         this.quesTextConfig = {fontFamily: 'Arial', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center'};
         this.descriptionTextConfig = {fontFamily: 'Helvetica', fontSize: '16px', color: '#000000', align: 'center'};
-        this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
         this.playMenu = this.add.image(10, 100, 'files').setOrigin(0,0);
         this.conveyor = this.add.image(305, 510, 'conveyor');
         this.scale = this.add.image(724, 450, 'scale').setOrigin(0 ,0);

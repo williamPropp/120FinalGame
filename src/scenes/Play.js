@@ -80,6 +80,7 @@ class Play extends Phaser.Scene {
         this.priceCalculated = false;
         this.contractEnabled = false;
 
+        
         //Add music to the scene
         this.soundtrack = this.sound.add('soundtrack', {
             volume: 0.5,
