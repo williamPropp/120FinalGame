@@ -19,18 +19,25 @@ class PlayMenu extends Phaser.Scene {
         this.load.image('green', 'TabGreen.png');
         this.load.image('blue', 'TabBlue.png');
         this.load.image('sign','sign.png');
+        this.load.spritesheet('signName', 'signatureSpritesheet.png', {frameWidth: 220, frameHeight: 91, startFrame: 0, endFrame: 34});
     }
 
     create() {
         console.log('play menu');
         console.log(this.scenePointer.money);
         this.pauseMenu = this.add.image(121, 50, 'manilla').setOrigin(0, 0);
+
+        //create signature animation
+        this.anims.create({ key: 'signAnim', frames: this.anims.generateFrameNumbers('signName', { start: 0, end: 34, first: 0}), frameRate: 24 });
+        // this.signName = this.add.image(305, 510, 'signName')
+
         this.signature = this.add.image(game.config.width/1.37, 550, 'sign').setOrigin(.5, 0);
         this.signature.setInteractive({
             useHandCursor: true
         });
         this.signature.setDataEnabled;
         this.signature.alpha = 0;
+
         this.currentTab = 'main';
         this.element = -1;
 
@@ -327,6 +334,12 @@ class PlayMenu extends Phaser.Scene {
             }
             if(gameObject == this.signature && this.clickAction == false) {
                 console.log('Signing!')
+                //play signing animation
+                let signName = this.add.sprite(710, 570, 'signName');
+                signName.anims.play('signAnim');
+                this.time.delayedCall(3000, () => {
+                    signName.destroy();
+                });
                 if(this.currentTab == 'upgrades') {
                     console.log('upgrading!!')
                     if(this.scenePointer.money > this.upgrades[this.element].cost){
