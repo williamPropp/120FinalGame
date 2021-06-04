@@ -164,7 +164,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             
             //Play Dispenser Sound
             if(localStorage.getItem('volume') == null){
-                this.sound.play('dispense');
+                this.scene.sound.play('dispense');
             } 
             else{
                 this.scene.sound.play('dispense', {volume: parseFloat(localStorage.getItem('volume'))});
