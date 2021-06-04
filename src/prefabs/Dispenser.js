@@ -19,7 +19,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.refillButton = this.scene.add.circle(this.x + 30, this.y + 150, 10, 0x0000FF).setOrigin(0.5,0.5);
         this.ingredientText = this.scene.add.text(this.x, this.y + 235, this.ingredientType + ((this.ingredientType == 'empty') ? '' : 's'), this.scene.defaultTextConfig).setOrigin(0.5,0.5);
         this.ingredientText.setScale(0.5);
-        this.priceText = this.scene.add.text(440, 265, 'init text', this.scene.defaultTextConfig).setScale(0.5).setOrigin(0.5,0.5);
+        this.priceText = this.scene.add.text(440, 265, 'init text', this.scene.whiteTextConfig).setScale(0.5).setOrigin(0.5,0.5);
         this.priceText.setVisible(false);
 
         //Add dispenser to dispenser layer
@@ -99,6 +99,12 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             else{
                 this.numIngredients = parseInt(localStorage.getItem('numPeanuts'));
             }
+            if(localStorage.getItem('refillPeanuts') == null){
+                localStorage.setItem('refillPeanuts', this.priceToRefill);
+            }
+            else{
+                this.priceToRefill = parseInt(localStorage.getItem('refillPeanuts'));
+            }
         }
         else if(this.ingredientType == 'raisin'){
             if(localStorage.getItem('heightRaisins') == null){
@@ -112,6 +118,12 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             }
             else{
                 this.numIngredients = parseInt(localStorage.getItem('numRaisins'));
+            }
+            if(localStorage.getItem('refillRaisins') == null){
+                localStorage.setItem('refillRaisins', this.priceToRefill);
+            }
+            else{
+                this.priceToRefill = parseInt(localStorage.getItem('refillRaisins'));
             }
         }
         else if(this.ingredientType == 'm&m'){
@@ -127,6 +139,12 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             else{
                 this.numIngredients = parseInt(localStorage.getItem('numM&Ms'));
             }
+            if(localStorage.getItem('refillM&Ms') == null){
+                localStorage.setItem('refillM&Ms', this.priceToRefill);
+            }
+            else{
+                this.priceToRefill = parseInt(localStorage.getItem('refillM&Ms'));
+            }
         }
         else if(this.ingredientType == 'almond'){
             if(localStorage.getItem('heightAlmonds') == null){
@@ -140,6 +158,12 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             }
             else{
                 this.numIngredients = parseInt(localStorage.getItem('numAlmonds'));
+            }
+            if(localStorage.getItem('refillAlmonds') == null){
+                localStorage.setItem('refillAlmonds', this.priceToRefill);
+            }
+            else{
+                this.priceToRefill = parseInt(localStorage.getItem('refillAlmonds'));
             }
         }
         
@@ -197,20 +221,24 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             this.refillMeter.height = (this.numIngredients / this.maxIngredients) * 75; //Update refillMeter
 
             if(this.ingredientType == 'peanut') {
-                localStorage.setItem('numPeanuts',this.numIngredients)
+                localStorage.setItem('numPeanuts',this.numIngredients);
                 localStorage.setItem('heightPeanuts', this.refillMeter.height);
+                localStorage.setItem('refillPeanuts',this.priceToRefill);
             } 
             else if(this.ingredientType == 'raisin') {
                 localStorage.setItem('numRaisins',this.numIngredients);
                 localStorage.setItem('heightRaisins', this.refillMeter.height);
+                localStorage.setItem('refillRaisins',this.priceToRefill);
             } 
             else if(this.ingredientType == 'm&m') {
                 localStorage.setItem('numM&Ms',this.numIngredients);
                 localStorage.setItem('heightM&Ms', this.refillMeter.height);
+                localStorage.setItem('refillM&Ms',this.priceToRefill);
             } 
             else if(this.ingredientType == 'almond') {
                 localStorage.setItem('numAlmonds',this.numIngredients);
                 localStorage.setItem('heightAlmonds', this.refillMeter.height);
+                localStorage.setItem('refillAlmonds',this.priceToRefill);
             }
 
         }
