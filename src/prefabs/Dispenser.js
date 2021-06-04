@@ -22,6 +22,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.priceText = this.scene.add.text(440, 265, 'init text', this.scene.defaultTextConfig).setScale(0.5).setOrigin(0.5,0.5);
         this.priceText.setVisible(false);
 
+        //Add dispenser to dispenser layer
         this.scene.dispenserLayer.add([this]);
 
         //Make dispenser and refill buttons interactable
@@ -29,10 +30,19 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             draggable: false,
             useHandCursor: true
         });
+
+        //When mouse leaves dispense button, stop spawning ingredient
+        this.dispenseButton.on('pointerout', () => {
+            this.scene.spawnIngredientLoop = false;
+        });
+
+        //Make refillButton clickable
         this.refillButton.setInteractive({
             draggable: false,
             useHandCursor: true
         });
+
+        //Display refill cost when pointer hovers over refill button
         this.refillButton.on('pointerover',() => {
             let priceStr;
             if(this.priceToRefill == 0) {
@@ -50,9 +60,11 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             // });
         });
 
+        //Hide refill cost text when pointer hovers over refill button
         this.refillButton.on('pointerout', () => {
             this.priceText.setVisible(false);
         });
+
 
         //Add pointers to buttons as data so the prefab's data can be referenced when they're clicked
         this.dispenseButton.setDataEnabled();
