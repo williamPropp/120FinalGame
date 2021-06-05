@@ -95,6 +95,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             this.numIngredients = parseInt(localStorage.getItem(numIngStr));
             this.priceToRefill = parseInt(localStorage.getItem(refillStr));
             this.refillMeter.height = parseFloat(localStorage.getItem(heightStr));
+            this.ingredientText.setText(this.ingredientType);
         }       
     }
 
@@ -156,6 +157,11 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.maxIngredients = Math.round(this.scene.binWeight / newWeight);
         this.numIngredients = this.maxIngredients;
         this.priceToRefill = 0;
+        this.refillMeter.height = 75;
+        this.ingredientText.setText(newType);
+
+        //Store updated data in localStorage
+        this.updateLocalStorage();
     }
 
     //Call to retrieve Ingredient data. Leave data arg blank to request all data in the form of an array, or use data arg to request a specific attribute

@@ -431,7 +431,7 @@ class Play extends Phaser.Scene {
                         priceText.destroy();
                     });
                 } else {
-                    this.buyIngredients(gObj);
+                    this.refillDispenser(gObj);
                 }
                 
             }
@@ -579,7 +579,7 @@ class Play extends Phaser.Scene {
     }
 
     //Refill a dispenser to max
-    buyIngredients(gObj) {
+    refillDispenser(gObj) {
         let dispPrefab = gObj.getData('prefab');
         let priceToBuy = dispPrefab.priceToRefill;
         if(this.money > priceToBuy) {
@@ -587,41 +587,14 @@ class Play extends Phaser.Scene {
             dispPrefab.numIngredients = dispPrefab.maxIngredients;
             dispPrefab.priceToRefill = 0;
             dispPrefab.refillMeter.height = 75;
+            dispPrefab.updateLocalStorage();
         } else {
-            this.insufficientFunds(priceToBuy);
-        }
-    }
-
-    //Purchase Upgrades
-    buyUpgrades(upgradeStr, price) {
-        if(upgradeStr == 'dispenser I') {
-            console.log('disp4 bought');
-            this.dispenser4 = new Dispenser(this, 610, 0, null, null, 'empty', 4); //Update x location when new sprites are added
-        } else if(upgradeStr == 'dispenser II') {
-            console.log('disp5 bought');
-            this.dispenser5 = new Dispenser(this, 730, 0, null, null, 'empty', 5); //Update x location when new sprites are added
-        } else if(upgradeStr == 'Bag 2x') {
-            this.bagMultiplier = 2;
-        } else if(upgradeStr == 'Bag 4x') {
-            this.bagMultiplier = 4;
-        } else if(upgradeStr == 'Bag 8x') {
-            this.bagMultiplier = 8;
-        } else if(upgradeStr == 'Bag 16x') {
-            this.bagMultiplier = 16;
-        } else if(upgradeStr == 'Lobby I') {
-            this.lobbyMultiplier = 2;
-        } else if(upgradeStr == 'Lobby II') {
-            this.lobbyMultiplier = 4;
-        } else if(upgradeStr == 'Lobby III') {
-            this.lobbyMultiplier = 8;
-        } else if ('insFunds'){
-            this.insufficientFunds(price);
-            console.log('funds error');
+            this.insufficientRefillFunds(priceToBuy);
         }
     }
 
     //Call when the user doesn't have enough cash to cover an ingredient refill transaction
-    insufficientFunds(price) {
+    insufficientRefillFunds(price) {
         let insFundText = this.add.text(game.config.width/2-50, game.config.height/2-75, 'You do not have enough funds, you need $' + price + ' to purchase', this.defaultTextConfig).setOrigin(0.5,0.5);
         insFundText.setScale(0.4);
         this.time.delayedCall(2000, () => {

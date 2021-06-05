@@ -46,107 +46,180 @@ class PlayMenu extends Phaser.Scene {
         this.element = -1;
 
         //tab setup
+        // this.mainTab = this.add.image(83, game.config.height/9, 'plain').setOrigin(0, 0);
+        // this.mainTab.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.mainTab.setDataEnabled;
+        // this.upgradeTab = this.add.image(83, game.config.height/9*2.8, 'green').setOrigin(0, 0);
+        // this.upgradeTab.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.upgradeTab.setDataEnabled;
+        // this.contractTab = this.add.image(83, game.config.height/9*4.6, 'red').setOrigin(0, 0);
+        // this.contractTab.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.contractTab.setDataEnabled;
+        // this.buyTab = this.add.image(83, game.config.height/9*6.4, 'blue').setOrigin(0, 0);
+        // this.buyTab.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.buyTab.setDataEnabled;
+
+        //tab setup
         this.mainTab = this.add.image(83, game.config.height/9, 'plain').setOrigin(0, 0);
-        this.mainTab.setInteractive({
-            useHandCursor: true
-        });
-        this.mainTab.setDataEnabled;
         this.upgradeTab = this.add.image(83, game.config.height/9*2.8, 'green').setOrigin(0, 0);
-        this.upgradeTab.setInteractive({
-            useHandCursor: true
-        });
-        this.upgradeTab.setDataEnabled;
         this.contractTab = this.add.image(83, game.config.height/9*4.6, 'red').setOrigin(0, 0);
-        this.contractTab.setInteractive({
-            useHandCursor: true
-        });
-        this.contractTab.setDataEnabled;
         this.buyTab = this.add.image(83, game.config.height/9*6.4, 'blue').setOrigin(0, 0);
-        this.buyTab.setInteractive({
-            useHandCursor: true
-        });
-        this.buyTab.setDataEnabled;
+
+        this.tabsHolder = this.add.group();
+        this.tabsHolder.addMultiple([this.mainTab, this.upgradeTab, this.contractTab, this.buyTab]);
+
+        for(let t of this.tabsHolder.getChildren()) {
+            t.setInteractive({
+                useHandCursor: true
+            });
+            t.setDataEnabled;
+        }
 
         //post-it setup
+        // this.postIt = this.add.image(150, 70, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        // this.postIt.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.postIt.setDataEnabled;
+        // this.postItTwo = this.add.image(300, 70, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        // this.postItTwo.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.postItTwo.setDataEnabled;
+        // this.postItThree = this.add.image(150, 220, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        // this.postItThree.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.postItThree.setDataEnabled;
+        // this.postItFour = this.add.image(300, 220, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        // this.postItFour.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.postItFour.setDataEnabled;
+        // this.postItFive = this.add.image(150, 370, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        // this.postItFive.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.postItFive.setDataEnabled;
+        // this.postItSix = this.add.image(300, 370, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        // this.postItSix.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.postItSix.setDataEnabled;
+        // this.postItSeven = this.add.image(150, 520, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        // this.postItSeven.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.postItSeven.setDataEnabled;
+        // this.postItEight = this.add.image(300, 520, 'post').setOrigin(0, 0).setTint(0xFAF28C);
+        // this.postItEight.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.postItEight.setDataEnabled;
+
+        //Create post-its
         this.postIt = this.add.image(150, 70, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        this.postIt.setInteractive({
-            useHandCursor: true
-        });
-        this.postIt.setDataEnabled;
         this.postItTwo = this.add.image(300, 70, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        this.postItTwo.setInteractive({
-            useHandCursor: true
-        });
-        this.postItTwo.setDataEnabled;
         this.postItThree = this.add.image(150, 220, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        this.postItThree.setInteractive({
-            useHandCursor: true
-        });
-        this.postItThree.setDataEnabled;
         this.postItFour = this.add.image(300, 220, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        this.postItFour.setInteractive({
-            useHandCursor: true
-        });
-        this.postItFour.setDataEnabled;
         this.postItFive = this.add.image(150, 370, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        this.postItFive.setInteractive({
-            useHandCursor: true
-        });
-        this.postItFive.setDataEnabled;
         this.postItSix = this.add.image(300, 370, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        this.postItSix.setInteractive({
-            useHandCursor: true
-        });
-        this.postItSix.setDataEnabled;
         this.postItSeven = this.add.image(150, 520, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        this.postItSeven.setInteractive({
-            useHandCursor: true
-        });
-        this.postItSeven.setDataEnabled;
         this.postItEight = this.add.image(300, 520, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        this.postItEight.setInteractive({
-            useHandCursor: true
-        });
-        this.postItEight.setDataEnabled;
+
         this.postHolder = this.add.group();
         this.postHolder.addMultiple([this.postIt, this.postItTwo,this.postItThree, this.postItFour,this.postItFive,this.postItSix,this.postItSeven,this.postItEight]);
-        for(let i of this.postHolder.getChildren()){
-            i.alpha = 0;
+        let postItCounter = 0;
+        for(let p of this.postHolder.getChildren()){
+            p.alpha = 0;
+            p.setDataEnabled;
+            p.setData('elementIndex', postItCounter);
+            postItCounter++;
+            p.setInteractive({
+                useHandCursor: true
+            }).on('pointerdown', function(pointer, localX, localY, event){
+                //On click
+            });
         }
         this.clickAction = false;
 
         //buttons
+        // this.assignOne  = this.add.image(560, 510, 'first').setOrigin(0,0);
+        // this.assignOne.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.assignOne.setDataEnabled;
+        // this.assignTwo  = this.add.image(620, 510, 'second').setOrigin(0,0);
+        // this.assignTwo.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.assignTwo.setDataEnabled;
+        // this.assignThree  = this.add.image(680, 510, 'third').setOrigin(0,0);
+        // this.assignThree.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.assignThree.setDataEnabled;
+        // this.assignFour  = this.add.image(740, 510, 'fourth').setOrigin(0,0);
+        // this.assignFour.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.assignFour.setDataEnabled;
+        // this.assignFive  = this.add.image(800, 510, 'fifth').setOrigin(0,0);
+        // this.assignFive.setInteractive({
+        //     useHandCursor: true
+        // });
+        // this.assignFive.setDataEnabled;
+
+        //Create dispenser selector buttons for ingredient tab
         this.assignOne  = this.add.image(560, 510, 'first').setOrigin(0,0);
-        this.assignOne.setInteractive({
-            useHandCursor: true
-        });
-        this.assignOne.setDataEnabled;
         this.assignTwo  = this.add.image(620, 510, 'second').setOrigin(0,0);
-        this.assignTwo.setInteractive({
-            useHandCursor: true
-        });
-        this.assignTwo.setDataEnabled;
         this.assignThree  = this.add.image(680, 510, 'third').setOrigin(0,0);
-        this.assignThree.setInteractive({
-            useHandCursor: true
-        });
-        this.assignThree.setDataEnabled;
         this.assignFour  = this.add.image(740, 510, 'fourth').setOrigin(0,0);
-        this.assignFour.setInteractive({
-            useHandCursor: true
-        });
-        this.assignFour.setDataEnabled;
         this.assignFive  = this.add.image(800, 510, 'fifth').setOrigin(0,0);
-        this.assignFive.setInteractive({
-            useHandCursor: true
-        });
-        this.assignFive.setDataEnabled;
+
         this.assignGroup = this.add.group();
         this.assignGroup.addMultiple([this.assignOne, this.assignTwo, this.assignThree,this.assignFour,this.assignFive]);
+
         for(let i of this.assignGroup.getChildren()) {
             i.alpha = 0;
+            i.setDataEnabled;
+            i.setData('selected', false)
+
+            let assignGroupPointer = this.assignGroup;
+
+            i.setInteractive({
+                useHandCursor: true
+            }).on('pointerdown', function(pointer, localX, localY, event){
+                for(let j of assignGroupPointer.getChildren()) {
+                    if(i == j) {
+                        (j.getData('selected')) ? j.setData('selected', false) : j.setData('selected', true); //If the dispenser is already selected, deselect it
+                    } else {
+                        j.setData('selected', false); //Deselect every other dispenser selector
+                    }
+                    
+                    //If the dispenser selector is selected, give it a tint, if not, reset its tint
+                    if(j.getData('selected')) {
+                        j.setTint(0xbababa);
+                    } else {
+                        j.setTint(0xFFFFFF); 
+                    }
+                }
+            });
         }
 
+        this.assignOne.setData('disp', this.scenePointer.dispenser1);
+        this.assignTwo.setData('disp', this.scenePointer.dispenser2);
+        this.assignThree.setData('disp', this.scenePointer.dispenser3);
+        this.assignFour.setData('disp', this.scenePointer.dispenser4);
+        this.assignFive.setData('disp', this.scenePointer.dispenser5);
 
         //Text Arrays
         this.intros = ['Welcome Young','Capitalist!','Use the tabs on the side','to navigate our files.','Click on sticky notes','to see more info!']
@@ -157,10 +230,10 @@ class PlayMenu extends Phaser.Scene {
         this.ingredients = [];
         this.categories = ['Nuts', 'Fruits', 'Sweet', 'Savory'];
         this.nuts = ['Peanuts', 'Almonds', '???', '???'];
-        this.fruits = ['Raisins', '???', '???', '???']
+        this.fruits = ['Raisins', '???', '???', '???'];
         this.sweets = ['M&Ms', '???', '???', '???'];
         this.savorys = ['???', '???', '???', '???'];
-        this.catText = ['A classic filler', 'Dried to Perfection', 'The best Part', 'Insert Text']
+        this.catText = ['A classic filler', 'Dried to Perfection', 'The best Part', 'Insert Text'];
 
         //Text Configs
         this.upgradeConfig = { fontFamily: 'Helvetica', fontSize: '20px', backgroundColor: '#00000000', color: '#000000', align: 'center' };
@@ -184,9 +257,12 @@ class PlayMenu extends Phaser.Scene {
         this.noteEight  = this.add.text(game.config.width/2.65, 570, '', this.upgradeConfig).setOrigin(0.5,0.5);
 
         this.noteHolder = this.add.group();
-        this.noteHolder.addMultiple([this.noteOne,this.noteTwo,this.noteThree,this.noteFour, this.noteFive, this.noteSix, this.noteSeven,this.noteEight]) 
+        this.noteHolder.addMultiple([this.noteOne,this.noteTwo,this.noteThree,this.noteFour, this.noteFive, this.noteSix, this.noteSeven,this.noteEight]);
 
-        //upgrade objs
+        this.textLineGroup = this.add.group(); 
+        this.textLineGroup.addMultiple([this.lineOne, this.lineTwo, this.lineThree, this.lineFour]);
+
+        //Make upgrade objs
         this.openContracts = {
             postName: 'Contracts',
             infoName: 'Sell your labor!',
@@ -298,7 +374,7 @@ class PlayMenu extends Phaser.Scene {
 
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
 
-            //tab clicks 
+            //Select tab
             if(gameObject == this.mainTab && this.clickAction == false) {
                 console.log('Main!!');
                 this.currentTab= 'main';
@@ -322,6 +398,8 @@ class PlayMenu extends Phaser.Scene {
                 this.lineFour.text = this.intros[5];
 
             }
+
+            //Upgrade tab
             if(gameObject == this.upgradeTab && this.clickAction == false) {
                 console.log('Upgrade!!');
                 this.currentTab= 'upgrades';
@@ -360,6 +438,8 @@ class PlayMenu extends Phaser.Scene {
                 this.lineFour.text = 'No matter the price...';
 
             }
+
+            //Contract tab
             if(gameObject == this.contractTab && this.clickAction == false) {
                 console.log('Contract!!');
                 this.currentTab= 'contracts';
@@ -396,6 +476,8 @@ class PlayMenu extends Phaser.Scene {
                 this.lineThree.text = 'Ethical deals til';
                 this.lineFour.text = 'coprate gets their way';
             }
+
+            //Ingredient purchase tab
             if(gameObject == this.buyTab && this.clickAction == false) {
                 console.log('Buy!!');  
                 this.currentTab= 'buy';
@@ -424,151 +506,172 @@ class PlayMenu extends Phaser.Scene {
                 this.lineFour.text = 'with your budget!';
             }
 
-            //post-it clicks
-            if(gameObject == this.postIt && this.clickAction == false) {
-                this.element = 0;
-                this.signature.alpha = 1;
-                if (this.currentTab == 'upgrades') {
-                    this.getUpgrades(this.element);
-                }
-                else if(this.currentTab == 'contracts'){
-                    this.getContracts(this.element);
-                }
-                else if(this.currentTab == 'buy'){
-                    this.getBuys(this.element);
-                    for(let i of this.assignGroup.getChildren()) {
-                        i.alpha = 1;
+            for(let p of this.postHolder.getChildren()) {
+                if(gameObject == p && this.clickAction == false) {
+                    this.element = p.getData('elementIndex');
+                    this.signature.alpha = 1;
+                    if (this.currentTab == 'upgrades') {
+                        this.getUpgrades(this.element);
+                    }
+                    else if(this.currentTab == 'contracts'){
+                        this.getContracts(this.element);
+                    }
+                    else if(this.currentTab == 'buy'){
+                        this.getBuys(this.element);
+                        for(let i of this.assignGroup.getChildren()) {
+                            i.alpha = 1;
+                        }
                     }
                 }
             }
+            // //post-it clicks
+            // if(gameObject == this.postIt && this.clickAction == false) {
+            //     this.element = 0;
+            //     this.signature.alpha = 1;
+            //     if (this.currentTab == 'upgrades') {
+            //         this.getUpgrades(this.element);
+            //     }
+            //     else if(this.currentTab == 'contracts'){
+            //         this.getContracts(this.element);
+            //     }
+            //     else if(this.currentTab == 'buy'){
+            //         this.getBuys(this.element);
+            //         for(let i of this.assignGroup.getChildren()) {
+            //             i.alpha = 1;
+            //         }
+            //     }
+            // }
 
-            if(gameObject == this.postItTwo && this.clickAction == false) {
-                this.element = 1;
-                this.signature.alpha = 1;
-                if (this.currentTab == 'upgrades') {
-                    this.getUpgrades(this.element);
-                }
-                else if(this.currentTab == 'contracts'){
-                    this.getContracts(this.element);
-                }
-                else if(this.currentTab == 'buy'){
-                    this.getBuys(this.element);
-                    for(let i of this.assignGroup.getChildren()) {
-                        i.alpha = 1;
-                    }
-                }
-            }
-            if(gameObject == this.postItThree && this.clickAction == false) {
-                this.element = 2;
-                this.signature.alpha = 1;
-                if (this.currentTab == 'upgrades') {
-                    this.getUpgrades(this.element);
-                }
-                else if(this.currentTab == 'contracts'){
-                    this.getContracts(this.element);
-                }
-                else if(this.currentTab == 'buy'){
-                    this.getBuys(this.element);
-                    for(let i of this.assignGroup.getChildren()) {
-                        i.alpha = 1;
-                    }
-                }
+            // if(gameObject == this.postItTwo && this.clickAction == false) {
+            //     this.element = 1;
+            //     this.signature.alpha = 1;
+            //     if (this.currentTab == 'upgrades') {
+            //         this.getUpgrades(this.element);
+            //     }
+            //     else if(this.currentTab == 'contracts'){
+            //         this.getContracts(this.element);
+            //     }
+            //     else if(this.currentTab == 'buy'){
+            //         this.getBuys(this.element);
+            //         for(let i of this.assignGroup.getChildren()) {
+            //             i.alpha = 1;
+            //         }
+            //     }
+            // }
+            // if(gameObject == this.postItThree && this.clickAction == false) {
+            //     this.element = 2;
+            //     this.signature.alpha = 1;
+            //     if (this.currentTab == 'upgrades') {
+            //         this.getUpgrades(this.element);
+            //     }
+            //     else if(this.currentTab == 'contracts'){
+            //         this.getContracts(this.element);
+            //     }
+            //     else if(this.currentTab == 'buy'){
+            //         this.getBuys(this.element);
+            //         for(let i of this.assignGroup.getChildren()) {
+            //             i.alpha = 1;
+            //         }
+            //     }
 
-            }
-            if(gameObject == this.postItFour && this.clickAction == false) {
-                this.element = 3;
-                this.signature.alpha = 1;
-                if (this.currentTab == 'upgrades') {
-                    this.getUpgrades(this.element);
-                }
-                else if(this.currentTab == 'contracts'){
-                    this.getContracts(this.element);
-                }
-                else if(this.currentTab == 'buy'){
-                    this.getBuys(this.element);
-                    for(let i of this.assignGroup.getChildren()) {
-                        i.alpha = 1;
-                    }
-                }
-            }
-            if(gameObject == this.postItFive && this.clickAction == false) {
-                this.element = 4;
-                this.signature.alpha = 1;
-                if (this.currentTab == 'upgrades') {
-                    this.getUpgrades(this.element);
-                }
-                else if(this.currentTab == 'contracts'){
-                    this.getContracts(this.element);
-                }
-                else if(this.currentTab == 'buy'){
-                    this.getBuys(this.element);
-                    for(let i of this.assignGroup.getChildren()) {
-                        i.alpha = 1;
-                    }
-                }
-            }
-            if(gameObject == this.postItSix && this.clickAction == false) {
-                this.element = 5;
-                this.signature.alpha = 1;
-                if (this.currentTab == 'upgrades') {
-                    this.getUpgrades(this.element);
-                }
-                else if(this.currentTab == 'contracts'){
-                    this.getContracts(this.element);
-                }
-                else if(this.currentTab == 'buy'){
-                    this.getBuys(this.element);
-                    for(let i of this.assignGroup.getChildren()) {
-                        i.alpha = 1;
-                    }
-                }
-            }
-            if(gameObject == this.postItSeven && this.clickAction == false) {
-                this.element = 6;
-                this.signature.alpha = 1;
-                if (this.currentTab == 'upgrades') {
-                    this.getUpgrades(this.element);
-                }
-                else if(this.currentTab == 'contracts'){
-                    this.getContracts(this.element);
-                }
-                else if(this.currentTab == 'buy'){
-                    this.getBuys(this.element);
-                    for(let i of this.assignGroup.getChildren()) {
-                        i.alpha = 1;
-                    }
-                }
-            }
-            if(gameObject == this.postItEight && this.clickAction == false) {
-                this.element = 7;
-                this.signature.alpha = 1;
-                if (this.currentTab == 'upgrades') {
-                    this.getUpgrades(this.element);
-                }
-                else if(this.currentTab == 'contracts'){
-                    this.getContracts(this.element);
-                }
-                else if(this.currentTab == 'buy'){
-                    this.getBuys(this.element);
-                    for(let i of this.assignGroup.getChildren()) {
-                        i.alpha = 1;
-                    }
-                }
-            }
+            // }
+            // if(gameObject == this.postItFour && this.clickAction == false) {
+            //     this.element = 3;
+            //     this.signature.alpha = 1;
+            //     if (this.currentTab == 'upgrades') {
+            //         this.getUpgrades(this.element);
+            //     }
+            //     else if(this.currentTab == 'contracts'){
+            //         this.getContracts(this.element);
+            //     }
+            //     else if(this.currentTab == 'buy'){
+            //         this.getBuys(this.element);
+            //         for(let i of this.assignGroup.getChildren()) {
+            //             i.alpha = 1;
+            //         }
+            //     }
+            // }
+            // if(gameObject == this.postItFive && this.clickAction == false) {
+            //     this.element = 4;
+            //     this.signature.alpha = 1;
+            //     if (this.currentTab == 'upgrades') {
+            //         this.getUpgrades(this.element);
+            //     }
+            //     else if(this.currentTab == 'contracts'){
+            //         this.getContracts(this.element);
+            //     }
+            //     else if(this.currentTab == 'buy'){
+            //         this.getBuys(this.element);
+            //         for(let i of this.assignGroup.getChildren()) {
+            //             i.alpha = 1;
+            //         }
+            //     }
+            // }
+            // if(gameObject == this.postItSix && this.clickAction == false) {
+            //     this.element = 5;
+            //     this.signature.alpha = 1;
+            //     if (this.currentTab == 'upgrades') {
+            //         this.getUpgrades(this.element);
+            //     }
+            //     else if(this.currentTab == 'contracts'){
+            //         this.getContracts(this.element);
+            //     }
+            //     else if(this.currentTab == 'buy'){
+            //         this.getBuys(this.element);
+            //         for(let i of this.assignGroup.getChildren()) {
+            //             i.alpha = 1;
+            //         }
+            //     }
+            // }
+            // if(gameObject == this.postItSeven && this.clickAction == false) {
+            //     this.element = 6;
+            //     this.signature.alpha = 1;
+            //     if (this.currentTab == 'upgrades') {
+            //         this.getUpgrades(this.element);
+            //     }
+            //     else if(this.currentTab == 'contracts'){
+            //         this.getContracts(this.element);
+            //     }
+            //     else if(this.currentTab == 'buy'){
+            //         this.getBuys(this.element);
+            //         for(let i of this.assignGroup.getChildren()) {
+            //             i.alpha = 1;
+            //         }
+            //     }
+            // }
+            // if(gameObject == this.postItEight && this.clickAction == false) {
+            //     this.element = 7;
+            //     this.signature.alpha = 1;
+            //     if (this.currentTab == 'upgrades') {
+            //         this.getUpgrades(this.element);
+            //     }
+            //     else if(this.currentTab == 'contracts'){
+            //         this.getContracts(this.element);
+            //     }
+            //     else if(this.currentTab == 'buy'){
+            //         this.getBuys(this.element);
+            //         for(let i of this.assignGroup.getChildren()) {
+            //             i.alpha = 1;
+            //         }
+            //     }
+            // }
+
+
             if(gameObject == this.signature && this.clickAction == false) {
-                console.log('Signing!')
-                //play signing animation
-                let signName = this.add.sprite(710, 570, 'signName');
-                signName.anims.play('signAnim');
-                this.time.delayedCall(3000, () => {
-                    signName.destroy();
-                });
+                // console.log('Signing!')
+                // //play signing animation
+                // let signName = this.add.sprite(710, 570, 'signName');
+                // signName.anims.play('signAnim');
+                // this.time.delayedCall(3000, () => {
+                //     signName.destroy();
+                // });
+
                 if(this.currentTab == 'upgrades') {
                     console.log('upgrading!!')
                     if(this.scenePointer.money > this.upgrades[this.element].cost){
 
                         this.scenePointer.spendCash(this.upgrades[this.element].cost);
-                        this.scenePointer.buyUpgrades(this.upgrades[this.element].postName, this.upgrades[this.element].cost);
+                        this.buyUpgrades(this.upgrades[this.element].postName, this.upgrades[this.element].cost);
                         this.scenePointer.money -= this.upgrades[this.element].cost;
                         console.log('buying upgrades');
                         this.upgrades.splice(this.element, 1);
@@ -581,8 +684,10 @@ class PlayMenu extends Phaser.Scene {
                             this.lineFour.text = 'No matter the price...';
                         });
                         this.signature.alpha = 0;
+                        //Play the sign animation
+                        this.playSignAnim();
                     } else {
-                        this.scenePointer.buyUpgrades('insFunds');
+                        this.buyUpgrades('insFunds');
                     }
                     this.count = 0;
                     for(let i of this.noteHolder.getChildren()){
@@ -603,10 +708,12 @@ class PlayMenu extends Phaser.Scene {
                             i.alpha = 0;
                         }
                     }
-                }
-                else if (this.currentTab == 'contracts') {
-                    console.log('contracting!!')
-                    contractInfo = this.contracts[this.element];
+                } else if(this.currentTab == 'contracts') {
+                    //Play the sign animation
+                    this.playSignAnim();
+
+                    console.log('contracting!!');
+                    contractInfo = this.contracts[this.element]; //I think maybe you meant to write this.contractInfo?
                     this.contracts.splice(this.element, 1);
                     this.time.delayedCall(3000, () => {
                         this.boldOne.text = 'A few Contracts';
@@ -622,6 +729,41 @@ class PlayMenu extends Phaser.Scene {
                         i.text = this.contracts[this.count].postName;
                         this.count++;
                     }
+                } else if(this.currentTab == 'buy') {
+                    // console.log('buying ingredients!!');
+                    let selectedIng, selectedDisp;
+                    for(let i of this.textLineGroup.getChildren()) {
+                        if(i.getData('selected') == true) {
+                            selectedIng = i.text;
+                            selectedIng = selectedIng.toLocaleLowerCase().slice(0, selectedIng.length - 1); //Make sure the ingredient name in the text is in the format 'Peanuts', 'Almonds', etc. Capital first, ending with s;
+                            console.log(selectedIng);
+                            i.setData('selected', false);
+                        }
+                    }
+                    for(let d of this.assignGroup.getChildren()) {
+                        if(d.getData('selected') == true) {
+                            selectedDisp = d.getData('disp');
+                            d.setData('selected', false);
+                            this.time.delayedCall(3000, () => {
+                                d.setTint(0xFFFFFF);
+                            });
+                        }
+                    }
+                    if(selectedIng == null || selectedDisp == null) {
+                        console.log('please select an ingredient and a dispenser');
+                    } else {
+                        let priceToBuyIngredient = this.calculateBuyPrice(selectedIng);
+                        if(this.scenePointer.money > priceToBuyIngredient) {
+                            console.log('buying ingredients!!');
+                            //Play the sign animation
+                            this.playSignAnim();
+                            selectedDisp.changeType(selectedIng);
+                            this.scenePointer.spendCash(priceToBuyIngredient);
+                        } else {
+                            this.insufficientPlayMenuFunds(priceToBuyIngredient);
+                        }
+                    }
+
                 }
                 this.clickAction = true;
             }
@@ -656,27 +798,77 @@ class PlayMenu extends Phaser.Scene {
         console.log(element);
         this.boldOne.text = this.categories[element];
         this.boldTwo.text = this.catText[element];
-        if(element == 0){
-            this.lineOne.text = this.nuts[0];
-            this.lineTwo.text = this.nuts[1];
-            this.lineThree.text = this.nuts[2];
-            this.lineFour.text = this.nuts[3];
-        } else if(element == 1){
-            this.lineOne.text = this.fruits[0];
-            this.lineTwo.text = this.fruits[1];
-            this.lineThree.text = this.fruits[2];
-            this.lineFour.text = this.fruits[3];
-        } else if(element == 2){
-            this.lineOne.text = this.sweets[0];
-            this.lineTwo.text = this.sweets[1];
-            this.lineThree.text = this.sweets[2];
-            this.lineFour.text = this.sweets[3];
-        } else if(element == 3){
-            this.lineOne.text = this.savorys[0];
-            this.lineTwo.text = this.savorys[1];
-            this.lineThree.text = this.savorys[2];
-            this.lineFour.text = this.savorys[3];
+
+        let textIndex = 0;
+        for(let t of this.textLineGroup.getChildren()) {
+            if(element == 0){
+                t.text = this.nuts[textIndex];
+            } else if(element == 1){
+                t.text = this.fruits[textIndex];
+            } else if(element == 2){
+                t.text = this.sweets[textIndex];
+            } else if(element == 3){
+                t.text = this.savorys[textIndex];
+            }
+            textIndex++;
+
+            let textGroupPointer = this.textLineGroup;
+            t.setStyle({
+                color: '#000000',
+                backgroundColor: '#00000000'
+            });
+
+            t.setDataEnabled;
+            t.setData('selected', false)
+            t.setInteractive({
+                useHandCursor: true
+            }).on('pointerdown', function(/*pointer, localX, localY, event*/){
+                for(let u of textGroupPointer.getChildren()) {
+                    if(t == u) {
+                        if(u.getData('selected')){
+                            u.setData('selected', false);
+                        } else {
+                            u.setData('selected', true);
+                        }
+                    } else {
+                        u.setData('selected', false);
+                    }
+
+                    if(u.getData('selected') == true) {
+                        u.setStyle({
+                            color: '#ffffff',
+                            backgroundColor: '#bababa'
+                        });
+                    } else {
+                        u.setStyle({
+                            color: '#000000',
+                            backgroundColor: '#00000000'
+                        });
+                    }
+                }
+            });
         }
+        // if(element == 0){
+        //     this.lineOne.text = this.nuts[0];
+        //     this.lineTwo.text = this.nuts[1];
+        //     this.lineThree.text = this.nuts[2];
+        //     this.lineFour.text = this.nuts[3];
+        // } else if(element == 1){
+        //     this.lineOne.text = this.fruits[0];
+        //     this.lineTwo.text = this.fruits[1];
+        //     this.lineThree.text = this.fruits[2];
+        //     this.lineFour.text = this.fruits[3];
+        // } else if(element == 2){
+        //     this.lineOne.text = this.sweets[0];
+        //     this.lineTwo.text = this.sweets[1];
+        //     this.lineThree.text = this.sweets[2];
+        //     this.lineFour.text = this.sweets[3];
+        // } else if(element == 3){
+        //     this.lineOne.text = this.savorys[0];
+        //     this.lineTwo.text = this.savorys[1];
+        //     this.lineThree.text = this.savorys[2];
+        //     this.lineFour.text = this.savorys[3];
+        // }
     }
 
     makeContract() {
@@ -755,4 +947,71 @@ class PlayMenu extends Phaser.Scene {
         this.contracts.push(this.madeContract);
     }
 
+    //Purchase Upgrades
+    buyUpgrades(upgradeStr, price) {
+        if(upgradeStr == 'dispenser I') {
+            console.log('disp4 bought');
+            this.scenePointer.dispenser4 = new Dispenser(this, 610, 0, null, null, 'empty', 4); //Update x location when new sprites are added
+        } else if(upgradeStr == 'dispenser II') {
+            console.log('disp5 bought');
+            this.scenePointer.dispenser5 = new Dispenser(this, 730, 0, null, null, 'empty', 5); //Update x location when new sprites are added
+        } else if(upgradeStr == 'Bag 2x') {
+            this.scenePointer.bagMultiplier = 2;
+        } else if(upgradeStr == 'Bag 4x') {
+            this.scenePointer.bagMultiplier = 4;
+        } else if(upgradeStr == 'Bag 8x') {
+            this.scenePointer.bagMultiplier = 8;
+        } else if(upgradeStr == 'Bag 16x') {
+            this.scenePointer.bagMultiplier = 16;
+        } else if(upgradeStr == 'Lobby I') {
+            this.scenePointer.lobbyMultiplier = 2;
+        } else if(upgradeStr == 'Lobby II') {
+            this.scenePointer.lobbyMultiplier = 4;
+        } else if(upgradeStr == 'Lobby III') {
+            this.scenePointer.lobbyMultiplier = 8;
+        } else if (upgradeStr =='insFunds') {
+            this.insufficientPlayMenuFunds(price);
+            console.log('funds error');
+        }
+    }
+
+    calculateBuyPrice(ingType) {
+        let ingPrice = this.scenePointer.dispenser1.getIngredientData(ingType, 'price');
+        let ingWeight = this.scenePointer.dispenser1.getIngredientData(ingType, 'weight');
+        let priceToBuyIng = Math.ceil(ingPrice * (this.scenePointer.binWeight / ingWeight));
+        return priceToBuyIng;
+    }
+
+    //Call when the user doesn't have enough cash to cover a purchase in the playMenu
+    insufficientPlayMenuFunds(price) {
+        console.log('you need $' + price + ' to purchase this');
+        let insFundText = this.add.text(game.config.width/4.5, game.config.height/3, 'You do not have enough funds, you need $' + price + ' to purchase', this.defaultTextConfig).setOrigin(0.5,0.5);
+        insFundText.setScale(0.4);
+        this.time.delayedCall(2000, () => {
+            insFundText.destroy();
+        });
+    }
+
+    //Play the signature animation 
+    playSignAnim() {
+        console.log('Signing!')
+        let signName = this.add.sprite(710, 570, 'signName');
+        signName.anims.play('signAnim');
+        // let signBox = this.add.image(game.config.width/1.37, 550, 'sign').setOrigin(.5, 0);
+        signName.on('animationcomplete', () => {
+            for(let t of this.textLineGroup.getChildren()) {
+                t.setStyle({
+                    color: '#000000',
+                    backgroundColor: '#00000000'
+                });
+                t.setData('selected', false);
+            }
+            for(let d of this.assignGroup.getChildren()) {
+                d.setTint(0xFFFFFF);
+                d.setData('selected', false);
+            }
+            signName.destroy();
+            // signBox.destroy();
+        });
+    }
 }
