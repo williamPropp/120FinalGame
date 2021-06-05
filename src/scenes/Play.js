@@ -144,10 +144,12 @@ class Play extends Phaser.Scene {
         this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond'];
         this.dispenserArray = [];
 
-        this.peanutDispenser = new Dispenser(this, 250, 0, 'peanut');
-        this.raisinDispenser = new Dispenser(this, 370, 0, 'raisin');
-        this.MNMDispenser = new Dispenser(this, 490, 0, 'm&m');
-        this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
+        this.dispenser1 = new Dispenser(this, 250, 0, null, null, 'peanut', 1);
+        this.dispenser2 = new Dispenser(this, 370, 0, null, null, 'raisin', 2);
+        this.dispenser3 = new Dispenser(this, 490, 0, null, null, 'm&m', 3);
+        this.dispenser4;
+        this.dispenser5;
+        // this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
 
         this.inform = this.cache.json.get('bag_physics');
         this.bag = this.matter.add.image(100, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
@@ -590,9 +592,9 @@ class Play extends Phaser.Scene {
                 if(this.money >= price){
                     this.spendCash(price);
                     if(upgradeStr == 'dispenser I') {
-                        // this.createDispenser(x, y); add x and y when ready
+                        this.dispenser4 = new Dispenser(this, 490, 0, null, null, 'empty', 4); //Update x location when new sprites are added
                     } else if(upgradeStr == 'dispenser II') {
-                        // this.createDispenser(x, y); add x and y when ready
+                        this.dispenser5 = new Dispenser(this, 490, 0, null, null, 'empty', 5); //Update x location when new sprites are added
                     } else if(upgradeStr == 'bag 2x') {
                         this.bagMultiplier = 2;
                     } else if(upgradeStr == 'bag 4x') {

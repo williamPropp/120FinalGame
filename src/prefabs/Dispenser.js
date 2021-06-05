@@ -1,14 +1,14 @@
 class Dispenser extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, /*texture, */type) {
-        super(scene, x, y, /*texture, */type);
+    constructor(scene, x, y, texture, frame, ingType, dispIndex) {
+        super(scene, x, y, texture, frame, ingType, dispIndex);
 
         //Add object to existing scene
         scene.add.existing(this);
         
         //Dispenser data
         this.scene = scene;
-        // this.dispenserIndex; //Implement later (local storage list of dispensers as multidimensional array)
-        this.ingredientType = (type == null) ? 'empty' : type;
+        this.dispIndex = dispIndex;
+        this.ingredientType = /*(ingType == null) ? 'empty' : */ingType;
         this.maxIngredients = (this.ingredientType == 'empty') ? null : (Math.round(this.scene.binWeight / this.getIngredientData(this.ingredientType, 'weight')));
         this.numIngredients = this.maxIngredients;
         this.priceToRefill = (this.ingredientType == 'empty') ? null : 0;
@@ -45,7 +45,9 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         //Display refill cost when pointer hovers over refill button
         this.refillButton.on('pointerover',() => {
             let priceStr;
-            if(this.priceToRefill == 0) {
+            if(this.priceToRefill == null) {
+                priceStr = 'this dispenser is empty';
+            } else if(this.priceToRefill == 0) {
                 priceStr = 'this dispenser is full';
             } else {
                 priceStr = 'this dispenser costs $' + this.priceToRefill + ' to refill';
@@ -53,18 +55,12 @@ class Dispenser extends Phaser.GameObjects.Sprite {
 
             this.priceText.setText(priceStr);
             this.priceText.setVisible(true);
-            // let priceText = this.scene.add.text(440, 265, 'init text', this.scene.defaultTextConfig).setScale(0.5).setOrigin(0.5,0.5);
-            // priceText.setScale(0.5);
-            // this.scene.time.delayedCall(2000, () => {
-            //     priceText.destroy();
-            // });
         });
 
         //Hide refill cost text when pointer hovers over refill button
         this.refillButton.on('pointerout', () => {
             this.priceText.setVisible(false);
         });
-
 
         //Add pointers to buttons as data so the prefab's data can be referenced when they're clicked
         this.dispenseButton.setDataEnabled();
@@ -82,130 +78,55 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.refillMeterBacking = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x000000).setOrigin(0.5, 1);
         this.refillMeter = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
 
-        //Load Audio
-        this.scene.load.audio('dispense', './assets/dispenserNoise.mp3');
-        this.scene.load.audio('emptyDispenser', './assets/dispenserEmpty.mp3');
+        //create temp address Strings to access localStorage
+        let localStorageAddress = 'disp' + this.dispIndex;
+        let ingTypeStr = localStorageAddress + 'Type';
+        let maxIngStr = localStorageAddress + 'MaxIngredients';
+        let numIngStr = localStorageAddress + 'NumIngredients';
+        let refillStr = localStorageAddress + 'PriceToRefill';
+        let heightStr = localStorageAddress + 'MeterHeight';
 
-        if(this.ingredientType == 'peanut'){
-            if(localStorage.getItem('heightPeanuts') == null){
-                localStorage.setItem('heightPeanuts', this.refillMeter.height);
-            }
-            else{
-                this.refillMeter.height = parseFloat(localStorage.getItem('heightPeanuts'));
-            }
-            if(localStorage.getItem('numPeanuts') == null){
-                localStorage.setItem('numPeanuts', this.numIngredients);
-            }
-            else{
-                this.numIngredients = parseInt(localStorage.getItem('numPeanuts'));
-            }
-            if(localStorage.getItem('refillPeanuts') == null){
-                localStorage.setItem('refillPeanuts', this.priceToRefill);
-            }
-            else{
-                this.priceToRefill = parseInt(localStorage.getItem('refillPeanuts'));
-            }
-        }
-        else if(this.ingredientType == 'raisin'){
-            if(localStorage.getItem('heightRaisins') == null){
-                localStorage.setItem('heightRaisins', this.refillMeter.height);
-            }
-            else{
-                this.refillMeter.height = parseFloat(localStorage.getItem('heightRaisins'));
-            }
-            if(localStorage.getItem('numRaisins') == null){
-                localStorage.setItem('numRaisins', this.numIngredients);
-            }
-            else{
-                this.numIngredients = parseInt(localStorage.getItem('numRaisins'));
-            }
-            if(localStorage.getItem('refillRaisins') == null){
-                localStorage.setItem('refillRaisins', this.priceToRefill);
-            }
-            else{
-                this.priceToRefill = parseInt(localStorage.getItem('refillRaisins'));
-            }
-        }
-        else if(this.ingredientType == 'm&m'){
-            if(localStorage.getItem('heightM&Ms') == null){
-                localStorage.setItem('heightM&Ms', this.refillMeter.height);
-            }
-            else{
-                this.refillMeter.height = parseFloat(localStorage.getItem('heightM&Ms'));
-            }
-            if(localStorage.getItem('numM&Ms') == null){
-                localStorage.setItem('numM&Ms', this.numIngredients);
-            }
-            else{
-                this.numIngredients = parseInt(localStorage.getItem('numM&Ms'));
-            }
-            if(localStorage.getItem('refillM&Ms') == null){
-                localStorage.setItem('refillM&Ms', this.priceToRefill);
-            }
-            else{
-                this.priceToRefill = parseInt(localStorage.getItem('refillM&Ms'));
-            }
-        }
-        else if(this.ingredientType == 'almond'){
-            if(localStorage.getItem('heightAlmonds') == null){
-                localStorage.setItem('heightAlmonds', this.refillMeter.height);
-            }
-            else{
-                this.refillMeter.height = parseFloat(localStorage.getItem('heightAlmonds'));
-            }
-            if(localStorage.getItem('numAlmonds') == null){
-                localStorage.setItem('numAlmonds', this.numIngredients);
-            }
-            else{
-                this.numIngredients = parseInt(localStorage.getItem('numAlmonds'));
-            }
-            if(localStorage.getItem('refillAlmonds') == null){
-                localStorage.setItem('refillAlmonds', this.priceToRefill);
-            }
-            else{
-                this.priceToRefill = parseInt(localStorage.getItem('refillAlmonds'));
-            }
-        }
-        
+        //First time setup, store dispData in local storage
+        if(localStorage.getItem(ingTypeStr) == null) {
+            this.updateLocalStorage();
+        } else { //If localStorage exists, restore dispData from local storage
+            this.ingredientType = localStorage.getItem(ingTypeStr);
+            this.maxIngredients = parseInt(localStorage.getItem(maxIngStr));
+            this.numIngredients = parseInt(localStorage.getItem(numIngStr));
+            this.priceToRefill = parseInt(localStorage.getItem(refillStr));
+            this.refillMeter.height = parseFloat(localStorage.getItem(heightStr));
+        }       
     }
 
     spawnIngredient() {
         let spawnedIngredient;
-        let typeString;
 
-        //If the dispenser is empty, play the empty sound
+        //If the dispenser is empty, play the empty sound and reset dispenser
         if(this.ingredientType == 'empty' || this.numIngredients < 1) {
+
+            //Reset dispenser when empty
+            this.priceToRefill = null;
+            this.ingredientText.setText('empty');
+
+            //If the player has edited volume, make sure sound effects are at that volume
             if(localStorage.getItem('volume') == null){
                 this.sound.play('emptyDispenser');
-            } 
-            else{
+            } else{
                 this.scene.sound.play('emptyDispenser', {volume: parseFloat(localStorage.getItem('volume'))});
             }
+
         } else {
-            //Select correct sprite to load for spawnIngredient
-            if(this.ingredientType == 'peanut') {
-                typeString = 'peanut'; // typeString = 'peanut';
-            } else if(this.ingredientType == 'raisin') {
-                typeString = 'raisin'; // typeString = 'raisin';
-            } else if(this.ingredientType == 'm&m') {
-                // this.scene.load.image('m&m', './assets/m&m.png');
-                typeString = 'm&m';
-                // typeString = 'cir'; // typeString = 'm&m';
-            } else if(this.ingredientType == 'almond') {
-                typeString = 'almond'; // typeString = 'almond';
-            }
 
             //Spawn Ingredient
-            spawnedIngredient = new Ingredient(this.scene, this.x + (Math.floor(Math.random()*10) - 5), this.y + 200 + (Math.floor(Math.random()*50)), /*'circle'*/typeString, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
+            spawnedIngredient = new Ingredient(this.scene, this.x + (Math.floor(Math.random()*10) - 5), this.y + 200 + (Math.floor(Math.random()*50)),  this.ingredientType, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
             
-            //Play Dispenser Sound
+            //Play Dispenser Sound, and if the player has edited volume, make sure sound effects are at that volume
             if(localStorage.getItem('volume') == null){
                 this.scene.sound.play('dispense');
             } 
             else{
                 this.scene.sound.play('dispense', {volume: parseFloat(localStorage.getItem('volume'))});
             }
-            
             
             //Update numIngredients
             this.numIngredients--;
@@ -220,61 +141,30 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             this.priceToRefill = Math.ceil(Math.abs(this.numIngredients - this.maxIngredients) * spawnedIngredient.price); //Update priceToRefill
             this.refillMeter.height = (this.numIngredients / this.maxIngredients) * 75; //Update refillMeter
 
-            if(this.ingredientType == 'peanut') {
-                localStorage.setItem('numPeanuts',this.numIngredients);
-                localStorage.setItem('heightPeanuts', this.refillMeter.height);
-                localStorage.setItem('refillPeanuts',this.priceToRefill);
-            } 
-            else if(this.ingredientType == 'raisin') {
-                localStorage.setItem('numRaisins',this.numIngredients);
-                localStorage.setItem('heightRaisins', this.refillMeter.height);
-                localStorage.setItem('refillRaisins',this.priceToRefill);
-            } 
-            else if(this.ingredientType == 'm&m') {
-                localStorage.setItem('numM&Ms',this.numIngredients);
-                localStorage.setItem('heightM&Ms', this.refillMeter.height);
-                localStorage.setItem('refillM&Ms',this.priceToRefill);
-            } 
-            else if(this.ingredientType == 'almond') {
-                localStorage.setItem('numAlmonds',this.numIngredients);
-                localStorage.setItem('heightAlmonds', this.refillMeter.height);
-                localStorage.setItem('refillAlmonds',this.priceToRefill);
-            }
+            //Store dispData in local storage
+            this.updateLocalStorage();
 
         }
     }
 
+    //Change Ingredient in this dispenser to newType, and refill the dispenser to full
     changeType(newType) {
         this.ingredientType = newType;
         let newWeight = this.getIngredientData(newType, 'weight');
-        let newPrice = this.getIngredientData(newType, 'price');
 
         this.ingredientType = newType;
         this.maxIngredients = Math.round(this.scene.binWeight / newWeight);
         this.numIngredients = this.maxIngredients;
-        this.priceToRefill = newPrice * this.numIngredients;
-
-
-        // if(newType == 'peanut') {
-        //     this.scene.load.image('peanut', './assets/peanut.png');
-        //     this.maxIngredients = this.scene.maxPeanuts;
-        // } else if(newType == 'raisin') {
-        //     this.scene.load.image('raisin', './assets/raisin.png');
-        //     this.maxIngredients = this.scene.maxRaisins;
-        // } else if(newType == 'm&m') {
-        //     this.scene.load.image('m&m', './assets/m&m.png');
-        //     this.maxIngredients = this.scene.maxMNMS;
-        // } else if(newType == 'almond') {
-        //     this.scene.load.image('almond', './assets/almond.png');
-        //     this.maxIngredients = this.scene.maxAlmonds;
-        // }
+        this.priceToRefill = 0;
     }
 
+    //Call to retrieve Ingredient data. Leave data arg blank to request all data in the form of an array, or use data arg to request a specific attribute
     getIngredientData(type, data) {
         let ingColor, ingWeight, ingPrice, ingValue;
         let ingDataArray = [];
         
-        if(type == "peanut"){
+        //List all ingredient data here. ingPrice = how much it costs to buy. ingValue = how much the ingredient sells for before multipliers are applied.
+        if(type == "peanut"){ //Make sure image key is spelled the same as the type
             ingColor = 0xeddeb4;
             ingWeight = 1
             ingPrice = 0.0029;
@@ -298,12 +188,13 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             ingValue = 0.0465;
         }
 
+        //If the data arg is left blank return an array containing all values. ingDataArray[0] : color, ingDataArray[1] : weight, ingDataArray[2] : price, ingDataArray[3] : value
         if(data == null) {
             ingDataArray.push(ingColor, ingWeight, ingPrice, ingValue);
             return ingDataArray;
-        } /*else if(data == 'color') {
+        } else if(data == 'color') {
             return ingColor;
-        }*/ else if(data == 'weight') {
+        } else if(data == 'weight') {
             return ingWeight;
         } else if(data == 'price') {
             return ingPrice;
@@ -312,23 +203,22 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         }
         
     }
+
+    updateLocalStorage() {
+        //Generate localStorage addresses to access stored data
+        let localStorageAddress = 'disp' + this.dispIndex;
+        let ingTypeStr = localStorageAddress + 'Type';
+        let maxIngStr = localStorageAddress + 'MaxIngredients';
+        let numIngStr = localStorageAddress + 'NumIngredients';
+        let refillStr = localStorageAddress + 'PriceToRefill';
+        let heightStr = localStorageAddress + 'MeterHeight';
+
+        //Replace stored data with updated values
+        localStorage.setItem(ingTypeStr, this.ingredientType);
+        localStorage.setItem(maxIngStr, this.maxIngredients);
+        localStorage.setItem(numIngStr, this.numIngredients);
+        localStorage.setItem(refillStr, this.priceToRefill);
+        localStorage.setItem(heightStr, this.refillMeter.height);
+    }
+
 }
-
-
-
-// constructor(scene, x, y, texture, frame/*, img*/) {
-//     super(scene, x, y, texture, frame/*, img*/);
-
-//     //Add object to existing scene
-//     scene.add.existing(this);
-
-//     this.scene = scene;
-//     this.scene.load.image('cir', './assets/circle.png');
-// }
-
-// spawnObj() {
-//     let spawnedObj;
-//     spawnedObj = new Spawned(this.scene, Math.floor(Math.random()*100)+((game.config.width/2) - 50), Math.floor(Math.random()*100)+((game.config.height/2) - 50), 'cir').setOrigin(0.5,0.5);
-//     spawnedObj.setTint(0xFF0000);
-//     console.log('spawnedObj spawned');
-// }
