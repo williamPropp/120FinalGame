@@ -49,7 +49,7 @@ class Play extends Phaser.Scene {
         }
         
         //Initialize Upgrade Array
-        this.upgradesArray = [['dispenser I', 250], 
+        this.upgradesArray = [['dispenser I', 0],//250], 
             ['dispenser II', 500], 
             ['bag 2x', 100], 
             ['bag 4x', 1000], 
@@ -147,8 +147,17 @@ class Play extends Phaser.Scene {
         this.dispenser1 = new Dispenser(this, 250, 0, null, null, 'peanut', 1);
         this.dispenser2 = new Dispenser(this, 370, 0, null, null, 'raisin', 2);
         this.dispenser3 = new Dispenser(this, 490, 0, null, null, 'm&m', 3);
-        this.dispenser4;
-        this.dispenser5;
+        if(localStorage.getItem('disp4Type') == null) {
+            this.dispenser4; //Don't create dispenser4 until it is bought;
+        } else {
+            this.dispenser4 = new Dispenser(this, 610, 0, null, null, 'empty', 4); //Update x location when new sprites are added
+        }
+        if(localStorage.getItem('disp5Type') == null) {
+            this.dispenser5; //Don't create dispenser5 until it is bought;
+        } else {
+            this.dispenser5 = new Dispenser(this, 730, 0, null, null, 'empty', 5); //Update x location when new sprites are added
+        }
+
         // this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
 
         this.inform = this.cache.json.get('bag_physics');
@@ -584,39 +593,30 @@ class Play extends Phaser.Scene {
     }
 
     //Purchase Upgrades
-    buyUpgrades(upgradeStr) {
-        let i = 0;
-        for(let u of this.upgradesArray) {
-            if(u[0] == upgradeStr) {
-                let price = u[1];
-                if(this.money >= price){
-                    this.spendCash(price);
-                    if(upgradeStr == 'dispenser I') {
-                        this.dispenser4 = new Dispenser(this, 490, 0, null, null, 'empty', 4); //Update x location when new sprites are added
-                    } else if(upgradeStr == 'dispenser II') {
-                        this.dispenser5 = new Dispenser(this, 490, 0, null, null, 'empty', 5); //Update x location when new sprites are added
-                    } else if(upgradeStr == 'bag 2x') {
-                        this.bagMultiplier = 2;
-                    } else if(upgradeStr == 'bag 4x') {
-                        this.bagMultiplier = 4;
-                    } else if(upgradeStr == 'bag 8x') {
-                        this.bagMultiplier = 8;
-                    } else if(upgradeStr == 'bag 16x') {
-                        this.bagMultiplier = 16;
-                    } else if(upgradeStr == 'lobby I') {
-                        this.lobbyMultiplier = 2;
-                    } else if(upgradeStr == 'lobby II') {
-                        this.lobbyMultiplier = 4;
-                    } else if(upgradeStr == 'lobby III') {
-                        this.lobbyMultiplier = 8;
-                    }
-                    this.upgradesArray.splice(i, 1);
-                    this.upgradesAcquiredArray.push(u);
-                } else {
-                    this.insufficientFunds(price)
-                }
-            }
-            i++;
+    buyUpgrades(upgradeStr, price) {
+        if(upgradeStr == 'dispenser I') {
+            console.log('disp4 bought');
+            this.dispenser4 = new Dispenser(this, 610, 0, null, null, 'empty', 4); //Update x location when new sprites are added
+        } else if(upgradeStr == 'dispenser II') {
+            console.log('disp5 bought');
+            this.dispenser5 = new Dispenser(this, 730, 0, null, null, 'empty', 5); //Update x location when new sprites are added
+        } else if(upgradeStr == 'Bag 2x') {
+            this.bagMultiplier = 2;
+        } else if(upgradeStr == 'Bag 4x') {
+            this.bagMultiplier = 4;
+        } else if(upgradeStr == 'Bag 8x') {
+            this.bagMultiplier = 8;
+        } else if(upgradeStr == 'Bag 16x') {
+            this.bagMultiplier = 16;
+        } else if(upgradeStr == 'Lobby I') {
+            this.lobbyMultiplier = 2;
+        } else if(upgradeStr == 'Lobby II') {
+            this.lobbyMultiplier = 4;
+        } else if(upgradeStr == 'Lobby III') {
+            this.lobbyMultiplier = 8;
+        } else if ('insFunds'){
+            this.insufficientFunds(price);
+            console.log('funds error');
         }
     }
 
@@ -628,10 +628,5 @@ class Play extends Phaser.Scene {
             insFundText.destroy();
         });
     }
-
- //   createDispenser(x, y, initType) {
- //       let newDispenser = new Dispenser(this, x, y, (initType == null) ? 'empty' : initType);
- //       return newDispenser;
- //   }
 
 }
