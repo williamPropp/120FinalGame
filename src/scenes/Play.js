@@ -102,6 +102,7 @@ class Play extends Phaser.Scene {
         //Text configs
         this.defaultTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
         this.whiteTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#00000033', color: '#FFFFFF', align: 'center'};
+        this.scaleTextConfig = {fontFamily: 'screen', fontSize: '62px', backgroundColor: '#FFFFFF00', color: '#00FC10', align: 'center'};
 
         //Keep track of clickTarget globally
         this.clickTarget;
@@ -301,7 +302,7 @@ class Play extends Phaser.Scene {
             let percentageOffset = 30;
             if(percentages != null) {
                 for(let p of percentages) {
-                    let percentText = this.add.text(850, 580 + (percentageOffset * percentages.indexOf(p)), p[0] + ' : ' + p[1] + '%', this.defaultTextConfig).setOrigin(0.5,0.5);
+                    let percentText = this.add.text(841, 583 + (percentageOffset * percentages.indexOf(p)), p[0].toUpperCase() + ' : ' + p[1] + '%', this.scaleTextConfig).setOrigin(0.5,0.5);
                     percentText.setScale(0.5);
                     this.time.delayedCall(2000, () => {
                         percentText.destroy();
