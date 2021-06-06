@@ -31,7 +31,7 @@ class Menu extends Phaser.Scene {
     
 
         this.pointerDown = false;
-        this.textConfig = { fontFamily: 'fred', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center' };
+        this.textConfig = { fontFamily: 'purse', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center' };
         this.playButton = this.add.rectangle(game.config.width/2, game.config.height/2 + 100, game.config.width/10, game.config.height/12, 0x00FF00).setOrigin(0.5,0.5);
         this.playText = this.add.text(game.config.width/2, game.config.height/2 + 100, 'Play', this.textConfig).setOrigin(0.5,0.5);
         this.optionsButton = this.add.rectangle(game.config.width/2, game.config.height/2 + 180, game.config.width/6, game.config.height/12, 0x0000FF).setOrigin(0.5,0.5);

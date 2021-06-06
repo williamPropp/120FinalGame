@@ -27,9 +27,9 @@ class Tutorial extends Phaser.Scene {
         
         //Create art assets
         this.bg = this.add.tileSprite(0, 0, screenWidth, game.config.height, 'bg').setOrigin(0 ,0);
-        this.defaultTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
-        this.quesTextConfig = {fontFamily: 'fred', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center'};
-        this.descriptionTextConfig = {fontFamily: 'fred', fontSize: '16px', color: '#000000', align: 'center'};
+        this.defaultTextConfig = {fontFamily: 'purse', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
+        this.quesTextConfig = {fontFamily: 'purse', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center'};
+        this.descriptionTextConfig = {fontFamily: 'purse', fontSize: '17px', color: '#000000', align: 'center'};
         this.whiteTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#00000033', color: '#FFFFFF', align: 'center'};
         this.playMenu = this.add.image(10, 100, 'files').setOrigin(0,0);
         this.conveyor = this.add.image(305, 510, 'conveyor');
