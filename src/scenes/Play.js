@@ -28,6 +28,7 @@ class Play extends Phaser.Scene {
         this.load.image('files', 'files.png');
         this.load.image('dispenser', 'Dispenser.png');
         this.load.image('arrow', 'Arrow.png');
+        this.load.image('roach', 'Roach.png');
     }
 
     create() {
@@ -145,12 +146,12 @@ class Play extends Phaser.Scene {
         this.dispenseButtons = this.add.group();
         this.refillButtons = this.add.group();
 
-        this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond'];
+        this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond', 'roach'];
         this.dispenserArray = [];
 
-        this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'peanut', 1);
-        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'raisin', 2);
-        this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'm&m', 3);
+        this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'peanut', 1, false, 'roach');
+        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'raisin', 2, false), 'roach';
+        this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'm&m', 3, false, 'roach');
         if(localStorage.getItem('disp4Type') == null) {
             this.dispenser4; //Don't create dispenser4 until it is bought;
         } else {
@@ -253,6 +254,8 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+
+        //this.dispenser1.lobby = true;
 
         this.playMenu.alpha = 1;
 

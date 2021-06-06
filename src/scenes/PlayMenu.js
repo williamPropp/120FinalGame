@@ -965,6 +965,9 @@ class PlayMenu extends Phaser.Scene {
             this.scenePointer.bagMultiplier = 16;
         } else if(upgradeStr == 'Lobby I') {
             this.scenePointer.lobbyMultiplier = 2;
+            this.scenePointer.dispenser1.lobby = true;
+            this.scenePointer.dispenser2.lobby = true;
+            this.scenePointer.dispenser3.lobby = true;
         } else if(upgradeStr == 'Lobby II') {
             this.scenePointer.lobbyMultiplier = 4;
         } else if(upgradeStr == 'Lobby III') {

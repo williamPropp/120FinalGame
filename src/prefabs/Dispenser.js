@@ -1,6 +1,6 @@
 class Dispenser extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame, ingType, dispIndex) {
-        super(scene, x, y, texture, frame, ingType, dispIndex);
+    constructor(scene, x, y, texture, frame, ingType, dispIndex, lobby, roach) {
+        super(scene, x, y, texture, frame, ingType, dispIndex, lobby, roach);
 
         //Add object to existing scene
         scene.add.existing(this);
@@ -10,6 +10,8 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         //Dispenser data
         this.scene = scene;
         this.dispIndex = dispIndex;
+        this.lobby = lobby;
+        this.roach = roach;
         this.ingredientType = /*(ingType == null) ? 'empty' : */ingType;
         this.maxIngredients = (this.ingredientType == 'empty') ? null : (Math.round(this.scene.binWeight / this.getIngredientData(this.ingredientType, 'weight')));
         this.numIngredients = this.maxIngredients;
@@ -120,9 +122,14 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             }
 
         } else {
-
+            this.decider = Math.random();
             //Spawn Ingredient
-            spawnedIngredient = new Ingredient(this.scene, this.x + (Math.floor(Math.random()*10) - 5), this.y + 200 + (Math.floor(Math.random()*50)),  this.ingredientType, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
+            if(this.lobby == false || this.decider < 0.95) {
+                spawnedIngredient = new Ingredient(this.scene, this.x + (Math.floor(Math.random()*10) - 5), this.y + 200 + (Math.floor(Math.random()*50)),  this.ingredientType, null, this.ingredientType, this.getIngredientData(this.ingredientType)).setOrigin(0.5,0.5);
+            } else if(this.decider > 0.95) {
+                spawnedIngredient = new Ingredient(this.scene, this.x + (Math.floor(Math.random()*10) - 5), this.y + 200 + (Math.floor(Math.random()*50)), 'roach', null, 'roach', this.getIngredientData('roach')).setOrigin(0.5,0.5);
+                console.log('roach');
+            }
             
             //Play Dispenser Sound, and if the player has edited volume, make sure sound effects are at that volume
             if(localStorage.getItem('volume') == null){
@@ -195,6 +202,11 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             ingWeight = 1.3;
             ingPrice = 0.028;
             ingValue = 0.0465;
+        } else if(type == "roach"){
+            ingColor = 0x523f0a;
+            ingWeight = 1.5;
+            ingPrice = 0.00;
+            ingValue = -2.0;
         }
 
         //If the data arg is left blank return an array containing all values. ingDataArray[0] : color, ingDataArray[1] : weight, ingDataArray[2] : price, ingDataArray[3] : value
