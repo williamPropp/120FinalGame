@@ -100,7 +100,7 @@ class Play extends Phaser.Scene {
         this.soundtrack.play();
 
         //Text configs
-        this.defaultTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
+        this.defaultTextConfig = {fontFamily: 'purse', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
         this.whiteTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#00000033', color: '#FFFFFF', align: 'center'};
         this.scaleTextConfig = {fontFamily: 'screen', fontSize: '62px', backgroundColor: '#FFFFFF00', color: '#00FC10', align: 'center'};
 
