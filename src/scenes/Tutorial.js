@@ -19,6 +19,8 @@ class Tutorial extends Phaser.Scene {
         this.load.image('files', 'files.png');
         this.load.image('scale', 'scale.png');
         this.load.image('bg', 'FactoryBG.png');
+        this.load.image('dispenser', 'Dispenser.png');
+        this.load.image('arrow', 'Arrow.png');
     }
 
     create(){            
@@ -44,15 +46,19 @@ class Tutorial extends Phaser.Scene {
         
         this.ingredientArray = ['peanut', 'raisin', 'm&m', 'almond'];
         for(let i = 0; i < 4; i++){
-            this.dispenserFrame = this.add.rectangle(250 + i * 120, 0, 100, 250, 0xD3D3D3).setOrigin(0.5, 0);
-            this.dispenseButton = this.add.circle(250 + i * 120, 200, 25, 0xFF0000).setOrigin(0.5,0.5);
-            this.refillButton = this.add.circle(250 + 30 + i * 120, 150, 10, 0x0000FF).setOrigin(0.5,0.5);
+            this.dispenserFrame = this.add.image(250 + i * 120, 0, 'dispenser').setOrigin(0.5, 0);
+            this.dispenseButton = this.add.circle(250 + i * 120, 200 + 6, 18, 0xFF0000).setOrigin(0.5,0.5);
+            this.refillButton = this.add.circle(250 + 30 + i * 120 - 30, 150 + 5, 10, 0x0000FF).setOrigin(0.5,0.5);
             this.ingredientText = this.add.text(250 + i * 120, 235, this.ingredientArray[i], this.defaultTextConfig).setOrigin(0.5,0.5);
             this.ingredientText.setScale(0.5);
-            this.refillMeterBacking = this.add.rectangle(250 + i * 120, 150, 25, 75, 0x000000).setOrigin(0.5, 1);
-            this.refillMeter = this.add.rectangle(250 + i * 120, 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
+            this.refillMeterBacking = this.add.rectangle(250 + i * 120, 130, 25, 75, 0x000000).setOrigin(0.5, 1);
+            this.refillMeter = this.add.rectangle(250 + i * 120, 130, 25, 75, 0x00FF00).setOrigin(0.5, 1);
         }
         this.moneyText = this.add.text(10, 5, 'Bank: $50.00', this.whiteTextConfig);
+        this.leftArrow = this.add.image(270, 510, 'arrow').setOrigin(0,0.5);
+        this.leftArrow.setFlipX(true);
+        this.rightArrow = this.add.image(387, 510, 'arrow').setOrigin(0,0.5);
+        this.rightArrow.setFlipX(false);
        
 
         //Icons
