@@ -27,10 +27,10 @@ class Tutorial extends Phaser.Scene {
         
         //Create art assets
         this.bg = this.add.tileSprite(0, 0, screenWidth, game.config.height, 'bg').setOrigin(0 ,0);
-        this.defaultTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
-        this.quesTextConfig = {fontFamily: 'Arial', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center'};
-        this.descriptionTextConfig = {fontFamily: 'Helvetica', fontSize: '16px', color: '#000000', align: 'center'};
-        this.whiteTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#00000033', color: '#FFFFFF', align: 'center'};
+        this.defaultTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
+        this.quesTextConfig = {fontFamily: 'fred', fontSize: '20px', backgroundColor: '#FFFFFF00', color: '#FFFFFF', align: 'center'};
+        this.descriptionTextConfig = {fontFamily: 'fred', fontSize: '16px', color: '#000000', align: 'center'};
+        this.whiteTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#00000033', color: '#FFFFFF', align: 'center'};
         this.playMenu = this.add.image(10, 100, 'files').setOrigin(0,0);
         this.conveyor = this.add.image(305, 510, 'conveyor');
         this.scale = this.add.image(724, 450, 'scale').setOrigin(0 ,0);
@@ -40,7 +40,7 @@ class Tutorial extends Phaser.Scene {
         this.tube = this.add.rectangle(780, 0, 120, 330, 0xadd8e6).setOrigin(0 ,0);
         this.tracker = this.add.rectangle(725, 50, 225, 250, 0xC4A484).setOrigin(0 ,0);
         this.contractBg = this.add.rectangle(735, 60, 205, 230, 0xFFFFFF).setOrigin(0 ,0);
-        this.currentContract = this.add.text(840, 147, '', this.descriptionTextConfig).setOrigin(0.5,0.5).setScale(1,1);
+        this.currentContract = this.add.text(840, 159, '', this.descriptionTextConfig).setOrigin(0.5,0.5).setScale(1,1);
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
         
         
@@ -49,7 +49,7 @@ class Tutorial extends Phaser.Scene {
             this.dispenserFrame = this.add.image(250 + i * 120, 0, 'dispenser').setOrigin(0.5, 0);
             this.dispenseButton = this.add.circle(250 + i * 120, 200 + 6, 18, 0xFF0000).setOrigin(0.5,0.5);
             this.refillButton = this.add.circle(250 + 30 + i * 120 - 30, 150 + 5, 10, 0x0000FF).setOrigin(0.5,0.5);
-            this.ingredientText = this.add.text(250 + i * 120, 235, this.ingredientArray[i], this.defaultTextConfig).setOrigin(0.5,0.5);
+            this.ingredientText = this.add.text(250 + i * 120, 241, this.ingredientArray[i].toUpperCase(), this.defaultTextConfig).setOrigin(0.5,0.5);
             this.ingredientText.setScale(0.5);
             this.refillMeterBacking = this.add.rectangle(250 + i * 120, 130, 25, 75, 0x000000).setOrigin(0.5, 1);
             this.refillMeter = this.add.rectangle(250 + i * 120, 130, 25, 75, 0x00FF00).setOrigin(0.5, 1);
@@ -66,7 +66,7 @@ class Tutorial extends Phaser.Scene {
         this.iconTwo = this.add.circle(20,this.playMenu.y + 145, 16, 0x5F20FF).setInteractive().setStrokeStyle(2, '#000000');
         this.iconThree = this.add.circle(this.bag.x + 100, this.bag.y, 16, 0x5F20FF).setInteractive().setStrokeStyle(2, '#000000');
         this.iconFour = this.add.circle(this.scale.x, this.scale.y - 35, 16, 0x5F20FF).setInteractive().setStrokeStyle(2, '#000000');
-        this.iconFive = this.add.circle(380, 50, 16, 0x5F20FF).setInteractive().setStrokeStyle(2, '#000000');
+        this.iconFive = this.add.circle(385, 35, 16, 0x5F20FF).setInteractive().setStrokeStyle(2, '#000000');
    
        
         
@@ -79,7 +79,7 @@ class Tutorial extends Phaser.Scene {
 
 
          //Effects
-         this.tweens.add({
+         this.bounce = this.tweens.add({
 
             targets: [this.iconOne, this.questionOne, this.iconTwo, this.questionTwo, this.iconThree, this.questionThree,
                 this.iconFour, this.questionFour, this.iconFive, this.questionFive],
@@ -92,53 +92,62 @@ class Tutorial extends Phaser.Scene {
         });
 
         //Descriptions
-        this.tutorialText = this.add.text(773,107, ['Hover over an icon', 'to get information', 'on the object next', 
-                                                    'to it. Press Esc', 'to go back to the', 'main menu.'], this.descriptionTextConfig)
+        this.tutorialText = this.add.text(754,97, ['Hover over an icon', 'with the mouse to', 'get information on', 'the Factory object next',  'to it. Press Esc to', 'go back to the main', 'menu.'], this.descriptionTextConfig)
 
         //Interactivity
         this.iconOne.on('pointerover', () => {
             this.tutorialText.setVisible(false);
-            this.currentContract.text = ['Your current amount of', 'money will always be', 'displayed here.'];
+            this.currentContract.text = ['Your current amount of', 'money will always be', 'displayed here. Sell', 'bags of mix to keep', 'building your fortune!'];
+            this.bounce.pause();
         });
         this.iconOne.on('pointerout', () => {
             this.tutorialText.setVisible(true);
             this.currentContract.text = '';
+            this.bounce.resume();
         });
         this.iconTwo.on('pointerover', () => {         
             this.tutorialText.setVisible(false);
-            this.currentContract.text = ['Here you have access to', 'new upgrades, contracts,', ' and restocks that will', 
-                                          'help you on your', 'trail-mix making journey.'];
+            this.currentContract.text = ['In your files you have', 'access to new upgrades,', 'contracts, and restocks', 
+                                         'that will help you on', 'your trail-mix making', 'journey.'];
+            this.bounce.pause();
          });
         this.iconTwo.on('pointerout', () => {
             this.tutorialText.setVisible(true); 
             this.currentContract.text = '';
+            this.bounce.resume();
          });
         this.iconThree.on('pointerover', () => {         
             this.tutorialText.setVisible(false);
-            this.currentContract.text = ['Catch the ingredients in', 'this bag to sell your', 'mix and earn money! Use', 
-                                         'the left and right arrow', 'keys to move your bag on', 'the conveyor belt.'];
+            this.currentContract.text = ['Catch the ingredients in', 'this bag to sell your mix', 'and earn money! Use the', 
+                                         'left and right arrow keys', 'to move your bag on the', 'conveyor belt.'];
+            this.bounce.pause();
         });
         this.iconThree.on('pointerout', () => {
             this.tutorialText.setVisible(true);
             this.currentContract.text = '';
+            this.bounce.resume();
         }); 
         this.iconFour.on('pointerover', () => {         
             this.tutorialText.setVisible(false);
-            this.currentContract.text = ['Move your bag to this', 'scale to have your mix', 'weighed and earnings', 'calculated!'];
+            this.currentContract.text = ['Move your bag to this', 'scale to have your mix', 'weighed and sold for cash!'];
+            this.bounce.pause();
         });
         this.iconFour.on('pointerout', () => {
             this.tutorialText.setVisible(true);
             this.currentContract.text = '';
+            this.bounce.resume();
         });
         this.iconFive.on('pointerover', () => {         
             this.tutorialText.setVisible(false);
-            this.currentContract.text =  ['These are your', 'dispensers. The red button', 'dispenses your ingredients', 
-                                          'into the bag, the green' , 'meter lets you know how', 'full each dispenser is, and', 
-                                          'you may refill your', 'dispensers for money by', 'pressing the blue button.'];
+            this.currentContract.text =  ['These are your dispensers.', ' Press or hold the red', 'button to dispense your',  
+                                          'ingredients into the bag.', 'Use the blue button to', 'refill a dispenser, whose', 
+                                          'ingredient level is', 'indicated by the green', 'meter in the middle of', 'each dispenser.'];
+            this.bounce.pause();
         });
         this.iconFive.on('pointerout', () => {
             this.tutorialText.setVisible(true);
             this.currentContract.text = '';
+            this.bounce.resume();
         });
 
         //Define keys

@@ -20,7 +20,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         console.log(this.dispenserFrame);
         this.dispenseButton = this.scene.add.circle(this.x, this.y + 207, 18, 0xFF0000).setOrigin(0.5,0.5);
         this.refillButton = this.scene.add.circle(this.x, this.y + 155, 10, 0x0000FF).setOrigin(0.5,0.5);
-        this.ingredientText = this.scene.add.text(this.x, this.y + 237, this.ingredientType + ((this.ingredientType == 'empty') ? '' : 's'), this.scene.defaultTextConfig).setOrigin(0.5,0.5);
+        this.ingredientText = this.scene.add.text(this.x, this.y + 240, this.ingredientType.toUpperCase() + ((this.ingredientType == 'empty') ? '' : 's'), this.scene.defaultTextConfig).setOrigin(0.5,0.5);
         this.ingredientText.setScale(0.5);
         this.priceText = this.scene.add.text(440, 265, 'init text', this.scene.whiteTextConfig).setScale(0.5).setOrigin(0.5,0.5);
         this.priceText.setVisible(false);
@@ -98,7 +98,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             this.numIngredients = parseInt(localStorage.getItem(numIngStr));
             this.priceToRefill = parseInt(localStorage.getItem(refillStr));
             this.refillMeter.height = parseFloat(localStorage.getItem(heightStr));
-            this.ingredientText.setText(this.ingredientType);
+            this.ingredientText.setText(this.ingredientType.toUpperCase());
         }       
     }
 
@@ -161,7 +161,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.numIngredients = this.maxIngredients;
         this.priceToRefill = 0;
         this.refillMeter.height = 75;
-        this.ingredientText.setText(newType);
+        this.ingredientText.setText(newType.toUpperCase());
 
         //Store updated data in localStorage
         this.updateLocalStorage();

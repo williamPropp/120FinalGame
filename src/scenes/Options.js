@@ -23,8 +23,8 @@ class Options extends Phaser.Scene {
         this.titleScreenFront = this.add.tileSprite(0, 0, 960, 720, 'menuScreenFront').setOrigin(0,0);
         this.moveDirection = true;
         
-        this.defaultTextConfig = {fontSize: '30px', backgroundColor: '#0050DF', color: '#FFFFFF', align: 'center'};
-        this.volTextConfig = { fontSize: '25px', color: '#FFFFFF', align: 'center'};
+        this.defaultTextConfig = {fontFamily: 'fred', fontSize: '30px', backgroundColor: '#0050DF', color: '#FFFFFF', align: 'center'};
+        this.volTextConfig = { fontFamily: 'fred', fontSize: '25px', color: '#FFFFFF', align: 'center'};
 
         this.volText = this.add.text(450, 444, 'Volume', this.defaultTextConfig).setOrigin(0.5,0.5);
 

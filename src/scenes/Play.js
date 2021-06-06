@@ -100,8 +100,8 @@ class Play extends Phaser.Scene {
         this.soundtrack.play();
 
         //Text configs
-        this.defaultTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
-        this.whiteTextConfig = {fontFamily: 'Helvetica', fontSize: '40px', backgroundColor: '#00000033', color: '#FFFFFF', align: 'center'};
+        this.defaultTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
+        this.whiteTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#00000033', color: '#FFFFFF', align: 'center'};
 
         //Keep track of clickTarget globally
         this.clickTarget;
@@ -185,11 +185,11 @@ class Play extends Phaser.Scene {
         //Current Contract Info
         this.contractBg = this.add.rectangle(735, 60, 205, 230, 0xFFFFFF).setOrigin(0 ,0);
 
-        this.currentContract = this.add.text(840, 100, contractInfo.ammount, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
-        this.ingOne = this.add.text(840, 140, contractInfo.infoOne, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingTwo = this.add.text(840, 180, contractInfo.infoTwo, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingThree = this.add.text(840, 220, contractInfo.infoThree, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
-        this.ingFour = this.add.text(840, 260, contractInfo.infoFour, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.currentContract = this.add.text(838, 100, contractInfo.ammount, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
+        this.ingOne = this.add.text(838, 140, contractInfo.infoOne, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingTwo = this.add.text(838, 180, contractInfo.infoTwo, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingThree = this.add.text(838, 220, contractInfo.infoThree, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
+        this.ingFour = this.add.text(838, 260, contractInfo.infoFour, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
 
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
