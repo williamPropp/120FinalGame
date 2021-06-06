@@ -26,6 +26,8 @@ class Play extends Phaser.Scene {
         this.load.audio('tubeSuction', 'suction.mp3');
         this.load.image('scale', 'scale.png');
         this.load.image('files', 'files.png');
+        this.load.image('dispenser', 'Dispenser.png');
+        this.load.image('arrow', 'Arrow.png');
     }
 
     create() {
@@ -79,6 +81,7 @@ class Play extends Phaser.Scene {
         this.spawnIngredientLoop = false;
         this.priceCalculated = false;
         this.contractEnabled = false;
+        this.sideMovement = false;
 
         
         //Add music to the scene
@@ -144,9 +147,9 @@ class Play extends Phaser.Scene {
         this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond'];
         this.dispenserArray = [];
 
-        this.dispenser1 = new Dispenser(this, 250, 0, null, null, 'peanut', 1);
-        this.dispenser2 = new Dispenser(this, 370, 0, null, null, 'raisin', 2);
-        this.dispenser3 = new Dispenser(this, 490, 0, null, null, 'm&m', 3);
+        this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'peanut', 1);
+        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'raisin', 2);
+        this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'm&m', 3);
         if(localStorage.getItem('disp4Type') == null) {
             this.dispenser4; //Don't create dispenser4 until it is bought;
         } else {
@@ -225,6 +228,20 @@ class Play extends Phaser.Scene {
             this.clickTarget = null;
             this.clickOff();
         });
+
+        //conveyor buttons
+        this.leftArrow = this.add.image(270, 510, 'arrow').setOrigin(0,0.5);
+        this.leftArrow.setFlipX(true);
+        this.leftArrow.setInteractive({
+            useHandCursor: true
+        });
+        this.leftArrow.setDataEnabled;
+        this.rightArrow = this.add.image(387, 510, 'arrow').setOrigin(0,0.5);
+        this.rightArrow.setFlipX(false);
+        this.rightArrow.setInteractive({
+            useHandCursor: true
+        });
+        this.rightArrow.setDataEnabled;
 
         //Define keys
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -386,6 +403,13 @@ class Play extends Phaser.Scene {
                     i.setVelocity(0,0);
                 }
             }
+        } else if(this.bag.x > 690 && this.bag.x < 840) {
+            this.bag.setVelocity(10,2);
+            for(let i of this.ingHolder.getChildren()){
+                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                    i.setVelocity(10,0);
+                }
+            }
         }
 
         //Go back to menu when you press ESC
@@ -415,6 +439,53 @@ class Play extends Phaser.Scene {
             }
             this.scene.pause('playScene');
         }
+        if(gObj == this.rightArrow){
+            this.sideMovement = true;
+            this.holder = 1;
+            if(this.sideMovement == true){
+                for(let i of this.ingHolder.getChildren()){
+                    if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                    //    console.log("right called");
+                        i.setVelocity(7,0)
+                    }
+                }
+                if(localStorage.getItem('volume') == null){
+                    this.sound.play('shortHydraulic');
+                } 
+                else{
+                    this.sound.play('shortHydraulic', {volume: parseFloat(localStorage.getItem('volume'))});
+                }
+                this.bag.setVelocity(7, 2);
+                let conveyorAnim = this.add.sprite(305, 510, 'conveyor');
+                conveyorAnim.anims.play('conveyorRight');
+                this.time.delayedCall(2500, () => {
+                    conveyorAnim.destroy();
+                })
+            }
+        }
+        if(gObj == this.leftArrow){
+            this.sideMovement = true;
+            if(this.sideMovement == true){
+                for(let i of this.ingHolder.getChildren()){
+                    if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                    //    console.log("right called");
+                        i.setVelocity(-7,0)
+                    }
+                }
+                if(localStorage.getItem('volume') == null){
+                    this.sound.play('shortHydraulic');
+                } 
+                else{
+                    this.sound.play('shortHydraulic', {volume: parseFloat(localStorage.getItem('volume'))});
+                }
+                this.bag.setVelocity(-7, 2);
+                let conveyorAnim = this.add.sprite(305, 510, 'conveyor');
+                conveyorAnim.anims.play('conveyorRight');
+                this.time.delayedCall(2500, () => {
+                    conveyorAnim.destroy();
+                })
+            }
+        }
             
         for(let b of this.dispenseButtons.getChildren()) {
             if(gObj == b) {
@@ -440,6 +511,7 @@ class Play extends Phaser.Scene {
 
     clickOff() {
         this.spawnIngredientLoop = false;
+        this.sideMovement = false;
     }
 
     //Calculates money made from selling trail mix bag

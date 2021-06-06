@@ -4,6 +4,8 @@ class Dispenser extends Phaser.GameObjects.Sprite {
 
         //Add object to existing scene
         scene.add.existing(this);
+
+        this.scene.load.image('disp', './assets/Dispenser.png');
         
         //Dispenser data
         this.scene = scene;
@@ -14,10 +16,11 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.priceToRefill = (this.ingredientType == 'empty') ? null : 0;
 
         //Dispenser components
-        this.dispenserFrame = this.scene.add.rectangle(this.x, this.y, 100, 250, 0xD3D3D3).setOrigin(0.5, 0);
-        this.dispenseButton = this.scene.add.circle(this.x, this.y + 200, 25, 0xFF0000).setOrigin(0.5,0.5);
-        this.refillButton = this.scene.add.circle(this.x + 30, this.y + 150, 10, 0x0000FF).setOrigin(0.5,0.5);
-        this.ingredientText = this.scene.add.text(this.x, this.y + 235, this.ingredientType + ((this.ingredientType == 'empty') ? '' : 's'), this.scene.defaultTextConfig).setOrigin(0.5,0.5);
+        this.dispenserFrame = this.scene.add.image(this.x, this.y, texture).setOrigin(0.5, 0);
+        console.log(this.dispenserFrame);
+        this.dispenseButton = this.scene.add.circle(this.x, this.y + 207, 18, 0xFF0000).setOrigin(0.5,0.5);
+        this.refillButton = this.scene.add.circle(this.x, this.y + 155, 10, 0x0000FF).setOrigin(0.5,0.5);
+        this.ingredientText = this.scene.add.text(this.x, this.y + 237, this.ingredientType + ((this.ingredientType == 'empty') ? '' : 's'), this.scene.defaultTextConfig).setOrigin(0.5,0.5);
         this.ingredientText.setScale(0.5);
         this.priceText = this.scene.add.text(440, 265, 'init text', this.scene.whiteTextConfig).setScale(0.5).setOrigin(0.5,0.5);
         this.priceText.setVisible(false);
@@ -75,8 +78,8 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         
 
         //Refill Meter
-        this.refillMeterBacking = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x000000).setOrigin(0.5, 1);
-        this.refillMeter = this.scene.add.rectangle(this.x, this.y + 150, 25, 75, 0x00FF00).setOrigin(0.5, 1);
+        this.refillMeterBacking = this.scene.add.rectangle(this.x, this.y + 130, 25, 75, 0x000000).setOrigin(0.5, 1);
+        this.refillMeter = this.scene.add.rectangle(this.x, this.y + 130, 25, 75, 0x00FF00).setOrigin(0.5, 1);
 
         //create temp address Strings to access localStorage
         let localStorageAddress = 'disp' + this.dispIndex;
