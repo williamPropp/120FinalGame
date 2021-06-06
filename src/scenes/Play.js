@@ -121,7 +121,7 @@ class Play extends Phaser.Scene {
         //Make conveyor belt
         this.anims.create({ key: 'conveyorLeft', frames: this.anims.generateFrameNumbers('conveyor', { start: 0, end: 2, first: 0}), frameRate: 12 });
         this.anims.create({ key: 'conveyorRight', frames: this.anims.generateFrameNumbers('conveyor', { start: 2, end: 0, first: 0}), frameRate: 12 });
-        this.conveyorBelt = this.matter.add.image(305, 510, 'conveyor').setIgnoreGravity(true).setStatic(true);
+        this.conveyorBelt = this.matter.add.image(308, 510, 'conveyor').setIgnoreGravity(true).setStatic(true);
 
         //Make Render Layers
         this.ingLayer = this.add.layer();
