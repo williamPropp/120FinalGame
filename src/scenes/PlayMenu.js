@@ -970,6 +970,7 @@ class PlayMenu extends Phaser.Scene {
             this.scenePointer.dispenser3.lobby = true;
         } else if(upgradeStr == 'Lobby II') {
             this.scenePointer.lobbyMultiplier = 4;
+            this.scenePointer.enableRatEvent = true;
         } else if(upgradeStr == 'Lobby III') {
             this.scenePointer.lobbyMultiplier = 8;
         } else if (upgradeStr =='insFunds') {
