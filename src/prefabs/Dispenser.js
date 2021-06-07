@@ -12,7 +12,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.dispIndex = dispIndex;
         this.lobby = lobby;
         this.roach = roach;
-        this.ingredientType = /*(ingType == null) ? 'empty' : */ingType;
+        this.ingredientType = ingType;
         this.maxIngredients = (this.ingredientType == 'empty') ? null : (Math.round(this.scene.binWeight / this.getIngredientData(this.ingredientType, 'weight')));
         this.numIngredients = this.maxIngredients;
         this.priceToRefill = (this.ingredientType == 'empty') ? null : 0;
@@ -206,7 +206,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             ingColor = 0x523f0a;
             ingWeight = 1.5;
             ingPrice = 0.00;
-            ingValue = -2.0;
+            ingValue = -0.05;
         }
 
         //If the data arg is left blank return an array containing all values. ingDataArray[0] : color, ingDataArray[1] : weight, ingDataArray[2] : price, ingDataArray[3] : value

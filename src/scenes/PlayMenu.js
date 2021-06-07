@@ -146,7 +146,9 @@ class PlayMenu extends Phaser.Scene {
             p.setInteractive({
                 useHandCursor: true
             }).on('pointerdown', function(pointer, localX, localY, event){
-                //On click
+                this.scene.deselectObj('all');
+            }).on('pointerup', function(pointer, localX, localY, event){
+                this.scene.deselectObj('all');
             });
         }
         this.clickAction = false;
@@ -191,7 +193,8 @@ class PlayMenu extends Phaser.Scene {
         for(let i of this.assignGroup.getChildren()) {
             i.alpha = 0;
             i.setDataEnabled;
-            i.setData('selected', false)
+            // i.setData('selected', false)
+            this.deselectObj(i, 'assign');
 
             let assignGroupPointer = this.assignGroup;
 
@@ -199,18 +202,13 @@ class PlayMenu extends Phaser.Scene {
                 useHandCursor: true
             }).on('pointerdown', function(pointer, localX, localY, event){
                 for(let j of assignGroupPointer.getChildren()) {
+                    //Selection handler
                     if(i == j) {
-                        (j.getData('selected')) ? j.setData('selected', false) : j.setData('selected', true); //If the dispenser is already selected, deselect it
+                        (j.getData('selected')) ? this.scene.deselectObj(j, 'assign') : this.scene.selectObj(j, 'assign'); //If the dispenser is already selected, deselect it
                     } else {
-                        j.setData('selected', false); //Deselect every other dispenser selector
+                        this.scene.deselectObj(j, 'assign'); //Deselect every other dispenser selector
                     }
-                    
-                    //If the dispenser selector is selected, give it a tint, if not, reset its tint
-                    if(j.getData('selected')) {
-                        j.setTint(0xbababa);
-                    } else {
-                        j.setTint(0xFFFFFF); 
-                    }
+
                 }
             });
         }
@@ -366,8 +364,16 @@ class PlayMenu extends Phaser.Scene {
             this.makeContract();
         }
 
+        console.log(this.lineOne.getData('selected'));
 
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
+            // for(let i of this.textLineGroup.getChildren()) {
+            //     this.deselectObj(i, 'text');
+            // }
+            // for(let d of this.assignGroup.getChildren()) {
+            //     this.deselectObj(d, 'assign');
+            // }
+            this.deselectObj('all');
             this.scene.sleep('playMenuScene');
             this.scene.resume('playScene');
         }
@@ -732,35 +738,56 @@ class PlayMenu extends Phaser.Scene {
                 } else if(this.currentTab == 'buy') {
                     // console.log('buying ingredients!!');
                     let selectedIng, selectedDisp;
+                    let ingExists = true;
                     for(let i of this.textLineGroup.getChildren()) {
                         if(i.getData('selected') == true) {
                             selectedIng = i.text;
-                            selectedIng = selectedIng.toLocaleLowerCase().slice(0, selectedIng.length - 1); //Make sure the ingredient name in the text is in the format 'Peanuts', 'Almonds', etc. Capital first, ending with s;
-                            console.log(selectedIng);
-                            i.setData('selected', false);
+                            if(selectedIng == '???') {
+                                this.purchaseError('ing???');
+                                ingExists = false;
+                                this.deselectObj('all');
+                            } else {
+                                selectedIng = selectedIng.toLocaleLowerCase().slice(0, selectedIng.length - 1); //Make sure the ingredient name in the text is in the format 'Peanuts', 'Almonds', etc. Capital first, ending with s;
+                                console.log(selectedIng);
+                                this.deselectObj(i, 'text');
+                            }
+                            // this.time.delayedCall(3000, () => {
+                            //     this.deselectObj(i, 'text');
+                            // });
                         }
                     }
+                    let upgradeExists = true;
                     for(let d of this.assignGroup.getChildren()) {
                         if(d.getData('selected') == true) {
                             selectedDisp = d.getData('disp');
-                            d.setData('selected', false);
-                            this.time.delayedCall(3000, () => {
-                                d.setTint(0xFFFFFF);
-                            });
+                            //If the selected dispenser if 4 or 5, check if the dispenser upgrade has been Purchased
+                            if(selectedDisp == this.scenePointer.dispenser4 || selectedDisp == this.scenePointer.dispenser5) {
+                                if(localStorage.getItem('disp4Type') == null || localStorage.getItem('disp5Type') == null) {
+                                    this.purchaseError('lackOfUpgrade', selectedDisp);
+                                    upgradeExists = false;
+                                    this.deselectObj('all');
+                                }
+                            }
                         }
                     }
-                    if(selectedIng == null || selectedDisp == null) {
-                        console.log('please select an ingredient and a dispenser');
-                    } else {
+                    if((selectedIng == null || selectedDisp == null) && upgradeExists && ingExists) {
+                        this.purchaseError('incompleteSelection');
+                        this.deselectObj('all');
+                    } else if(upgradeExists && ingExists){
                         let priceToBuyIngredient = this.calculateBuyPrice(selectedIng);
                         if(this.scenePointer.money > priceToBuyIngredient) {
                             console.log('buying ingredients!!');
                             //Play the sign animation
                             this.playSignAnim();
+                            console.log(selectedDisp);
+                            console.log(selectedIng);
                             selectedDisp.changeType(selectedIng);
                             this.scenePointer.spendCash(priceToBuyIngredient);
+                            this.deselectObj('all');
+                            // selectedDisp = null;
+                            // selectedIng = null;
                         } else {
-                            this.insufficientPlayMenuFunds(priceToBuyIngredient);
+                            this.purchaseError('insFunds', priceToBuyIngredient);
                         }
                     }
 
@@ -785,6 +812,7 @@ class PlayMenu extends Phaser.Scene {
         this.lineThree.text = this.upgrades[element].infoTwo;
         this.lineFour.text = this.upgrades[element].infoThree;
     }
+
     getContracts(element) {
         console.log(element);
         this.boldOne.text = this.contracts[element].postName;
@@ -794,60 +822,14 @@ class PlayMenu extends Phaser.Scene {
         this.lineThree.text = this.contracts[element].infoThree;
         this.lineFour.text = this.contracts[element].infoFour;
     }
+
     getBuys(element) {
         console.log(element);
         this.boldOne.text = this.categories[element];
         this.boldTwo.text = this.catText[element];
 
         let textIndex = 0;
-        for(let t of this.textLineGroup.getChildren()) {
-            if(element == 0){
-                t.text = this.nuts[textIndex];
-            } else if(element == 1){
-                t.text = this.fruits[textIndex];
-            } else if(element == 2){
-                t.text = this.sweets[textIndex];
-            } else if(element == 3){
-                t.text = this.savorys[textIndex];
-            }
-            textIndex++;
 
-            let textGroupPointer = this.textLineGroup;
-            t.setStyle({
-                color: '#000000',
-                backgroundColor: '#00000000'
-            });
-
-            t.setDataEnabled;
-            t.setData('selected', false)
-            t.setInteractive({
-                useHandCursor: true
-            }).on('pointerdown', function(/*pointer, localX, localY, event*/){
-                for(let u of textGroupPointer.getChildren()) {
-                    if(t == u) {
-                        if(u.getData('selected')){
-                            u.setData('selected', false);
-                        } else {
-                            u.setData('selected', true);
-                        }
-                    } else {
-                        u.setData('selected', false);
-                    }
-
-                    if(u.getData('selected') == true) {
-                        u.setStyle({
-                            color: '#ffffff',
-                            backgroundColor: '#bababa'
-                        });
-                    } else {
-                        u.setStyle({
-                            color: '#000000',
-                            backgroundColor: '#00000000'
-                        });
-                    }
-                }
-            });
-        }
         // if(element == 0){
         //     this.lineOne.text = this.nuts[0];
         //     this.lineTwo.text = this.nuts[1];
@@ -869,6 +851,79 @@ class PlayMenu extends Phaser.Scene {
         //     this.lineThree.text = this.savorys[2];
         //     this.lineFour.text = this.savorys[3];
         // }
+
+        for(let t of this.textLineGroup.getChildren()) {
+            if(element == 0){
+                t.text = this.nuts[textIndex];
+            } else if(element == 1){
+                t.text = this.fruits[textIndex];
+            } else if(element == 2){
+                t.text = this.sweets[textIndex];
+            } else if(element == 3){
+                t.text = this.savorys[textIndex];
+            }
+            textIndex++;
+
+            let textGroupPointer = this.textLineGroup;
+
+            t.setDataEnabled;
+            this.deselectObj(t, 'text')
+            t.setInteractive({
+                useHandCursor: true
+            }).on('pointerdown', function(/*pointer, localX, localY, event*/){
+                for(let u of textGroupPointer.getChildren()) {
+                    if(t == u) {
+                        (u.getData('selected')) ? this.scene.deselectObj(u, 'text') : this.scene.selectObj(u, 'text'); //If the ingredient is already selected, deselect it
+                    } else {
+                        this.scene.deselectObj(u, 'text'); //Deselect every other ingredient
+                    }
+                }
+            });
+        }
+    }
+
+    //Call when selecting ingredients or dispensers in buy tab
+    selectObj(obj, type) {
+        obj.setData('selected', true);
+        if(type == 'assign') {
+            obj.setTint(0xbababa);
+        } else if(type == 'text') {
+            obj.setStyle({
+                color: '#FFFFFF',
+                backgroundColor: '#bababa'
+            });
+        } else {
+            console.log('invalid type in selectObj() in playMenuScene')
+        }
+    }
+
+    //Call when selecting ingredients or dispensers in buy tab
+    deselectObj(obj, type) {
+        if(obj == null) {
+            console.log('null passed as obj arg in deselectObj');
+            return;
+        }
+        // obj.setData('selected', false);
+        if(type == 'assign') {
+            obj.setTint(0xFFFFFF);
+        } else if(type == 'text') {
+            obj.setStyle({
+                color: '#000000',
+                backgroundColor: '#00000000'
+            });
+        } else if(obj == 'all') {
+            for(let i of this.textLineGroup.getChildren()) {
+                this.deselectObj(i, 'text');
+            }
+            for(let d of this.assignGroup.getChildren()) {
+                this.deselectObj(d, 'assign');
+            }
+            return;
+        } else {
+            console.log('invalid type in deselectObj() in playMenuScene');
+            return;
+        }
+        obj.setData('selected', false);
     }
 
     makeContract() {
@@ -973,8 +1028,7 @@ class PlayMenu extends Phaser.Scene {
         } else if(upgradeStr == 'Lobby III') {
             this.scenePointer.lobbyMultiplier = 8;
         } else if (upgradeStr =='insFunds') {
-            this.insufficientPlayMenuFunds(price);
-            console.log('funds error');
+            this.purchaseError('insFunds', price);
         }
     }
 
@@ -985,14 +1039,44 @@ class PlayMenu extends Phaser.Scene {
         return priceToBuyIng;
     }
 
-    //Call when the user doesn't have enough cash to cover a purchase in the playMenu
-    insufficientPlayMenuFunds(price) {
-        console.log('you need $' + price + ' to purchase this');
-        let insFundText = this.add.text(game.config.width/4.5, game.config.height/3, 'You do not have enough funds, you need $' + price + ' to purchase', this.defaultTextConfig).setOrigin(0.5,0.5);
-        insFundText.setScale(0.4);
+    
+    //Call when a purchase results in an error, err is the type of error, arg is any info needed to output to the play like price needed 
+    purchaseError(err, arg) {
+        let errStr;
+        if(err == 'insFunds') { //Insufficient funds for a purchase
+            console.log('you need $' + arg + ' to purchase this');
+            errStr = 'You do not have enough funds, you need $' + arg + ' to purchase';
+        } else if(err == 'lackOfUpgrade') { //Selected dispenser does not exist
+            if(arg == this.scenePointer.dispenser4) {
+                console.log('you have not purchased dispenser IV');
+                errStr = 'You have not purchased dispenser IV';
+            } else if (arg == this.scenePointer.dispenser5) {
+                console.log('you have not purchased dispenser V');
+                errStr = 'You have not purchased dispenser V';
+            } else {
+                console.log('invalid disp passed to purchaseError()');
+            }
+        } else if(err == 'ing???') { //Selected ingredient does not exist
+            errStr = 'You have not unlocked this ingredient yet!';
+        } else if(err == 'incompleteSelection') {
+            errStr = 'You must select both an ingredient and dispenser';
+        } else {
+            console.log('invalid err arg in purchaseError() in playMenuScene');
+            return;
+        }
+        //this.sound.play('error'); //implement when errors are done
+        let errText = this.add.text((game.config.width/4 * 3) - 20, game.config.height/6, errStr, this.scenePointer.defaultTextConfig).setOrigin(0.5,0.5);
+        errText.setScale(0.4);
+        errText.setStyle({wordWrap: { width: 800 }})
         this.time.delayedCall(2000, () => {
-            insFundText.destroy();
+            errText.destroy();
         });
+        // for(let i of this.textLineGroup.getChildren()) {
+        //     this.deselectObj(i, 'text');
+        // }
+        // for(let d of this.assignGroup.getChildren()) {
+        //     this.deselectObj(d, 'assign');
+        // }
     }
 
     //Play the signature animation 
@@ -1002,17 +1086,13 @@ class PlayMenu extends Phaser.Scene {
         signName.anims.play('signAnim');
         // let signBox = this.add.image(game.config.width/1.37, 550, 'sign').setOrigin(.5, 0);
         signName.on('animationcomplete', () => {
-            for(let t of this.textLineGroup.getChildren()) {
-                t.setStyle({
-                    color: '#000000',
-                    backgroundColor: '#00000000'
-                });
-                t.setData('selected', false);
-            }
-            for(let d of this.assignGroup.getChildren()) {
-                d.setTint(0xFFFFFF);
-                d.setData('selected', false);
-            }
+            // for(let t of this.textLineGroup.getChildren()) {
+            //     this.deselectObj(t, 'text');
+            // }
+            // for(let d of this.assignGroup.getChildren()) {
+            //     this.deselectObj(d, 'assign');
+            // }
+            this.deselectObj('all');
             signName.destroy();
             // signBox.destroy();
         });

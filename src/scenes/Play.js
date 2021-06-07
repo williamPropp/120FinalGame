@@ -247,7 +247,7 @@ class Play extends Phaser.Scene {
 
         //Define keys
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 
@@ -417,9 +417,14 @@ class Play extends Phaser.Scene {
         }
 
         //Go back to menu when you press ESC
-        if(Phaser.Input.Keyboard.JustDown(keyESC)) {
+        if(Phaser.Input.Keyboard.JustDown(this.keyESC)) {
             this.soundtrack.stop();
             this.scene.start("menuScene");
+        }
+        
+        //Change dispenser1 to a roach dispenser when you hit spacebar
+        if(Phaser.Input.Keyboard.JustDown(keySPACE) && this.dispenser1.lobby) {
+            this.dispenser1.changeType('roach');
         }
 
     }
