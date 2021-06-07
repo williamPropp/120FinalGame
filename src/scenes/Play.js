@@ -53,7 +53,7 @@ class Play extends Phaser.Scene {
             localStorage.setItem('money', this.money);
         }
         else{
-            this.money = parseFloat(localStorage.getItem('money'));
+            this.money = parseFloat(localStorage.getItem('money')).toFixed(2);
         }
         
         //Initialize Upgrade Array
@@ -73,15 +73,6 @@ class Play extends Phaser.Scene {
         this.bagMultiplier = 1;
         this.contractMultiplier = 1;
         this.lobbyMultiplier = 1;
-
-       /* if(baseCache.exists('money')){
-            this.money = baseCache.get('money');
-        }
-        else{
-            this.money = 50; //Starting cash
-            baseCache.add('money', this.money);
-        }
-        */
 
         //Add boolean flags
         this.spawnIngredientLoop = false;
@@ -119,6 +110,7 @@ class Play extends Phaser.Scene {
 
         //Menu
         this.playMenu = this.add.image(10, 100, 'files').setOrigin(0 ,0);
+        this.playMenuText = this.add.text(44,139, 'Files', this.defaultTextConfig);
         this.playMenu.setInteractive({
             useHandCursor: true
         });
@@ -236,7 +228,7 @@ class Play extends Phaser.Scene {
 
         //Add UI element to keep track on the player's money
         // this.moneyText = this.add.text(10, 5, 'Bank: $'+this.money, this.whiteTextConfig);
-        this.moneyText = this.add.text(10, 5, 'Bank: $'+this.money, this.whiteTextConfig);
+        this.moneyText = this.add.text(10, 5, 'Bank: $' + this.money, this.whiteTextConfig);
 
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
             this.clickTarget = gameObject;
@@ -270,9 +262,7 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-
-        //this.dispenser1.lobby = true;
-
+        this.playMenuText.setVisible(true);
         this.playMenu.alpha = 1;
 
         //How many frames have elapsed since the start of the scene
@@ -342,7 +332,7 @@ class Play extends Phaser.Scene {
     
                 //Display bag's price and weight
                 let weightText = this.add.text(700, 350, (Number.isNaN(weight)) ? ('this bag is empty') : ('this bag weighs ' + weight + 'g'), this.defaultTextConfig).setOrigin(0.5,0.5);
-                let valueText = this.add.text(700, 380, (Number.isNaN(value)) ? ('this bag is worth $0') : ('this bag is worth $' + value), this.defaultTextConfig).setOrigin(0.5,0.5);
+                let valueText = this.add.text(700, 380, (Number.isNaN(value)) ? ('this bag is worth $0') : ('this bag is worth $' + value.toFixed(2)), this.defaultTextConfig).setOrigin(0.5,0.5);
                 weightText.setScale(0.5);
                 valueText.setScale(0.5);
     
@@ -487,6 +477,7 @@ class Play extends Phaser.Scene {
                 this.playMenu.alpha = 0;
                 this.scene.launch("playMenuScene", sceneData);
             }
+            this.playMenuText.setVisible(false);
             this.scene.pause('playScene');
         }
         if(gObj == this.rightArrow){
@@ -588,11 +579,10 @@ class Play extends Phaser.Scene {
         if(Number.isNaN(gained)) {
             console.log('NaN passed to getCash() in play scene')
         } else {
+            this.money = parseFloat(this.money);
             this.money += gained;
         }
-        this.money += gained;
         this.money = this.money.toFixed(2);
-        this.money = Number.parseFloat(this.money);
         this.moneyText.setText('Bank: $'+ this.money);
         localStorage.setItem('money', this.money);
     }
@@ -704,6 +694,7 @@ class Play extends Phaser.Scene {
     refillDispenser(gObj) {
         let dispPrefab = gObj.getData('prefab');
         let priceToBuy = dispPrefab.priceToRefill;
+        dispPrefab.ingredientText.text = dispPrefab.ingredientType.toUpperCase();
         if(this.money > priceToBuy) {
             this.spendCash(priceToBuy);
             dispPrefab.numIngredients = dispPrefab.maxIngredients;
