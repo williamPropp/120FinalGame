@@ -42,7 +42,7 @@ class Tutorial extends Phaser.Scene {
         this.contractBg = this.add.rectangle(735, 60, 205, 230, 0xFFFFFF).setOrigin(0 ,0);
         this.currentContract = this.add.text(840, 159, '', this.descriptionTextConfig).setOrigin(0.5,0.5).setScale(1,1);
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
-        
+        this.playMenuText = this.add.text(44, 139, 'Files', this.defaultTextConfig);
         
         this.ingredientArray = ['peanut', 'raisin', 'm&m', 'almond'];
         for(let i = 0; i < 4; i++){

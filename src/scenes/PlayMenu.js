@@ -351,9 +351,32 @@ class PlayMenu extends Phaser.Scene {
             infoTwo: 'running for president.',
             infoThree: 'Bye Bye labor laws!',
         }
-
-        this.upgrades = [this.openContracts, this.bag2x,this.dispenserOne, this.bag4x, this.dispenserTwo, this.bag8x,this.bag16x, this.lobbyOne, this.lobbyTwo, this.lobbyThree];
+        
+        this.upgrades = [this.openContracts, this.bag2x, this.dispenserOne, this.bag4x, this.dispenserTwo, this.bag8x, this.bag16x, this.lobbyOne, this.lobbyTwo, this.lobbyThree];
         this.contracts = [];
+        if (localStorage.getItem('LobbyIII') != null){
+            this.upgrades.splice(9,1);
+        }
+        if (localStorage.getItem('LobbyII') != null){
+            this.upgrades.splice(8,1);
+        }
+        if (localStorage.getItem('LobbyI') != null){
+            this.upgrades.splice(7,1);
+        }
+        if (localStorage.getItem('Bag16x') != null){
+            this.upgrades.splice(6,1);
+        }
+        if (localStorage.getItem('Bag8x') != null){
+            this.upgrades.splice(5,1);
+        }
+        if (localStorage.getItem('Bag4x') != null){
+            this.upgrades.splice(3,1);
+        }
+        if (localStorage.getItem('Bag2x') != null){
+            this.upgrades.splice(1,1);
+        }
+        
+
 
         //Define keys
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
@@ -1012,21 +1035,36 @@ class PlayMenu extends Phaser.Scene {
             this.scenePointer.dispenser5 = new Dispenser(this, 730, 0, null, null, 'empty', 5); //Update x location when new sprites are added
         } else if(upgradeStr == 'Bag 2x') {
             this.scenePointer.bagMultiplier = 2;
+            localStorage.setItem('bagMult', 2);
+            localStorage.setItem('Bag2x', 'bought');
         } else if(upgradeStr == 'Bag 4x') {
             this.scenePointer.bagMultiplier = 4;
+            localStorage.setItem('bagMult', 4);
+            localStorage.setItem('Bag4x', 'bought');
         } else if(upgradeStr == 'Bag 8x') {
             this.scenePointer.bagMultiplier = 8;
+            localStorage.setItem('bagMult', 8);
+            localStorage.setItem('Bag8x', 'bought');
         } else if(upgradeStr == 'Bag 16x') {
             this.scenePointer.bagMultiplier = 16;
+            localStorage.setItem('bagMult', 16);
+            localStorage.setItem('Bag16x', 'bought');
         } else if(upgradeStr == 'Lobby I') {
             this.scenePointer.lobbyMultiplier = 2;
             this.scenePointer.dispenser1.lobby = true;
             this.scenePointer.dispenser2.lobby = true;
             this.scenePointer.dispenser3.lobby = true;
+            localStorage.setItem('lobbyMult', 2);
+            localStorage.setItem('LobbyI', 'bought');
         } else if(upgradeStr == 'Lobby II') {
             this.scenePointer.lobbyMultiplier = 4;
+            this.scenePointer.enableRatEvent = true;
+            localStorage.setItem('lobbyMult', 4);
+            localStorage.setItem('LobbyII', 'bought');
         } else if(upgradeStr == 'Lobby III') {
             this.scenePointer.lobbyMultiplier = 8;
+            localStorage.setItem('lobbyMult', 8);
+            localStorage.setItem('LobbyIII', 'bought');
         } else if (upgradeStr =='insFunds') {
             this.purchaseError('insFunds', price);
         }

@@ -29,6 +29,11 @@ class Play extends Phaser.Scene {
         this.load.image('dispenser', 'Dispenser.png');
         this.load.image('arrow', 'Arrow.png');
         this.load.image('roach', 'Roach.png');
+        this.load.image('rat', 'Rat.png');
+        this.load.image('ratSign', 'RatSign.png');
+        this.load.image('trash', 'trash.png');
+        this.load.image('hammer', 'Hammer.png');
+        this.load.image('squashed', 'Squashed.png');
     }
 
     create() {
@@ -41,6 +46,9 @@ class Play extends Phaser.Scene {
         this.money;
         this.binWeight = 1000; //How many grams of ingredients can fit in one dispenser
         this.lift = false; //for sell action
+        this.enableRatEvent = false; //allows rats attack bag
+        this.ratEvent = false; //if the rat event is actually happeing
+        this.ratSign = false;
 
         //Initialize player money based on previous gameplay
         if(localStorage.getItem('money') == null){
@@ -48,7 +56,7 @@ class Play extends Phaser.Scene {
             localStorage.setItem('money', this.money);
         }
         else{
-            this.money = parseFloat(localStorage.getItem('money'));
+            this.money = parseFloat(localStorage.getItem('money')).toFixed(2);
         }
         
         //Initialize Upgrade Array
@@ -65,18 +73,20 @@ class Play extends Phaser.Scene {
         this.upgradesAcquiredArray = [];
 
         //Keep track of multipliers
-        this.bagMultiplier = 1;
-        this.contractMultiplier = 1;
-        this.lobbyMultiplier = 1;
-
-       /* if(baseCache.exists('money')){
-            this.money = baseCache.get('money');
+        if(localStorage.getItem('bagMult') == null){
+            this.bagMultiplier = 1;
         }
         else{
-            this.money = 50; //Starting cash
-            baseCache.add('money', this.money);
+            this.bagMultiplier = parseInt(localStorage.getItem('bagMult'));
         }
-        */
+        
+        this.contractMultiplier = 1;
+        if(localStorage.getItem('lobbyMult') == null){
+            this.lobbyMultiplier = 1;
+        }
+        else{
+            this.lobbyMultiplier = parseInt(localStorage.getItem('lobbyMult'));
+        }
 
         //Add boolean flags
         this.spawnIngredientLoop = false;
@@ -114,6 +124,7 @@ class Play extends Phaser.Scene {
 
         //Menu
         this.playMenu = this.add.image(10, 100, 'files').setOrigin(0 ,0);
+        this.playMenuText = this.add.text(44,139, 'Files', this.defaultTextConfig);
         this.playMenu.setInteractive({
             useHandCursor: true
         });
@@ -149,9 +160,14 @@ class Play extends Phaser.Scene {
         this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond', 'roach'];
         this.dispenserArray = [];
 
-        this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'peanut', 1, false, 'roach');
-        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'raisin', 2, false), 'roach';
-        this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'm&m', 3, false, 'roach');
+        this.lobby = true;
+        if(localStorage.getItem('LobbyI') == null){
+            this.lobby = false;
+        }
+
+        this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'peanut', 1, this.lobby, 'roach');
+        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'raisin', 2, this.lobby), 'roach';
+        this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'm&m', 3, this.lobby, 'roach');
         if(localStorage.getItem('disp4Type') == null) {
             this.dispenser4; //Don't create dispenser4 until it is bought;
         } else {
@@ -197,30 +213,38 @@ class Play extends Phaser.Scene {
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
         this.matter.add.image(this.floor);
 
-        // this.bin = this.add.rectangle(25, 600, 100, 200, 0x808080).setOrigin(0 ,0);
-        // this.bin.setInteractive();
-        // this.input.setDraggable(this.bin);
-        // this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-        //     gameObject.x = dragX;
-        //     gameObject.y = dragY;
-        // });
-        // this.input.on('dragend', function(pointer, gameObject, dragX, dragY, dropped) {
-        //     gameObject.x = 25;
-        //     gameObject.y = 600;
-        // });
-        // this.bin.on('drop', (pointer, target) => {
-            // note: the message below will be superseded by the dragend event above
-            // console.log(`Dropped '${this.burrito.texture.key}' on '${target.texture.key}'`);
-            // this.printMessage(`Dropped '${this.burrito.texture.key}' on '${target.texture.key}'`);
-    
-            // if (target.texture.key === 'dispenser') {
-            //     this.bin.destroy();
-            // }
-        // });
+        this.trash = this.add.image(10, game.config.height - 140, 'trash').setOrigin(0,0);
+        this.trash.setInteractive({
+            useHandCursor: true
+        });
+        this.trash.setDataEnabled;
+
+        //the rats
+        this.middleRat = this.add.image(game.config.width - 135, 30, 'rat').setOrigin(0, 0);
+        this.leftRat = this.add.image(game.config.width - 165, 10, 'rat').setOrigin(0, 0);
+        this.rightRat = this.add.image(game.config.width - 105, 10, 'rat').setOrigin(0, 0);
+        this.theRats = this.add.group();
+        this.theRats.addMultiple([this.middleRat, this.leftRat, this.rightRat]);
+        console.log(this.theRats)
+        for(let i of this.theRats.getChildren()){
+            i.alpha = 0;
+        }
+
+        this.hammer = this.add.image(150, 600, 'hammer').setOrigin(0 ,0);
+        this.hammer.setInteractive();
+        this.input.setDraggable(this.hammer);
+        this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+            gameObject.x = dragX;
+            gameObject.y = dragY;
+        });
+        this.input.on('dragend', function(pointer, gameObject, dragX, dragY, dropped) {
+            gameObject.x = 150;
+            gameObject.y = 600;
+        });
 
         //Add UI element to keep track on the player's money
         // this.moneyText = this.add.text(10, 5, 'Bank: $'+this.money, this.whiteTextConfig);
-        this.moneyText = this.add.text(10, 5, 'Bank: $'+this.money, this.whiteTextConfig);
+        this.moneyText = this.add.text(10, 5, 'Bank: $' + this.money, this.whiteTextConfig);
 
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
             this.clickTarget = gameObject;
@@ -254,9 +278,7 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-
-        //this.dispenser1.lobby = true;
-
+        this.playMenuText.setVisible(true);
         this.playMenu.alpha = 1;
 
         //How many frames have elapsed since the start of the scene
@@ -277,70 +299,100 @@ class Play extends Phaser.Scene {
             }
         }
 
+        if(this.ratEvent == true){
+            if(this.middleRat.y < this.bag.y - 100) {
+                for(let i of this.theRats.getChildren()){
+                    i.y += 5;
+                }
+            }
+            else {
+                this.ratSign = this.add.image(this.bag.x, this.bag.y - 20, 'ratSign').setOrigin(.5,.5);
+                this.ingHolder.clear(true, true);
+                this.ratEvent = false;
+                for(let i of this.theRats.getChildren()){
+                    i.alpha = 0;
+                }
+                this.middleRat.y = 0;
+                this.leftRat.y = -20;
+                this.rightRat.y = -20;
+                this.time.delayedCall(500, () => {
+                    this.ratSign.destroy();
+                });
+            }
+        }
+
         //Calculate bag value and weight when on the scale
         if(this.bag.x > 840 && !this.priceCalculated) {
-            this.priceCalculated = true;
-
-            //Calculate which ingredients are in the bag, then add them to an array
-            let bagContentsArray = [];
-            for(let i of this.ingHolder.getChildren()) {
-                if(i.x > this.bag.x - (this.bag.width / 2) && i.x < this.bag.x + (this.bag.width / 2) && i.y > this.bag.y - (this.bag.height/2) && i.y < this.bag.y + (this.bag.height/2)) {
-                    bagContentsArray.push(i);
+            if(this.enableRatEvent == true && Math.random() > 0.5) {
+                this.ratEvent = true;
+                for(let i of this.theRats.getChildren()){
+                    i.alpha = 1;
                 }
             }
-            
-            //Use the array to calculate the bag's ingredient percents, weight, and price
-            let percentages = this.calculatePercentages(bagContentsArray);
-            let value = parseFloat(this.calculatePrice(bagContentsArray, percentages));
-            let weight = parseFloat(this.calculateWeight(bagContentsArray));
-            
+            else if (this.ratEvent == false){
+                this.priceCalculated = true;
 
-            //Display bag's price and weight
-            let weightText = this.add.text(700, 350, (Number.isNaN(weight)) ? ('this bag is empty') : ('this bag weighs ' + weight + 'g'), this.defaultTextConfig).setOrigin(0.5,0.5);
-            let valueText = this.add.text(700, 380, (Number.isNaN(value)) ? ('this bag is worth $0') : ('this bag is worth $' + value), this.defaultTextConfig).setOrigin(0.5,0.5);
-            weightText.setScale(0.5);
-            valueText.setScale(0.5);
-
-            //Display bag's ingredient percents
-            let percentageOffset = 30;
-            if(percentages != null) {
-                for(let p of percentages) {
-                    let percentText = this.add.text(841, 583 + (percentageOffset * percentages.indexOf(p)), p[0].toUpperCase() + ' : ' + p[1] + '%', this.scaleTextConfig).setOrigin(0.5,0.5);
-                    percentText.setScale(0.5);
-                    this.time.delayedCall(2000, () => {
-                        percentText.destroy();
-                    });
-                }
-            }
-            //Play suction sound
-            if(localStorage.getItem('volume') == null){
-                this.sound.play('tubeSuction');
-            } 
-            else{
-                this.sound.play('tubeSuction', {volume: parseFloat(localStorage.getItem('volume'))});
-            }
-            
-
-            //After the player gets a chance to read everything, reset bag and ingredients
-            this.time.delayedCall(2000, () => {
-                weightText.destroy();
-                valueText.destroy();
-                this.lift = true;
-                
-                this.bag.setVelocity(0, -20);
-                this.time.delayedCall(550, () => {
-                    this.getCash((Number.isNaN(value) ? 0 : value));
-                    this.ingHolder.clear(true, true);
-                    this.bag.setPosition(100, 400);
-                    this.priceCalculated = false;
-                    this.lift = false;
-                });
-                for(let i of this.ingHolder.getChildren()){
-                    if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                        i.setVelocity(0,-20);
+                //Calculate which ingredients are in the bag, then add them to an array
+                let bagContentsArray = [];
+                for(let i of this.ingHolder.getChildren()) {
+                    if(i.x > this.bag.x - (this.bag.width / 2) && i.x < this.bag.x + (this.bag.width / 2) && i.y > this.bag.y - (this.bag.height/2) - 15 && i.y < this.bag.y + (this.bag.height/2)) {
+                        bagContentsArray.push(i);
                     }
                 }
-            });
+                
+                //Use the array to calculate the bag's ingredient percents, weight, and price
+                let percentages = this.calculatePercentages(bagContentsArray);
+                let value = parseFloat(this.calculatePrice(bagContentsArray, percentages));
+                let weight = parseFloat(this.calculateWeight(bagContentsArray));
+                
+    
+                //Display bag's price and weight
+                let weightText = this.add.text(700, 350, (Number.isNaN(weight)) ? ('this bag is empty') : ('this bag weighs ' + weight + 'g'), this.defaultTextConfig).setOrigin(0.5,0.5);
+                let valueText = this.add.text(700, 380, (Number.isNaN(value)) ? ('this bag is worth $0') : ('this bag is worth $' + value.toFixed(2)), this.defaultTextConfig).setOrigin(0.5,0.5);
+                weightText.setScale(0.5);
+                valueText.setScale(0.5);
+    
+                //Display bag's ingredient percents
+                let percentageOffset = 30;
+                if(percentages != null) {
+                    for(let p of percentages) {
+                        let percentText = this.add.text(841, 583 + (percentageOffset * percentages.indexOf(p)), p[0].toUpperCase() + ' : ' + p[1] + '%', this.scaleTextConfig).setOrigin(0.5,0.5);
+                        percentText.setScale(0.5);
+                        this.time.delayedCall(2000, () => {
+                            percentText.destroy();
+                        });
+                    }
+                }
+                //Play suction sound
+                if(localStorage.getItem('volume') == null){
+                    this.sound.play('tubeSuction');
+                } 
+                else{
+                    this.sound.play('tubeSuction', {volume: parseFloat(localStorage.getItem('volume'))});
+                }
+                
+    
+                //After the player gets a chance to read everything, reset bag and ingredients
+                this.time.delayedCall(2000, () => {
+                    weightText.destroy();
+                    valueText.destroy();
+                    this.lift = true;
+                    
+                    this.bag.setVelocity(0, -20);
+                    this.time.delayedCall(550, () => {
+                        this.getCash((Number.isNaN(value) ? 0 : value));
+                        this.ingHolder.clear(true, true);
+                        this.bag.setPosition(100, 400);
+                        this.priceCalculated = false;
+                        this.lift = false;
+                    });
+                    for(let i of this.ingHolder.getChildren()){
+                        if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                            i.setVelocity(0,-20);
+                        }
+                    }
+                });
+            }
         }
 
         //Move the bag right
@@ -416,6 +468,20 @@ class Play extends Phaser.Scene {
             }
         }
 
+        if(this.hammer.x < this.bag.x + 50 && this.hammer.x > this.bag.x - 50 && this.hammer.y < this.bag.y + 30 && this.hammer.y > this.bag.y - 70){
+            console.log('hammer time');
+            for(let i of this.ingHolder.getChildren()){
+                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                    if(i.type == 'roach') {
+                        i.setTexture('squashed');
+                        this.time.delayedCall(1500, () => {
+                            i.destroy();
+                        })
+                    }
+                }
+            }
+        }
+
         //Go back to menu when you press ESC
         if(Phaser.Input.Keyboard.JustDown(this.keyESC)) {
             this.soundtrack.stop();
@@ -446,6 +512,7 @@ class Play extends Phaser.Scene {
                 this.playMenu.alpha = 0;
                 this.scene.launch("playMenuScene", sceneData);
             }
+            this.playMenuText.setVisible(false);
             this.scene.pause('playScene');
         }
         if(gObj == this.rightArrow){
@@ -494,6 +561,9 @@ class Play extends Phaser.Scene {
                     conveyorAnim.destroy();
                 })
             }
+        }
+        if(gObj == this.trash){
+            this.ingHolder.clear(true, true);
         }
             
         for(let b of this.dispenseButtons.getChildren()) {
@@ -547,11 +617,10 @@ class Play extends Phaser.Scene {
         if(Number.isNaN(gained)) {
             console.log('NaN passed to getCash() in play scene')
         } else {
+            this.money = parseFloat(this.money);
             this.money += gained;
         }
-        this.money += gained;
         this.money = this.money.toFixed(2);
-        this.money = Number.parseFloat(this.money);
         this.moneyText.setText('Bank: $'+ this.money);
         localStorage.setItem('money', this.money);
     }
@@ -624,28 +693,23 @@ class Play extends Phaser.Scene {
 
         if(contents.length == 0) {
             return null;
-        } else {
+        } 
+        else {
             let typeArray = [];
-            let first = contents[0];
-            let firstData = [first.type, 0];
-            typeArray.push(firstData);
             for(let c of contents) {
-                let maybeAdd; 
-                let i = 0;
+                let itemType = c.type;
+                let found = false;
                 for(let t of typeArray) {
                     if(c.type == t[0]) {
+                        found = true;
                         t[1] += 1;
-                    } else {
-                        maybeAdd = c.type;
-                        if(i == typeArray.length-1) {
-                            let typeData = [maybeAdd, 0]; //Array with two elements, typeData[0] = type string, typeData[1] = number of items of the same type
-                            typeArray.push(typeData);
-                        }
-                    }
-                    i++;
+                    } 
+                }
+                if(!found){
+                    typeArray.push([itemType, 1]);
                 }
             }
-
+            
             let totalContents = contents.length;
 
             for(let n of typeArray) {
@@ -663,6 +727,7 @@ class Play extends Phaser.Scene {
     refillDispenser(gObj) {
         let dispPrefab = gObj.getData('prefab');
         let priceToBuy = dispPrefab.priceToRefill;
+        dispPrefab.ingredientText.text = dispPrefab.ingredientType.toUpperCase();
         if(this.money > priceToBuy) {
             this.spendCash(priceToBuy);
             dispPrefab.numIngredients = dispPrefab.maxIngredients;
