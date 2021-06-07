@@ -70,9 +70,20 @@ class Play extends Phaser.Scene {
         this.upgradesAcquiredArray = [];
 
         //Keep track of multipliers
-        this.bagMultiplier = 1;
+        if(localStorage.getItem('bagMult') == null){
+            this.bagMultiplier = 1;
+        }
+        else{
+            this.bagMultiplier = parseInt(localStorage.getItem('bagMult'));
+        }
+        
         this.contractMultiplier = 1;
-        this.lobbyMultiplier = 1;
+        if(localStorage.getItem('lobbyMult') == null){
+            this.lobbyMultiplier = 1;
+        }
+        else{
+            this.lobbyMultiplier = parseInt(localStorage.getItem('lobbyMult'));
+        }
 
         //Add boolean flags
         this.spawnIngredientLoop = false;
