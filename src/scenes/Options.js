@@ -25,6 +25,8 @@ class Options extends Phaser.Scene {
         
         this.defaultTextConfig = {fontFamily: 'purse', fontSize: '30px', backgroundColor: '#0050DF', color: '#FFFFFF', align: 'center'};
         this.volTextConfig = { fontFamily: 'purse', fontSize: '25px', color: '#FFFFFF', align: 'center'};
+        this.moneyTextConfig = {fontFamily: 'purse', fontSize: '30px', backgroundColor: '#04FF22', color: '#FFFFFF', align: 'center'};
+        this.dataTextConfig = {fontFamily: 'purse', fontSize: '30px', backgroundColor: '#FF2002', color: '#FFFFFF', align: 'center'};
 
         this.volText = this.add.text(450, 444, 'Volume', this.defaultTextConfig).setOrigin(0.5,0.5);
 
@@ -35,14 +37,14 @@ class Options extends Phaser.Scene {
         this.volume100 = this.add.rectangle(472, 475, 45, 40, 0x0000ff).setOrigin(0 ,0);
         this.vol100 = this.add.text(494, 490, '100', this.volTextConfig).setOrigin(0.5,0.5);
 
-        this.dataButton = this.add.rectangle(game.config.width/2 + 275, game.config.height/2 + 200, game.config.width/6, 
-                                             game.config.height/12, 0xFF2002).setOrigin(0.5,0.5);
+        this.dataButton = this.add.rectangle(game.config.width/2 + 275, game.config.height/2 + 200, game.config.width/6 + 40, 
+                                             game.config.height/12 + 50, 0xFF2002).setOrigin(0.5,0.5);
         this.dataText = this.add.text(game.config.width/2 + 275, game.config.height/2 + 200, 'Reset All Data', 
-                                      this.textConfig).setOrigin(0.5,0.5);
-        this.moneyButton = this.add.rectangle(game.config.width/2 - 275, game.config.height/2 + 200, game.config.width/6, 
-                                             game.config.height/12, 0x00FF81).setOrigin(0.5,0.5);
+                                      this.dataTextConfig).setOrigin(0.5,0.5);
+        this.moneyButton = this.add.rectangle(game.config.width/2 - 275, game.config.height/2 + 200, game.config.width/6 + 49, 
+                                             game.config.height/12 + 50, 0x04FF22).setOrigin(0.5,0.5);
         this.moneyText = this.add.text(game.config.width/2 - 275, game.config.height/2 + 200, 'Infinite Money', 
-                                      this.textConfig).setOrigin(0.5,0.5);
+                                      this.moneyTextConfig).setOrigin(0.5,0.5);
         
         this.dataButton.setInteractive({
             draggable: false,

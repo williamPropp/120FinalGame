@@ -23,10 +23,19 @@ class Menu extends Phaser.Scene {
 
         this.moveDirection = true;
 
-        this.menuSoundtrack = this.sound.add('soundtrackMenu', {
-            volume: 0.5,
-            loop: true,
-        });
+
+        if(localStorage.getItem('volume') == null){
+            this.menuSoundtrack = this.sound.add('soundtrackMenu', {
+                volume: 0.5,
+                loop: true,
+            });
+        } 
+        else{
+            this.menuSoundtrack = this.sound.add('soundtrackMenu', {
+                volume: parseFloat(localStorage.getItem('volume')),
+                loop: true,
+            });
+        }
         this.menuSoundtrack.play();
     
 

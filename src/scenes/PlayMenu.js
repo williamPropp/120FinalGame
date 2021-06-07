@@ -365,9 +365,6 @@ class PlayMenu extends Phaser.Scene {
         if (localStorage.getItem('LobbyI') != null){
             this.upgrades.splice(7,1);
         }
-        if (localStorage.getItem('Bag2x') != null){
-            this.upgrades.splice(1,1);
-        }
         if (localStorage.getItem('Bag16x') != null){
             this.upgrades.splice(6,1);
         }
