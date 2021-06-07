@@ -32,6 +32,8 @@ class Play extends Phaser.Scene {
         this.load.image('rat', 'Rat.png');
         this.load.image('ratSign', 'RatSign.png');
         this.load.image('trash', 'trash.png');
+        this.load.image('hammer', 'Hammer.png');
+        this.load.image('squashed', 'Squashed.png');
     }
 
     create() {
@@ -228,26 +230,17 @@ class Play extends Phaser.Scene {
             i.alpha = 0;
         }
 
-        // this.bin = this.add.rectangle(25, 600, 100, 200, 0x808080).setOrigin(0 ,0);
-        // this.bin.setInteractive();
-        // this.input.setDraggable(this.bin);
-        // this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-        //     gameObject.x = dragX;
-        //     gameObject.y = dragY;
-        // });
-        // this.input.on('dragend', function(pointer, gameObject, dragX, dragY, dropped) {
-        //     gameObject.x = 25;
-        //     gameObject.y = 600;
-        // });
-        // this.bin.on('drop', (pointer, target) => {
-            // note: the message below will be superseded by the dragend event above
-            // console.log(`Dropped '${this.burrito.texture.key}' on '${target.texture.key}'`);
-            // this.printMessage(`Dropped '${this.burrito.texture.key}' on '${target.texture.key}'`);
-    
-            // if (target.texture.key === 'dispenser') {
-            //     this.bin.destroy();
-            // }
-        // });
+        this.hammer = this.add.image(150, 600, 'hammer').setOrigin(0 ,0);
+        this.hammer.setInteractive();
+        this.input.setDraggable(this.hammer);
+        this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+            gameObject.x = dragX;
+            gameObject.y = dragY;
+        });
+        this.input.on('dragend', function(pointer, gameObject, dragX, dragY, dropped) {
+            gameObject.x = 150;
+            gameObject.y = 600;
+        });
 
         //Add UI element to keep track on the player's money
         // this.moneyText = this.add.text(10, 5, 'Bank: $'+this.money, this.whiteTextConfig);
@@ -471,6 +464,20 @@ class Play extends Phaser.Scene {
             for(let i of this.ingHolder.getChildren()){
                 if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
                     i.setVelocity(10,0);
+                }
+            }
+        }
+
+        if(this.hammer.x < this.bag.x + 50 && this.hammer.x > this.bag.x - 50 && this.hammer.y < this.bag.y + 30 && this.hammer.y > this.bag.y - 70){
+            console.log('hammer time');
+            for(let i of this.ingHolder.getChildren()){
+                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                    if(i.type == 'roach') {
+                        i.setTexture('squashed');
+                        this.time.delayedCall(1500, () => {
+                            i.destroy();
+                        })
+                    }
                 }
             }
         }
