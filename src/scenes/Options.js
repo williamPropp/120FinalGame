@@ -102,16 +102,7 @@ class Options extends Phaser.Scene {
 
     clickOn(gObj) {
         if(gObj == this.dataButton) {
-            localStorage.removeItem('money');        
-            localStorage.removeItem('heightPeanuts');
-            localStorage.removeItem('numPeanuts');
-            localStorage.removeItem('heightM&Ms');
-            localStorage.removeItem('numM&Ms');
-            localStorage.removeItem('heightAlmonds');
-            localStorage.removeItem('numAlmonds');
-            localStorage.removeItem('heightRaisins');
-            localStorage.removeItem('numRaisins');
-
+            localStorage.clear()
         }    
         else if(gObj == this.volume0){
            localStorage.setItem('volume', 0.0); 

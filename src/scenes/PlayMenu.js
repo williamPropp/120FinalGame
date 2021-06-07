@@ -286,7 +286,7 @@ class PlayMenu extends Phaser.Scene {
             priceTag: 'Price: $50',
             infoOne: 'Fill your bags with',
             infoTwo: 'one more ingredient!',
-            infoThree: 'IDK',
+            infoThree: 'Almond',
         }
         this.bag4x = {
             postName: 'Bag 4x',
@@ -369,8 +369,14 @@ class PlayMenu extends Phaser.Scene {
         if (localStorage.getItem('Bag8x') != null){
             this.upgrades.splice(5,1);
         }
+        if (localStorage.getItem('disp5Type') != null){
+            this.upgrades.splice(4,1);
+        }
         if (localStorage.getItem('Bag4x') != null){
             this.upgrades.splice(3,1);
+        }
+        if (localStorage.getItem('disp4Type') != null){
+            this.upgrades.splice(2,1);
         }
         if (localStorage.getItem('Bag2x') != null){
             this.upgrades.splice(1,1);
@@ -1027,12 +1033,18 @@ class PlayMenu extends Phaser.Scene {
 
     //Purchase Upgrades
     buyUpgrades(upgradeStr, price) {
-        if(upgradeStr == 'dispenser I') {
+        this.lobby = false;
+        if(!this.upgrades.some(upgrade => upgrade.postName === "LobbyI")){
+            this.lobby = true;
+        }
+        if(upgradeStr == 'Dispenser I') {
             console.log('disp4 bought');
-            this.scenePointer.dispenser4 = new Dispenser(this, 610, 0, null, null, 'empty', 4); //Update x location when new sprites are added
-        } else if(upgradeStr == 'dispenser II') {
+            this.scenePointer.dispenser4 = new Dispenser(this.scenePointer, 610, 0, 'dispenser', null, 'almond', 4, this.lobby, 'roach'); //Update x location when new sprites are added
+            localStorage.setItem('disp4Type', 'almond');
+        } else if(upgradeStr == 'Dispenser II') {
             console.log('disp5 bought');
-            this.scenePointer.dispenser5 = new Dispenser(this, 730, 0, null, null, 'empty', 5); //Update x location when new sprites are added
+            this.scenePointer.dispenser5 = new Dispenser(this.scenePointer, 730, 0, 'dispenser', null, 'pretzle', 5, this.lobby, 'roach'); //Update x location when new sprites are added
+            localStorage.setItem('disp5Type', 'pretzle');
         } else if(upgradeStr == 'Bag 2x') {
             this.scenePointer.bagMultiplier = 2;
             localStorage.setItem('bagMult', 2);

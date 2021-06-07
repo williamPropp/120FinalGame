@@ -21,6 +21,8 @@ class Tutorial extends Phaser.Scene {
         this.load.image('bg', 'FactoryBG.png');
         this.load.image('dispenser', 'Dispenser.png');
         this.load.image('arrow', 'Arrow.png');
+        this.load.image('trash', 'trash.png');
+        this.load.image('hammer', 'Hammer.png');
     }
 
     create(){            
@@ -43,6 +45,8 @@ class Tutorial extends Phaser.Scene {
         this.currentContract = this.add.text(840, 159, '', this.descriptionTextConfig).setOrigin(0.5,0.5).setScale(1,1);
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
         this.playMenuText = this.add.text(44, 139, 'Files', this.defaultTextConfig);
+        this.hammer = this.add.image(150, 600, 'hammer').setOrigin(0 ,0);
+        this.trash = this.add.image(10, game.config.height - 140, 'trash').setOrigin(0,0);
         
         this.ingredientArray = ['peanut', 'raisin', 'm&m', 'almond'];
         for(let i = 0; i < 4; i++){
@@ -67,7 +71,8 @@ class Tutorial extends Phaser.Scene {
         this.iconThree = this.add.circle(this.bag.x + 100, this.bag.y, 16, 0x5F20FF).setInteractive().setStrokeStyle(2, '#000000');
         this.iconFour = this.add.circle(this.scale.x, this.scale.y - 35, 16, 0x5F20FF).setInteractive().setStrokeStyle(2, '#000000');
         this.iconFive = this.add.circle(385, 35, 16, 0x5F20FF).setInteractive().setStrokeStyle(2, '#000000');
-   
+        this.iconSix = this.add.circle(this.trash.x + 45, this.trash.y + 75, 16, 0x5F20FF).setInteractive().setStrokeStyle(2, '#000000');
+        this.iconSeven = this.add.circle(this.hammer.x + 78, this.hammer.y + 53, 16, 0x5F20FF).setInteractive().setStrokeStyle(2, '#000000');
        
         
         //Question Marks
@@ -76,13 +81,15 @@ class Tutorial extends Phaser.Scene {
         this.questionThree = this.add.text(this.iconThree.x - 5,this.iconThree.y - 10,'?', this.quesTextConfig);
         this.questionFour = this.add.text(this.iconFour.x - 5,this.iconFour.y - 10,'?', this.quesTextConfig);
         this.questionFive = this.add.text(this.iconFive.x - 5,this.iconFive.y - 10,'?', this.quesTextConfig);
-
+        this.questionSix = this.add.text(this.iconSix.x - 5,this.iconSix.y - 10,'?', this.quesTextConfig);
+        this.questionSeven = this.add.text(this.iconSeven.x - 5,this.iconSeven.y - 10,'?', this.quesTextConfig);
 
          //Effects
          this.bounce = this.tweens.add({
 
             targets: [this.iconOne, this.questionOne, this.iconTwo, this.questionTwo, this.iconThree, this.questionThree,
-                this.iconFour, this.questionFour, this.iconFive, this.questionFive],
+                      this.iconFour, this.questionFour, this.iconFive, this.questionFive, this.iconSix, this.questionSix, 
+                      this.iconSeven, this.questionSeven],
             scaleX: 0.8,
             scaleY: 0.8,
             yoyo: true,
@@ -92,7 +99,7 @@ class Tutorial extends Phaser.Scene {
         });
 
         //Descriptions
-        this.tutorialText = this.add.text(754,97, ['Hover over an icon', 'with the mouse to', 'get information on', 'the Factory object next',  'to it. Press Esc to', 'go back to the main', 'menu.'], this.descriptionTextConfig)
+        this.tutorialText = this.add.text(752,97, ['Hover over an icon', 'with the mouse to', 'get information on', 'the Factory object next',  'to it. Press Esc to', 'go back to the main', 'menu.'], this.descriptionTextConfig)
 
         //Interactivity
         this.iconOne.on('pointerover', () => {
@@ -145,6 +152,29 @@ class Tutorial extends Phaser.Scene {
             this.bounce.pause();
         });
         this.iconFive.on('pointerout', () => {
+            this.tutorialText.setVisible(true);
+            this.currentContract.text = '';
+            this.bounce.resume();
+        });
+        this.iconSix.on('pointerover', () => {         
+            this.tutorialText.setVisible(false);
+            this.currentContract.text =  ['This is your trash can.', 'Click on it to clear the', 'screen of all ingredients,', 
+                                          'including the ones in your', 'bag.'];  
+                                          
+            this.bounce.pause();
+        });
+        this.iconSix.on('pointerout', () => {
+            this.tutorialText.setVisible(true);
+            this.currentContract.text = '';
+            this.bounce.resume();
+        });
+        this.iconSeven.on('pointerover', () => {         
+            this.tutorialText.setVisible(false);
+            this.currentContract.text =  ['Here is your mighty', 'hammer. In the unlikely', 'event any bug or critter', 
+                                          'appears in your factory', 'you may smash them by', 'using this hammer.'];
+            this.bounce.pause();
+        });
+        this.iconSeven.on('pointerout', () => {
             this.tutorialText.setVisible(true);
             this.currentContract.text = '';
             this.bounce.resume();

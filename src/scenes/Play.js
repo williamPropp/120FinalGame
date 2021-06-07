@@ -40,7 +40,7 @@ class Play extends Phaser.Scene {
 
         //Initialize data variables
         this.matter.world.setBounds(0, 0, 960, 720);
-        this.matter.world.setGravity(0, 1); 
+        this.matter.world.setGravity(0, 1.3); 
         this.frameCount = 0;
         this.flowRate = 5; //How often in frames to spawn Ingredients
         this.money;
@@ -111,7 +111,7 @@ class Play extends Phaser.Scene {
         this.soundtrack.play();
 
         //Text configs
-        this.defaultTextConfig = {fontFamily: 'purse', fontSize: '40px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
+        this.defaultTextConfig = {fontFamily: 'purse', fontSize: '38px', backgroundColor: '#FFFFFF00', color: '#000000', align: 'center'};
         this.whiteTextConfig = {fontFamily: 'fred', fontSize: '40px', backgroundColor: '#00000033', color: '#FFFFFF', align: 'center'};
         this.scaleTextConfig = {fontFamily: 'screen', fontSize: '62px', backgroundColor: '#FFFFFF00', color: '#00FC10', align: 'center'};
 
@@ -134,6 +134,7 @@ class Play extends Phaser.Scene {
         this.anims.create({ key: 'conveyorLeft', frames: this.anims.generateFrameNumbers('conveyor', { start: 0, end: 2, first: 0}), frameRate: 12 });
         this.anims.create({ key: 'conveyorRight', frames: this.anims.generateFrameNumbers('conveyor', { start: 2, end: 0, first: 0}), frameRate: 12 });
         this.conveyorBelt = this.matter.add.image(308, 510, 'conveyor').setIgnoreGravity(true).setStatic(true);
+        //this.surface = this.matter.add.rectangle(10, 510, game.config.width, 175, 0xC4AAA4).setIgnoreGravity(true);
 
         //Make Render Layers
         this.ingLayer = this.add.layer();
@@ -166,12 +167,12 @@ class Play extends Phaser.Scene {
         }
 
         this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'peanut', 1, this.lobby, 'roach');
-        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'raisin', 2, this.lobby), 'roach';
+        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'raisin', 2, this.lobby, 'roach');
         this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'm&m', 3, this.lobby, 'roach');
         if(localStorage.getItem('disp4Type') == null) {
             this.dispenser4; //Don't create dispenser4 until it is bought;
         } else {
-            this.dispenser4 = new Dispenser(this, 610, 0, null, null, 'empty', 4); //Update x location when new sprites are added
+            this.dispenser4 = new Dispenser(this, 610, 0, 'dispenser', null, localStorage.getItem('disp4Type'), 4, this.lobby, 'roach'); //Update x location when new sprites are added
         }
         if(localStorage.getItem('disp5Type') == null) {
             this.dispenser5; //Don't create dispenser5 until it is bought;
@@ -182,7 +183,7 @@ class Play extends Phaser.Scene {
         // this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
 
         this.inform = this.cache.json.get('bag_physics');
-        this.bag = this.matter.add.image(100, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
+        this.bag = this.matter.add.image(100, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });//.setIgnoreGravity(true);
         //this.bag.setCollisionGroup(1);
         //this.bag.setDensity(.5);
         //this.bag.setBounce(.5);
@@ -195,7 +196,7 @@ class Play extends Phaser.Scene {
         // this.bagOut.setData('gravityEnabled','false');
         // this.bagIn.setData('gravityEnabled','false');
 
-        this.scale = this.add.image(game.config.width - 120, 580, 'scale').setOrigin(0, 0);
+        this.scale = this.add.image(game.config.width - 120, 579, 'scale').setOrigin(0, 0);
         this.matter.add.gameObject(this.scale).setIgnoreGravity(true).setStatic(true);
         this.tube = this.add.rectangle(780, 0, 120, 330, 0xadd8e6).setOrigin(0 ,0);
         this.tracker = this.add.rectangle(725, 50, 225, 250, 0xC4A484).setOrigin(0 ,0);
@@ -400,7 +401,7 @@ class Play extends Phaser.Scene {
             for(let i of this.ingHolder.getChildren()){
                 if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
                 //    console.log("right called");
-                    i.setVelocity(7,0)
+                    i.setVelocity(6,3)
                 }
             }
             if(localStorage.getItem('volume') == null){
@@ -409,7 +410,7 @@ class Play extends Phaser.Scene {
             else{
                 this.sound.play('shortHydraulic', {volume: parseFloat(localStorage.getItem('volume'))});
             }
-                this.bag.setVelocity(7, 2);
+                this.bag.setVelocity(6, 3);
             let conveyorAnim = this.add.sprite(305, 510, 'conveyor');
             conveyorAnim.anims.play('conveyorRight');
             this.time.delayedCall(2500, () => {
@@ -425,7 +426,7 @@ class Play extends Phaser.Scene {
             else{
                 this.sound.play('shortHydraulic', {volume: parseFloat(localStorage.getItem('volume'))});
             }
-            this.bag.setVelocity(-7, 2);
+            this.bag.setVelocity(-6, 3);
             let conveyorAnim = this.add.sprite(305, 510, 'conveyor');
             conveyorAnim.anims.play('conveyorLeft');
             this.time.delayedCall(2500, () => {
@@ -434,7 +435,7 @@ class Play extends Phaser.Scene {
             for(let i of this.ingHolder.getChildren()){
                 if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
                 //    console.log("left called");
-                    i.setVelocity(-7,0);
+                    i.setVelocity(-6,3);
                     
                 }
             }
@@ -471,7 +472,7 @@ class Play extends Phaser.Scene {
         if(this.hammer.x < this.bag.x + 50 && this.hammer.x > this.bag.x - 50 && this.hammer.y < this.bag.y + 30 && this.hammer.y > this.bag.y - 70){
             console.log('hammer time');
             for(let i of this.ingHolder.getChildren()){
-                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
+                if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 70) {
                     if(i.type == 'roach') {
                         i.setTexture('squashed');
                         this.time.delayedCall(1500, () => {
@@ -607,7 +608,7 @@ class Play extends Phaser.Scene {
             this.money -= spent;
         }
         this.money = this.money.toFixed(2);
-        this.money = Number.parseFloat(this.money);
+        //this.money = Number.parseFloat(this.money);
         this.moneyText.setText('Bank: $'+ this.money);
         localStorage.setItem('money', this.money);
     }
@@ -727,7 +728,7 @@ class Play extends Phaser.Scene {
     refillDispenser(gObj) {
         let dispPrefab = gObj.getData('prefab');
         let priceToBuy = dispPrefab.priceToRefill;
-        dispPrefab.ingredientText.text = dispPrefab.ingredientType.toUpperCase();
+        dispPrefab.ingredientText.text = dispPrefab.ingredientType.toUpperCase() + ((dispPrefab.ingredientType == 'empty') ? '' : 's');
         if(this.money > priceToBuy) {
             this.spendCash(priceToBuy);
             dispPrefab.numIngredients = dispPrefab.maxIngredients;

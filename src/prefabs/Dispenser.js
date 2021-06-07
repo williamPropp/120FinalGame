@@ -100,7 +100,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             this.numIngredients = parseInt(localStorage.getItem(numIngStr));
             this.priceToRefill = parseInt(localStorage.getItem(refillStr));
             this.refillMeter.height = parseFloat(localStorage.getItem(heightStr));
-            this.ingredientText.setText(this.ingredientType.toUpperCase());
+            this.ingredientText.setText(this.ingredientType.toUpperCase() + ((this.ingredientType == 'empty') ? '' : 's')) ;
         }       
     }
 
@@ -168,7 +168,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.numIngredients = this.maxIngredients;
         this.priceToRefill = 0;
         this.refillMeter.height = 75;
-        this.ingredientText.setText(newType.toUpperCase());
+        this.ingredientText.setText(newType.toUpperCase() + ((newtype == 'empty') ? '' : 's'));
 
         //Store updated data in localStorage
         this.updateLocalStorage();
