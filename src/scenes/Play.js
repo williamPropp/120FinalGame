@@ -31,6 +31,7 @@ class Play extends Phaser.Scene {
         this.load.image('roach', 'Roach.png');
         this.load.image('rat', 'Rat.png');
         this.load.image('ratSign', 'RatSign.png');
+        this.load.image('trash', 'trash.png');
     }
 
     create() {
@@ -209,6 +210,12 @@ class Play extends Phaser.Scene {
 
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
         this.matter.add.image(this.floor);
+
+        this.trash = this.add.image(10, game.config.height - 140, 'trash').setOrigin(0,0);
+        this.trash.setInteractive({
+            useHandCursor: true
+        });
+        this.trash.setDataEnabled;
 
         //the rats
         this.middleRat = this.add.image(game.config.width - 135, 30, 'rat').setOrigin(0, 0);
@@ -542,6 +549,9 @@ class Play extends Phaser.Scene {
                     conveyorAnim.destroy();
                 })
             }
+        }
+        if(gObj == this.trash){
+            this.ingHolder.clear(true, true);
         }
             
         for(let b of this.dispenseButtons.getChildren()) {
