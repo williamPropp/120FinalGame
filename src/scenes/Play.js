@@ -319,7 +319,7 @@ class Play extends Phaser.Scene {
                 //Calculate which ingredients are in the bag, then add them to an array
                 let bagContentsArray = [];
                 for(let i of this.ingHolder.getChildren()) {
-                    if(i.x > this.bag.x - (this.bag.width / 2) && i.x < this.bag.x + (this.bag.width / 2) && i.y > this.bag.y - (this.bag.height/2) && i.y < this.bag.y + (this.bag.height/2)) {
+                    if(i.x > this.bag.x - (this.bag.width / 2) && i.x < this.bag.x + (this.bag.width / 2) && i.y > this.bag.y - (this.bag.height/2) - 15 && i.y < this.bag.y + (this.bag.height/2)) {
                         bagContentsArray.push(i);
                     }
                 }
@@ -655,28 +655,23 @@ class Play extends Phaser.Scene {
 
         if(contents.length == 0) {
             return null;
-        } else {
+        } 
+        else {
             let typeArray = [];
-            let first = contents[0];
-            let firstData = [first.type, 0];
-            typeArray.push(firstData);
             for(let c of contents) {
-                let maybeAdd; 
-                let i = 0;
+                let itemType = c.type;
+                let found = false;
                 for(let t of typeArray) {
                     if(c.type == t[0]) {
+                        found = true;
                         t[1] += 1;
-                    } else {
-                        maybeAdd = c.type;
-                        if(i == typeArray.length-1) {
-                            let typeData = [maybeAdd, 0]; //Array with two elements, typeData[0] = type string, typeData[1] = number of items of the same type
-                            typeArray.push(typeData);
-                        }
-                    }
-                    i++;
+                    } 
+                }
+                if(!found){
+                    typeArray.push([itemType, 1]);
                 }
             }
-
+            
             let totalContents = contents.length;
 
             for(let n of typeArray) {
