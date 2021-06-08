@@ -31,7 +31,7 @@ class Play extends Phaser.Scene {
         this.load.image('roach', 'Roach.png');
         this.load.image('rat', 'Rat.png');
         this.load.image('ratSign', 'RatSign.png');
-        this.load.image('trash', 'trash.png');
+        this.load.image('trash', 'Trash.png');
         this.load.image('hammer', 'Hammer.png');
         this.load.image('squashed', 'Squashed.png');
     }
@@ -49,6 +49,9 @@ class Play extends Phaser.Scene {
         this.enableRatEvent = false; //allows rats attack bag
         this.ratEvent = false; //if the rat event is actually happeing
         this.ratSign = false;
+        this.evalution = false;
+        this.contractChecker = 0;
+        this.contractMulti = 1;
 
         //Initialize player money based on previous gameplay
         if(localStorage.getItem('money') == null){
@@ -91,7 +94,6 @@ class Play extends Phaser.Scene {
         //Add boolean flags
         this.spawnIngredientLoop = false;
         this.priceCalculated = false;
-        this.contractEnabled = false;
         this.sideMovement = false;
 
         
@@ -158,7 +160,7 @@ class Play extends Phaser.Scene {
         this.dispenseButtons = this.add.group();
         this.refillButtons = this.add.group();
 
-        this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond', 'roach'];
+        this.ingredientTypeArray = ['Peanut','Raisin', 'M&M', 'Almond', 'Roach'];
         this.dispenserArray = [];
 
         this.lobby = true;
@@ -166,9 +168,9 @@ class Play extends Phaser.Scene {
             this.lobby = false;
         }
 
-        this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'peanut', 1, this.lobby, 'roach');
-        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'raisin', 2, this.lobby, 'roach');
-        this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'm&m', 3, this.lobby, 'roach');
+        this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'Peanut', 1, this.lobby, 'Roach');
+        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'Raisin', 2, this.lobby, 'Roach');
+        this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'M&M', 3, this.lobby, 'Roach');
         if(localStorage.getItem('disp4Type') == null) {
             this.dispenser4; //Don't create dispenser4 until it is bought;
         } else {
@@ -180,7 +182,7 @@ class Play extends Phaser.Scene {
             this.dispenser5 = new Dispenser(this, 730, 0, null, null, 'empty', 5); //Update x location when new sprites are added
         }
 
-        // this.almondDispenser = new Dispenser(this, 610, 0, 'almond');
+        // this.AlmondDispenser = new Dispenser(this, 610, 0, 'Almond');
 
         this.inform = this.cache.json.get('bag_physics');
         this.bag = this.matter.add.image(100, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });//.setIgnoreGravity(true);
@@ -204,7 +206,7 @@ class Play extends Phaser.Scene {
         //Current Contract Info
         this.contractBg = this.add.rectangle(735, 60, 205, 230, 0xFFFFFF).setOrigin(0 ,0);
 
-        this.currentContract = this.add.text(838, 100, contractInfo.ammount, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
+        this.currentContract = this.add.text(838, 100, contractInfo.amountString, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
         this.ingOne = this.add.text(838, 140, contractInfo.infoOne, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
         this.ingTwo = this.add.text(838, 180, contractInfo.infoTwo, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
         this.ingThree = this.add.text(838, 220, contractInfo.infoThree, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
@@ -285,7 +287,7 @@ class Play extends Phaser.Scene {
         //How many frames have elapsed since the start of the scene
         this.frameCount++;
 
-        this.currentContract.text = contractInfo.ammount;
+        this.currentContract.text = contractInfo.amountString;
         this.ingOne.text = contractInfo.infoOne;
         this.ingTwo.text = contractInfo.infoTwo;
         this.ingThree.text = contractInfo.infoThree;
@@ -309,7 +311,6 @@ class Play extends Phaser.Scene {
             else {
                 this.ratSign = this.add.image(this.bag.x, this.bag.y - 20, 'ratSign').setOrigin(.5,.5);
                 this.ingHolder.clear(true, true);
-                this.ratEvent = false;
                 for(let i of this.theRats.getChildren()){
                     i.alpha = 0;
                 }
@@ -319,18 +320,21 @@ class Play extends Phaser.Scene {
                 this.time.delayedCall(500, () => {
                     this.ratSign.destroy();
                 });
+                this.evalution = true;
+                this.ratEvent = false;
             }
         }
 
         //Calculate bag value and weight when on the scale
         if(this.bag.x > 840 && !this.priceCalculated) {
-            if(this.enableRatEvent == true && Math.random() > 0.5) {
+            console.log(this.ingHolder);
+            if(this.enableRatEvent == true && Math.random() > 0.5 && this.evalution == false) {
                 this.ratEvent = true;
                 for(let i of this.theRats.getChildren()){
                     i.alpha = 1;
                 }
             }
-            else if (this.ratEvent == false){
+            else {
                 this.priceCalculated = true;
 
                 //Calculate which ingredients are in the bag, then add them to an array
@@ -384,6 +388,7 @@ class Play extends Phaser.Scene {
                         this.getCash((Number.isNaN(value) ? 0 : value));
                         this.ingHolder.clear(true, true);
                         this.bag.setPosition(100, 400);
+                        this.bag.setVelocity(0, 0);
                         this.priceCalculated = false;
                         this.lift = false;
                     });
@@ -393,6 +398,7 @@ class Play extends Phaser.Scene {
                         }
                     }
                 });
+                this.evalution = false;
             }
         }
 
@@ -595,7 +601,7 @@ class Play extends Phaser.Scene {
     }
 
     //Calculates money made from selling trail mix bag
-    //Mix will be an array of the weight of each ingredient contained in the bag: [peanuts, raisins, m&ms, almonds] 
+    //Mix will be an array of the weight of each ingredient contained in the bag: [Peanuts, raisins, M&Ms, Almonds] 
     // sellMix(mix){
     //     this.money += (0.0214 * mix[0] + 0.0208 * mix[1] / 0.5 + 0.0745 * mix[2] / 1.1 + 0.0465 * mix[3] / 1.3);         
     // }
@@ -645,12 +651,45 @@ class Play extends Phaser.Scene {
         if(contents.length == 0) {
             return null;
 
-        //Do contract logic if a contract is active
-        } else if(this.contractEnabled) {
-            console.log('implement contracts')
-
         //Calculate freeform bag value
         } else {
+            if(contractInfo.amountString != 'Motivation') {
+                for(let p of percents) {
+                    if(contractInfo.infoOne.toUpperCase().split(' ')[1] == p[0].toUpperCase().concat('S') && contractInfo.infoOne.toUpperCase().split(' ')[0].slice(0, -1) + 5 >= p[1] && contractInfo.infoOne.split(' ')[0].slice(0, -1) - 5 <= p[1]){
+                        this.contractChecker += 1;
+                        console.log('ignOne good');
+                    }
+                    if(contractInfo.infoTwo.toUpperCase().split(' ')[1] == p[0].toUpperCase().concat('S') && contractInfo.infoTwo.split(' ')[0].slice(0, -1) + 5 >= p[1] && contractInfo.infoTwo.split(' ')[0].slice(0, -1) - 5 <= p[1]){
+                        this.contractChecker += 1;
+                        console.log('ignTwo good');
+                    }
+                    if(contractInfo.infoThree.split(' ')[1].toUpperCase() == p[0].toUpperCase().concat('S') && contractInfo.infoThree.split(' ')[0].slice(0, -1) + 5 >= p[1] && contractInfo.infoThree.split(' ')[0].slice(0, -1) - 5 <= p[1]){
+                        this.contractChecker += 1;
+                        console.log('ignThree good');
+                    }
+                    if(contractInfo.infoFour.split(' ')[1].toUpperCase() == p[0].toUpperCase().concat('S') && contractInfo.infoFour.split(' ')[0].slice(0, -1) + 5 >= p[1] && contractInfo.infoFour.split(' ')[0].slice(0, -1) - 5 <= p[1]){
+                        this.contractChecker += 1;
+                        console.log('ignFour good');
+                    }
+                }
+                if(this.contractChecker == 4) {
+                    contractInfo.amount -= 1;
+                    if(contractInfo.amount == 0) {
+                        contractInfo = {
+                            infoOne: 'Your life savings were',
+                            infoTwo: 'spent opening this up.',
+                            infoThree: 'It better have been',
+                            infoFour: 'worth it...',
+                            amountString: 'Motivation',
+                            amount: -10
+                        };
+                    }
+                    contractInfo.amountString = contractInfo.amount.toString().concat(' Left')
+                    this.contractChecker = 0;
+                    this.contractMulti = contractInfo.multTag;
+                }
+            }
+
             let bagValue = 0;
             for(let c of contents) {
                 bagValue += c.value;
@@ -683,7 +722,8 @@ class Play extends Phaser.Scene {
                 filledMultiplier = 0.5;
             }
             //Multiply base value by the multipliers
-            bagValue *= this.bagMultiplier * this.lobbyMultiplier * varietyMultiplier * filledMultiplier;
+            bagValue *= this.bagMultiplier * this.lobbyMultiplier * varietyMultiplier * filledMultiplier * this.contractMulti;
+            this.contractMulti = 1;
             bagValue = bagValue.toFixed(2);
             return bagValue;
         }

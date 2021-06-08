@@ -18,7 +18,7 @@ class PlayMenu extends Phaser.Scene {
         this.load.image('red', 'TabRed.png');
         this.load.image('green', 'TabGreen.png');
         this.load.image('blue', 'TabBlue.png');
-        this.load.image('sign','sign.png');
+        this.load.image('sign','Sign.png');
         this.load.spritesheet('signName', 'signatureSpritesheet.png', {frameWidth: 220, frameHeight: 91, startFrame: 0, endFrame: 34});
         this.load.image('first','Assign-01.png');
         this.load.image('second','Assign-02.png');
@@ -82,6 +82,7 @@ class PlayMenu extends Phaser.Scene {
             });
             t.setDataEnabled;
         }
+        this.contractTab.alpha = 0;
 
         //post-it setup
         // this.postIt = this.add.image(150, 70, 'post').setOrigin(0, 0).setTint(0xFAF28C);
@@ -983,6 +984,7 @@ class PlayMenu extends Phaser.Scene {
                 break;
             }
         }
+        this.amountMaker = Math.floor(Math.random() * 20) + 5
         this.multi = this.multChanges[Math.floor(Math.random() * this.multChanges.length)]
         this.madeContract = {
             postName: this.currentCompany,
@@ -997,7 +999,8 @@ class PlayMenu extends Phaser.Scene {
             percentTwo: this.percentTwo,
             percentThree: this.percentThree,
             percentFour: this.percentFour,
-            ammount: (Math.floor(Math.random() * 20) + 5).toString().concat(' Left')
+            amountString: this.amountMaker.toString().concat(' Left'),
+            amount: this.amountMaker
         }
         this.usedIng = []
         for (let i = 0; i < 4; i++) {
@@ -1036,6 +1039,9 @@ class PlayMenu extends Phaser.Scene {
         this.lobby = false;
         if(!this.upgrades.some(upgrade => upgrade.postName === "LobbyI")){
             this.lobby = true;
+        }
+        if(upgradeStr == 'Contracts') {
+            this.contractTab.alpha = 1;
         }
         if(upgradeStr == 'Dispenser I') {
             console.log('disp4 bought');

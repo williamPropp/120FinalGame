@@ -19,7 +19,6 @@ class Dispenser extends Phaser.GameObjects.Sprite {
 
         //Dispenser components
         this.dispenserFrame = this.scene.add.image(this.x, this.y, texture).setOrigin(0.5, 0);
-        console.log(this.dispenserFrame);
         this.dispenseButton = this.scene.add.circle(this.x, this.y + 207, 18, 0xFF0000).setOrigin(0.5,0.5);
         this.refillButton = this.scene.add.circle(this.x, this.y + 155, 10, 0x0000FF).setOrigin(0.5,0.5);
         this.ingredientText = this.scene.add.text(this.x, this.y + 240, this.ingredientType.toUpperCase() + ((this.ingredientType == 'empty') ? '' : 's'), this.scene.defaultTextConfig).setOrigin(0.5,0.5);
