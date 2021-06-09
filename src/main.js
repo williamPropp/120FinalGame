@@ -38,7 +38,8 @@ let contractInfo = {
     infoTwo: 'spent opening this up.',
     infoThree: 'It better have been',
     infoFour: 'worth it...',
-    ammount: 'Motivation'
+    amountString: 'Motivation',
+    amount: -10
 };
 // this.upgradesArray = [['dispenser I', 250], 
 //             ['dispenser II', 500], 
