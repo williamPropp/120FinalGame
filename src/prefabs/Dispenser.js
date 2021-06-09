@@ -160,6 +160,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
 
     //Change Ingredient in this dispenser to newType, and refill the dispenser to full
     changeType(newType) {
+        console.log(newType);
         this.ingredientType = newType;
         let newWeight = this.getIngredientData(newType, 'weight');
 
@@ -168,7 +169,7 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         this.numIngredients = this.maxIngredients;
         this.priceToRefill = 0;
         this.refillMeter.height = 75;
-        this.ingredientText.setText(newType.toUpperCase() + ((newtype == 'empty') ? '' : 's'));
+        this.ingredientText.setText(this.ingredientType.toUpperCase() + ((this.ingredientType == 'empty') ? '' : 's'));
 
         //Store updated data in localStorage
         this.updateLocalStorage();

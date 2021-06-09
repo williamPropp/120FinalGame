@@ -393,8 +393,6 @@ class PlayMenu extends Phaser.Scene {
             this.makeContract();
         }
 
-        console.log(this.lineOne.getData('selected'));
-
         if(Phaser.Input.Keyboard.JustDown(keyESC)) {
             // for(let i of this.textLineGroup.getChildren()) {
             //     this.deselectObj(i, 'text');
