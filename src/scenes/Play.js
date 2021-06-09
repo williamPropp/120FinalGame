@@ -160,7 +160,7 @@ class Play extends Phaser.Scene {
         this.dispenseButtons = this.add.group();
         this.refillButtons = this.add.group();
 
-        this.ingredientTypeArray = ['Peanut','Raisin', 'M&M', 'Almond', 'Roach'];
+        this.ingredientTypeArray = ['peanut','raisin', 'm&m', 'almond', 'roach'];
         this.dispenserArray = [];
 
         this.lobby = true;
@@ -168,9 +168,9 @@ class Play extends Phaser.Scene {
             this.lobby = false;
         }
 
-        this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'Peanut', 1, this.lobby, 'Roach');
-        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'Raisin', 2, this.lobby, 'Roach');
-        this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'M&M', 3, this.lobby, 'Roach');
+        this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'peanut', 1, this.lobby, 'roach');
+        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'raisin', 2, this.lobby, 'roach');
+        this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'm&m', 3, this.lobby, 'roach');
         if(localStorage.getItem('disp4Type') == null) {
             this.dispenser4; //Don't create dispenser4 until it is bought;
         } else {
