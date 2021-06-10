@@ -1043,14 +1043,11 @@ class PlayMenu extends Phaser.Scene {
         }
         if(upgradeStr == 'Dispenser I') {
             console.log('disp4 bought');
-            // this.scenePointer.dispenser4 = new Dispenser(this.scenePointer, 610, 0, 'dispenser', null, 'almond', 4, this.lobby, 'roach'); //Update x location when new sprites are added
             this.scenePointer.dispenser4 = new Dispenser(this.scenePointer, 565, 0, 'dispenser', null, 'almond', 4, this.lobby, 'roach'); //Update x location when new sprites are added
             localStorage.setItem('disp4Type', 'almond');
         } else if(upgradeStr == 'Dispenser II') {
             console.log('disp5 bought');
-            // this.scenePointer.dispenser5 = new Dispenser(this.scenePointer, 730, 0, 'dispenser', null, 'pretzel', 5, this.lobby, 'roach'); //Update x location when new sprites are added
             this.scenePointer.dispenser5 = new Dispenser(this.scenePointer, 675, 0, 'dispenser', null, 'pretzel', 5, this.lobby, 'roach'); //Update x location when new sprites are added
-
             localStorage.setItem('disp5Type', 'pretzel');
         } else if(upgradeStr == 'Bag 2x') {
             this.scenePointer.bagMultiplier = 2;
@@ -1089,6 +1086,7 @@ class PlayMenu extends Phaser.Scene {
         }
     }
 
+    //Call when a refill price needs to be calculated
     calculateBuyPrice(ingType) {
         let ingPrice = this.scenePointer.dispenser1.getIngredientData(ingType, 'price');
         let ingWeight = this.scenePointer.dispenser1.getIngredientData(ingType, 'weight');
@@ -1121,19 +1119,12 @@ class PlayMenu extends Phaser.Scene {
             console.log('invalid err arg in purchaseError() in playMenuScene');
             return;
         }
-        //this.sound.play('error'); //implement when errors are done
         let errText = this.add.text((game.config.width/4 * 3) - 20, game.config.height/6, errStr, this.scenePointer.defaultTextConfig).setOrigin(0.5,0.5);
         errText.setScale(0.4);
         errText.setStyle({wordWrap: { width: 800 }})
         this.time.delayedCall(2000, () => {
             errText.destroy();
         });
-        // for(let i of this.textLineGroup.getChildren()) {
-        //     this.deselectObj(i, 'text');
-        // }
-        // for(let d of this.assignGroup.getChildren()) {
-        //     this.deselectObj(d, 'assign');
-        // }
     }
 
     //Play the signature animation 
@@ -1141,17 +1132,9 @@ class PlayMenu extends Phaser.Scene {
         console.log('Signing!')
         let signName = this.add.sprite(710, 570, 'signName');
         signName.anims.play('signAnim');
-        // let signBox = this.add.image(game.config.width/1.37, 550, 'sign').setOrigin(.5, 0);
         signName.on('animationcomplete', () => {
-            // for(let t of this.textLineGroup.getChildren()) {
-            //     this.deselectObj(t, 'text');
-            // }
-            // for(let d of this.assignGroup.getChildren()) {
-            //     this.deselectObj(d, 'assign');
-            // }
             this.deselectObj('all');
             signName.destroy();
-            // signBox.destroy();
         });
     }
 }

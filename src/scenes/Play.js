@@ -123,7 +123,6 @@ class Play extends Phaser.Scene {
         
         //Draw Background
         this.bg = this.add.tileSprite(0, 0, screenWidth, game.config.height, 'bg').setOrigin(0 ,0);
-        // this.bg = this.add.rectangle(0, 0, screenWidth, game.config.height, 0xf0f0f0).setOrigin(0 ,0);
 
         //Menu
         this.playMenu = this.add.image(10, 100, 'files').setOrigin(0 ,0);
@@ -137,12 +136,10 @@ class Play extends Phaser.Scene {
         this.anims.create({ key: 'conveyorLeft', frames: this.anims.generateFrameNumbers('conveyor', { start: 0, end: 2, first: 0}), frameRate: 12 });
         this.anims.create({ key: 'conveyorRight', frames: this.anims.generateFrameNumbers('conveyor', { start: 2, end: 0, first: 0}), frameRate: 12 });
         this.conveyorBelt = this.matter.add.image(308, 510, 'conveyor').setIgnoreGravity(true).setStatic(true);
-        //this.surface = this.matter.add.rectangle(10, 510, game.config.width, 175, 0xC4AAA4).setIgnoreGravity(true);
 
         //Make Render Layers
         this.ingLayer = this.add.layer();
         this.dispenserLayer = this.add.layer();
-        //this.ingLayer.add([this.player]);
 
         this.ingredients = this.matter.add.sprite({
             classType: Phaser.Physics.Matter.Sprite,
@@ -169,36 +166,27 @@ class Play extends Phaser.Scene {
             this.lobby = false;
         }
 
+
+        //Create dispensers
         this.dispenser1 = new Dispenser(this, 235, 0, 'dispenser', null, 'peanut', 1, this.lobby, 'roach');
         this.dispenser2 = new Dispenser(this, 345, 0, 'dispenser', null, 'raisin', 2, this.lobby, 'roach');
         this.dispenser3 = new Dispenser(this, 455, 0, 'dispenser', null, 'm&m', 3, this.lobby, 'roach');
         if(localStorage.getItem('disp4Type') == null) {
-            this.dispenser4; //Don't create dispenser4 until it is bought;
+            this.dispenser4; //Don't spawn dispenser4 until it is bought;
         } else {
             this.dispenser4 = new Dispenser(this, 565, 0, 'dispenser', null, localStorage.getItem('disp4Type'), 4, this.lobby, 'roach'); //Update x location when new sprites are added
         }
         if(localStorage.getItem('disp5Type') == null) {
-            this.dispenser5; //Don't create dispenser5 until it is bought;
+            this.dispenser5; //Don't spawn dispenser5 until it is bought;
         } else {
-            this.dispenser5 = new Dispenser(this, 675, 0, 'dispenser', null, localStorage.getItem('disp4Type'), 4, this.lobby, 'roach'); //Update x location when new sprites are added
+            this.dispenser5 = new Dispenser(this, 675, 0, 'dispenser', null, localStorage.getItem('disp5Type'), 4, this.lobby, 'roach'); //Update x location when new sprites are added
         }
 
-        // this.AlmondDispenser = new Dispenser(this, 610, 0, 'Almond');
-
+        //Create Trail Mix Bag
         this.inform = this.cache.json.get('bag_physics');
-        this.bag = this.matter.add.image(100, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });//.setIgnoreGravity(true);
-        //this.bag.setCollisionGroup(1);
-        //this.bag.setDensity(.5);
-        //this.bag.setBounce(.5);
-        // this.bag.body.collideWorldBounds = true;
+        this.bag = this.matter.add.image(100, 400, 'bag_info', 'bag.png',{ shape: this.inform.bag });
 
-        // this.bagOut = this.add.rectangle(450, 300, 100, 100, 0xD3D3D3).setOrigin(0 ,0);
-        // this.bagIn = this.add.rectangle(451, 300, 98, 99, 0xFFFFFF).setOrigin(0 ,0);
-        // this.matter.add.image(this.bagOut);
-        // this.matter.add.image(this.bagIn).setIgnoreGravity(false);
-        // this.bagOut.setData('gravityEnabled','false');
-        // this.bagIn.setData('gravityEnabled','false');
-
+        //Create tube, scale, and tracker
         this.scale = this.add.image(game.config.width - 120, 579, 'scale').setOrigin(0, 0);
         this.matter.add.gameObject(this.scale).setIgnoreGravity(true).setStatic(true);
         this.tube = this.add.rectangle(780, 0, 120, 330, 0xadd8e6).setOrigin(0 ,0);
@@ -207,23 +195,25 @@ class Play extends Phaser.Scene {
         //Current Contract Info
         this.contractBg = this.add.rectangle(735, 60, 205, 230, 0xFFFFFF).setOrigin(0 ,0);
 
+        //Initialize graphical contract info
         this.currentContract = this.add.text(838, 100, contractInfo.amountString, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(1,1);
         this.ingOne = this.add.text(838, 140, contractInfo.infoOne, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
         this.ingTwo = this.add.text(838, 180, contractInfo.infoTwo, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
         this.ingThree = this.add.text(838, 220, contractInfo.infoThree, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
         this.ingFour = this.add.text(838, 260, contractInfo.infoFour, this.defaultTextConfig).setOrigin(0.5,0.5).setScale(.5, .5);
 
-
+        //Create floor
         this.floor = this.add.rectangle(0, game.config.height-10, game.config.width, 20, 0x211244).setOrigin(0,0);
         this.matter.add.image(this.floor);
 
+        //Create trash can
         this.trash = this.add.image(10, game.config.height - 140, 'trash').setOrigin(0,0);
         this.trash.setInteractive({
             useHandCursor: true
         });
         this.trash.setDataEnabled;
 
-        //the rats
+        //The rats
         this.middleRat = this.add.image(game.config.width - 135, 30, 'rat').setOrigin(0, 0);
         this.leftRat = this.add.image(game.config.width - 165, 10, 'rat').setOrigin(0, 0);
         this.rightRat = this.add.image(game.config.width - 105, 10, 'rat').setOrigin(0, 0);
@@ -234,6 +224,7 @@ class Play extends Phaser.Scene {
             i.alpha = 0;
         }
 
+        //Create hammer
         this.hammer = this.add.image(150, 600, 'hammer').setOrigin(0 ,0);
         this.hammer.setInteractive();
         this.input.setDraggable(this.hammer);
@@ -247,9 +238,9 @@ class Play extends Phaser.Scene {
         });
 
         //Add UI element to keep track on the player's money
-        // this.moneyText = this.add.text(10, 5, 'Bank: $'+this.money, this.whiteTextConfig);
         this.moneyText = this.add.text(10, 5, 'Bank: $' + this.money, this.whiteTextConfig);
 
+        //Enable event based click interaction
         this.input.on('gameobjectdown', (pointer, gameObject, event) => {
             this.clickTarget = gameObject;
             this.clickOn(gameObject);
@@ -259,7 +250,7 @@ class Play extends Phaser.Scene {
             this.clickOff();
         });
 
-        //conveyor buttons
+        //Conveyor buttons
         this.leftArrow = this.add.image(270, 510, 'arrow').setOrigin(0,0.5);
         this.leftArrow.setFlipX(true);
         this.leftArrow.setInteractive({
@@ -294,7 +285,8 @@ class Play extends Phaser.Scene {
         this.ingThree.text = contractInfo.infoThree;
         this.ingFour.text = contractInfo.infoFour;
 
-        if(this.spawnIngredientLoop && this.frameCount % this.flowRate == 0) {
+        //Dispense ingredients when button is clicked and conditions are met
+        if(this.spawnIngredientLoop && (this.frameCount % this.flowRate) == 0) {
             for(let d of this.dispenseButtons.getChildren()) {
                 if(d == this.clickTarget) {
                     let dispPrefab = this.clickTarget.getData('prefab');
@@ -303,6 +295,7 @@ class Play extends Phaser.Scene {
             }
         }
 
+        //Rat handling
         if(this.ratEvent == true){
             if(this.middleRat.y < this.bag.y - 100) {
                 for(let i of this.theRats.getChildren()){
@@ -447,23 +440,12 @@ class Play extends Phaser.Scene {
                 }
             }
         }
-
-            // for(let i of this.ingredients.getChildren()){
-            //     if(this.container.body.hitTest(i.x,i.y) == true) {
-            //         i.setVelocity(this.container.body.velocity.x, this.container.body.velocity.y)
-            //     }
-            // }
-            // for(let i of this.ingHolder.getChildren()){
-            //     if(i.x > 750) {
-            //         i.destroy();
-            //     }
-            // }
         
+        //Auto move bag to scale when it reaches the end of the conveyor belt
         if(this.bag.x > 840 && this.lift == false){
             this.bag.setVelocity(0,0);
             for(let i of this.ingHolder.getChildren()){
                 if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                //    console.log("left called");
                     i.setVelocity(0,0);
                 }
             }
@@ -476,6 +458,7 @@ class Play extends Phaser.Scene {
             }
         }
 
+        //Hammer event
         if(this.hammer.x < this.bag.x + 50 && this.hammer.x > this.bag.x - 50 && this.hammer.y < this.bag.y + 30 && this.hammer.y > this.bag.y - 70){
             console.log('hammer time');
             for(let i of this.ingHolder.getChildren()){
@@ -504,9 +487,6 @@ class Play extends Phaser.Scene {
     }
 
     clickOn(gObj) {
-
-        // let x = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.width-100);
-        // let y = Phaser.Math.Clamp((Math.floor(Math.random()*game.config.width)), 0, game.config.height-100);
         
         if(gObj == this.playMenu) {
             if(this.scene.isSleeping("playMenuScene")){
@@ -523,13 +503,14 @@ class Play extends Phaser.Scene {
             this.playMenuText.setVisible(false);
             this.scene.pause('playScene');
         }
+
+        //Use right arrow, move bag right
         if(gObj == this.rightArrow){
             this.sideMovement = true;
             this.holder = 1;
             if(this.sideMovement == true){
                 for(let i of this.ingHolder.getChildren()){
                     if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                    //    console.log("right called");
                         i.setVelocity(7,0)
                     }
                 }
@@ -547,12 +528,13 @@ class Play extends Phaser.Scene {
                 })
             }
         }
+
+        //Use left arrow, move bag left
         if(gObj == this.leftArrow){
             this.sideMovement = true;
             if(this.sideMovement == true){
                 for(let i of this.ingHolder.getChildren()){
                     if(i.x > this.bag.x - 55 && i.x < this.bag.x + 55 && i.y > this.bag.y - 50) {
-                    //    console.log("right called");
                         i.setVelocity(-7,0)
                     }
                 }
@@ -570,16 +552,20 @@ class Play extends Phaser.Scene {
                 })
             }
         }
+
+        //When the trash is clicked, clear items from the scene
         if(gObj == this.trash){
             this.ingHolder.clear(true, true);
         }
             
+        //If the dispenser button is pushed, spawn ingredients
         for(let b of this.dispenseButtons.getChildren()) {
             if(gObj == b) {
                 this.spawnIngredientLoop = true;
             }
         }
 
+        //Refill dispenser on refillButton click
         for(let r of this.refillButtons.getChildren()) {
             if(gObj == r) {
                 let dispPrefab = gObj.getData('prefab');
@@ -596,16 +582,11 @@ class Play extends Phaser.Scene {
         }
     }
 
+    //Callback when mouse is unclicked
     clickOff() {
         this.spawnIngredientLoop = false;
         this.sideMovement = false;
     }
-
-    //Calculates money made from selling trail mix bag
-    //Mix will be an array of the weight of each ingredient contained in the bag: [Peanuts, raisins, M&Ms, Almonds] 
-    // sellMix(mix){
-    //     this.money += (0.0214 * mix[0] + 0.0208 * mix[1] / 0.5 + 0.0745 * mix[2] / 1.1 + 0.0465 * mix[3] / 1.3);         
-    // }
 
     //Call this method when spending any amount of money
     spendCash(spent) {
@@ -615,7 +596,6 @@ class Play extends Phaser.Scene {
             this.money -= spent;
         }
         this.money = this.money.toFixed(2);
-        //this.money = Number.parseFloat(this.money);
         this.moneyText.setText('Bank: $'+ this.money);
         localStorage.setItem('money', this.money);
     }
@@ -648,7 +628,7 @@ class Play extends Phaser.Scene {
 
     //Calculate the price of a bag
     calculatePrice(contents, percents) {
-        //If the bad is empty, return null
+        //If the bag is empty, return null
         if(contents.length == 0) {
             return null;
 
