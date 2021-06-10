@@ -231,7 +231,7 @@ class PlayMenu extends Phaser.Scene {
         this.nuts = ['Peanuts', 'Almonds', '???', '???'];
         this.fruits = ['Raisins', '???', '???', '???'];
         this.sweets = ['M&Ms', '???', '???', '???'];
-        this.savorys = ['???', '???', '???', '???'];
+        this.savorys = ['Pretzels', '???', '???', '???'];
         this.catText = ['A classic filler', 'Dried to Perfection', 'The best Part', 'Insert Text'];
 
         //Text Configs
@@ -386,7 +386,7 @@ class PlayMenu extends Phaser.Scene {
 
 
         //Define keys
-        keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 
     update() {
@@ -394,7 +394,7 @@ class PlayMenu extends Phaser.Scene {
             this.makeContract();
         }
 
-        if(Phaser.Input.Keyboard.JustDown(keyESC)) {
+        if(Phaser.Input.Keyboard.JustDown(this.keyESC)) {
             // for(let i of this.textLineGroup.getChildren()) {
             //     this.deselectObj(i, 'text');
             // }
@@ -1043,12 +1043,15 @@ class PlayMenu extends Phaser.Scene {
         }
         if(upgradeStr == 'Dispenser I') {
             console.log('disp4 bought');
-            this.scenePointer.dispenser4 = new Dispenser(this.scenePointer, 610, 0, 'dispenser', null, 'almond', 4, this.lobby, 'roach'); //Update x location when new sprites are added
+            // this.scenePointer.dispenser4 = new Dispenser(this.scenePointer, 610, 0, 'dispenser', null, 'almond', 4, this.lobby, 'roach'); //Update x location when new sprites are added
+            this.scenePointer.dispenser4 = new Dispenser(this.scenePointer, 565, 0, 'dispenser', null, 'almond', 4, this.lobby, 'roach'); //Update x location when new sprites are added
             localStorage.setItem('disp4Type', 'almond');
         } else if(upgradeStr == 'Dispenser II') {
             console.log('disp5 bought');
-            this.scenePointer.dispenser5 = new Dispenser(this.scenePointer, 730, 0, 'dispenser', null, 'pretzle', 5, this.lobby, 'roach'); //Update x location when new sprites are added
-            localStorage.setItem('disp5Type', 'pretzle');
+            // this.scenePointer.dispenser5 = new Dispenser(this.scenePointer, 730, 0, 'dispenser', null, 'pretzel', 5, this.lobby, 'roach'); //Update x location when new sprites are added
+            this.scenePointer.dispenser5 = new Dispenser(this.scenePointer, 675, 0, 'dispenser', null, 'pretzel', 5, this.lobby, 'roach'); //Update x location when new sprites are added
+
+            localStorage.setItem('disp5Type', 'pretzel');
         } else if(upgradeStr == 'Bag 2x') {
             this.scenePointer.bagMultiplier = 2;
             localStorage.setItem('bagMult', 2);

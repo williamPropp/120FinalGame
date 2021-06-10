@@ -164,7 +164,10 @@ class Dispenser extends Phaser.GameObjects.Sprite {
         let newWeight = this.getIngredientData(newType, 'weight');
 
         this.ingredientType = newType;
-        this.maxIngredients = Math.round(this.scene.binWeight / newWeight);
+        // console.log(scene);
+        console.log(this.scene);
+        // console.log(this.scene.binWeight);
+        this.maxIngredients = Math.round(/*this.scene.binWeight*/ 1000 / newWeight);
         this.numIngredients = this.maxIngredients;
         this.priceToRefill = 0;
         this.refillMeter.height = 75;
@@ -202,6 +205,11 @@ class Dispenser extends Phaser.GameObjects.Sprite {
             ingWeight = 1.3;
             ingPrice = 0.028;
             ingValue = 0.0465;
+        } else if(type == "pretzel"){
+            ingColor = 0x523f0a;
+            ingWeight = 1.7;
+            ingPrice = 0.035;
+            ingValue = 0.0535;
         } else if(type == "roach"){
             ingColor = 0x523f0a;
             ingWeight = 1.5;

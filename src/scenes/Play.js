@@ -19,6 +19,7 @@ class Play extends Phaser.Scene {
         this.load.image('almond', 'almond.png');
         this.load.image('peanut', 'peanut.png');
         this.load.image('raisin', 'raisin.png');
+        this.load.image('pretzel', 'pretzel.png');
         this.load.audio('dispense', 'dispenserNoise.mp3');
         this.load.audio('soundtrack', 'PlayTrack.mp3');
         this.load.audio('emptyDispenser', 'dispenserEmpty.mp3');
@@ -168,18 +169,18 @@ class Play extends Phaser.Scene {
             this.lobby = false;
         }
 
-        this.dispenser1 = new Dispenser(this, 250, 0, 'dispenser', null, 'peanut', 1, this.lobby, 'roach');
-        this.dispenser2 = new Dispenser(this, 370, 0, 'dispenser', null, 'raisin', 2, this.lobby, 'roach');
-        this.dispenser3 = new Dispenser(this, 490, 0, 'dispenser', null, 'm&m', 3, this.lobby, 'roach');
+        this.dispenser1 = new Dispenser(this, 235, 0, 'dispenser', null, 'peanut', 1, this.lobby, 'roach');
+        this.dispenser2 = new Dispenser(this, 345, 0, 'dispenser', null, 'raisin', 2, this.lobby, 'roach');
+        this.dispenser3 = new Dispenser(this, 455, 0, 'dispenser', null, 'm&m', 3, this.lobby, 'roach');
         if(localStorage.getItem('disp4Type') == null) {
             this.dispenser4; //Don't create dispenser4 until it is bought;
         } else {
-            this.dispenser4 = new Dispenser(this, 610, 0, 'dispenser', null, localStorage.getItem('disp4Type'), 4, this.lobby, 'roach'); //Update x location when new sprites are added
+            this.dispenser4 = new Dispenser(this, 565, 0, 'dispenser', null, localStorage.getItem('disp4Type'), 4, this.lobby, 'roach'); //Update x location when new sprites are added
         }
         if(localStorage.getItem('disp5Type') == null) {
             this.dispenser5; //Don't create dispenser5 until it is bought;
         } else {
-            this.dispenser5 = new Dispenser(this, 730, 0, null, null, 'empty', 5); //Update x location when new sprites are added
+            this.dispenser5 = new Dispenser(this, 675, 0, 'dispenser', null, localStorage.getItem('disp4Type'), 4, this.lobby, 'roach'); //Update x location when new sprites are added
         }
 
         // this.AlmondDispenser = new Dispenser(this, 610, 0, 'Almond');
