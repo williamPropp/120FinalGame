@@ -33,7 +33,6 @@ class PlayMenu extends Phaser.Scene {
 
         //create signature animation
         this.anims.create({ key: 'signAnim', frames: this.anims.generateFrameNumbers('signName', { start: 0, end: 34, first: 0}), frameRate: 24 });
-        // this.signName = this.add.image(305, 510, 'signName')
 
         this.signature = this.add.image(game.config.width/1.37, 550, 'sign').setOrigin(.5, 0);
         this.signature.setInteractive({
@@ -44,28 +43,6 @@ class PlayMenu extends Phaser.Scene {
 
         this.currentTab = 'main';
         this.element = -1;
-
-        //tab setup
-        // this.mainTab = this.add.image(83, game.config.height/9, 'plain').setOrigin(0, 0);
-        // this.mainTab.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.mainTab.setDataEnabled;
-        // this.upgradeTab = this.add.image(83, game.config.height/9*2.8, 'green').setOrigin(0, 0);
-        // this.upgradeTab.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.upgradeTab.setDataEnabled;
-        // this.contractTab = this.add.image(83, game.config.height/9*4.6, 'red').setOrigin(0, 0);
-        // this.contractTab.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.contractTab.setDataEnabled;
-        // this.buyTab = this.add.image(83, game.config.height/9*6.4, 'blue').setOrigin(0, 0);
-        // this.buyTab.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.buyTab.setDataEnabled;
 
         //tab setup
         this.mainTab = this.add.image(83, game.config.height/9, 'plain').setOrigin(0, 0);
@@ -83,48 +60,6 @@ class PlayMenu extends Phaser.Scene {
             t.setDataEnabled;
         }
         this.contractTab.alpha = 0;
-
-        //post-it setup
-        // this.postIt = this.add.image(150, 70, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        // this.postIt.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.postIt.setDataEnabled;
-        // this.postItTwo = this.add.image(300, 70, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        // this.postItTwo.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.postItTwo.setDataEnabled;
-        // this.postItThree = this.add.image(150, 220, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        // this.postItThree.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.postItThree.setDataEnabled;
-        // this.postItFour = this.add.image(300, 220, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        // this.postItFour.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.postItFour.setDataEnabled;
-        // this.postItFive = this.add.image(150, 370, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        // this.postItFive.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.postItFive.setDataEnabled;
-        // this.postItSix = this.add.image(300, 370, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        // this.postItSix.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.postItSix.setDataEnabled;
-        // this.postItSeven = this.add.image(150, 520, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        // this.postItSeven.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.postItSeven.setDataEnabled;
-        // this.postItEight = this.add.image(300, 520, 'post').setOrigin(0, 0).setTint(0xFAF28C);
-        // this.postItEight.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.postItEight.setDataEnabled;
 
         //Create post-its
         this.postIt = this.add.image(150, 70, 'post').setOrigin(0, 0).setTint(0xFAF28C);
@@ -153,33 +88,6 @@ class PlayMenu extends Phaser.Scene {
             });
         }
         this.clickAction = false;
-
-        //buttons
-        // this.assignOne  = this.add.image(560, 510, 'first').setOrigin(0,0);
-        // this.assignOne.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.assignOne.setDataEnabled;
-        // this.assignTwo  = this.add.image(620, 510, 'second').setOrigin(0,0);
-        // this.assignTwo.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.assignTwo.setDataEnabled;
-        // this.assignThree  = this.add.image(680, 510, 'third').setOrigin(0,0);
-        // this.assignThree.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.assignThree.setDataEnabled;
-        // this.assignFour  = this.add.image(740, 510, 'fourth').setOrigin(0,0);
-        // this.assignFour.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.assignFour.setDataEnabled;
-        // this.assignFive  = this.add.image(800, 510, 'fifth').setOrigin(0,0);
-        // this.assignFive.setInteractive({
-        //     useHandCursor: true
-        // });
-        // this.assignFive.setDataEnabled;
 
         //Create dispenser selector buttons for ingredient tab
         this.assignOne  = this.add.image(560, 510, 'first').setOrigin(0,0);
@@ -395,12 +303,6 @@ class PlayMenu extends Phaser.Scene {
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.keyESC)) {
-            // for(let i of this.textLineGroup.getChildren()) {
-            //     this.deselectObj(i, 'text');
-            // }
-            // for(let d of this.assignGroup.getChildren()) {
-            //     this.deselectObj(d, 'assign');
-            // }
             this.deselectObj('all');
             this.scene.sleep('playMenuScene');
             this.scene.resume('playScene');
@@ -529,7 +431,7 @@ class PlayMenu extends Phaser.Scene {
                 this.count = 0;
                 for(let i of this.noteHolder.getChildren()){
                     i.alpha = 1;
-                    i.text = this.categories[this.count];//this.openIng[this.count];
+                    i.text = this.categories[this.count];
                     this.count++;
                 }
                 this.boldOne.text = 'Restock at your';
@@ -558,147 +460,9 @@ class PlayMenu extends Phaser.Scene {
                     }
                 }
             }
-            // //post-it clicks
-            // if(gameObject == this.postIt && this.clickAction == false) {
-            //     this.element = 0;
-            //     this.signature.alpha = 1;
-            //     if (this.currentTab == 'upgrades') {
-            //         this.getUpgrades(this.element);
-            //     }
-            //     else if(this.currentTab == 'contracts'){
-            //         this.getContracts(this.element);
-            //     }
-            //     else if(this.currentTab == 'buy'){
-            //         this.getBuys(this.element);
-            //         for(let i of this.assignGroup.getChildren()) {
-            //             i.alpha = 1;
-            //         }
-            //     }
-            // }
-
-            // if(gameObject == this.postItTwo && this.clickAction == false) {
-            //     this.element = 1;
-            //     this.signature.alpha = 1;
-            //     if (this.currentTab == 'upgrades') {
-            //         this.getUpgrades(this.element);
-            //     }
-            //     else if(this.currentTab == 'contracts'){
-            //         this.getContracts(this.element);
-            //     }
-            //     else if(this.currentTab == 'buy'){
-            //         this.getBuys(this.element);
-            //         for(let i of this.assignGroup.getChildren()) {
-            //             i.alpha = 1;
-            //         }
-            //     }
-            // }
-            // if(gameObject == this.postItThree && this.clickAction == false) {
-            //     this.element = 2;
-            //     this.signature.alpha = 1;
-            //     if (this.currentTab == 'upgrades') {
-            //         this.getUpgrades(this.element);
-            //     }
-            //     else if(this.currentTab == 'contracts'){
-            //         this.getContracts(this.element);
-            //     }
-            //     else if(this.currentTab == 'buy'){
-            //         this.getBuys(this.element);
-            //         for(let i of this.assignGroup.getChildren()) {
-            //             i.alpha = 1;
-            //         }
-            //     }
-
-            // }
-            // if(gameObject == this.postItFour && this.clickAction == false) {
-            //     this.element = 3;
-            //     this.signature.alpha = 1;
-            //     if (this.currentTab == 'upgrades') {
-            //         this.getUpgrades(this.element);
-            //     }
-            //     else if(this.currentTab == 'contracts'){
-            //         this.getContracts(this.element);
-            //     }
-            //     else if(this.currentTab == 'buy'){
-            //         this.getBuys(this.element);
-            //         for(let i of this.assignGroup.getChildren()) {
-            //             i.alpha = 1;
-            //         }
-            //     }
-            // }
-            // if(gameObject == this.postItFive && this.clickAction == false) {
-            //     this.element = 4;
-            //     this.signature.alpha = 1;
-            //     if (this.currentTab == 'upgrades') {
-            //         this.getUpgrades(this.element);
-            //     }
-            //     else if(this.currentTab == 'contracts'){
-            //         this.getContracts(this.element);
-            //     }
-            //     else if(this.currentTab == 'buy'){
-            //         this.getBuys(this.element);
-            //         for(let i of this.assignGroup.getChildren()) {
-            //             i.alpha = 1;
-            //         }
-            //     }
-            // }
-            // if(gameObject == this.postItSix && this.clickAction == false) {
-            //     this.element = 5;
-            //     this.signature.alpha = 1;
-            //     if (this.currentTab == 'upgrades') {
-            //         this.getUpgrades(this.element);
-            //     }
-            //     else if(this.currentTab == 'contracts'){
-            //         this.getContracts(this.element);
-            //     }
-            //     else if(this.currentTab == 'buy'){
-            //         this.getBuys(this.element);
-            //         for(let i of this.assignGroup.getChildren()) {
-            //             i.alpha = 1;
-            //         }
-            //     }
-            // }
-            // if(gameObject == this.postItSeven && this.clickAction == false) {
-            //     this.element = 6;
-            //     this.signature.alpha = 1;
-            //     if (this.currentTab == 'upgrades') {
-            //         this.getUpgrades(this.element);
-            //     }
-            //     else if(this.currentTab == 'contracts'){
-            //         this.getContracts(this.element);
-            //     }
-            //     else if(this.currentTab == 'buy'){
-            //         this.getBuys(this.element);
-            //         for(let i of this.assignGroup.getChildren()) {
-            //             i.alpha = 1;
-            //         }
-            //     }
-            // }
-            // if(gameObject == this.postItEight && this.clickAction == false) {
-            //     this.element = 7;
-            //     this.signature.alpha = 1;
-            //     if (this.currentTab == 'upgrades') {
-            //         this.getUpgrades(this.element);
-            //     }
-            //     else if(this.currentTab == 'contracts'){
-            //         this.getContracts(this.element);
-            //     }
-            //     else if(this.currentTab == 'buy'){
-            //         this.getBuys(this.element);
-            //         for(let i of this.assignGroup.getChildren()) {
-            //             i.alpha = 1;
-            //         }
-            //     }
-            // }
 
 
             if(gameObject == this.signature && this.clickAction == false) {
-                // console.log('Signing!')
-                // //play signing animation
-                // let signName = this.add.sprite(710, 570, 'signName');
-                // signName.anims.play('signAnim');
-                // this.time.delayedCall(3000, () => {
-                //     signName.destroy();
-                // });
 
                 if(this.currentTab == 'upgrades') {
                     console.log('upgrading!!')
@@ -857,28 +621,6 @@ class PlayMenu extends Phaser.Scene {
         this.boldTwo.text = this.catText[element];
 
         let textIndex = 0;
-
-        // if(element == 0){
-        //     this.lineOne.text = this.nuts[0];
-        //     this.lineTwo.text = this.nuts[1];
-        //     this.lineThree.text = this.nuts[2];
-        //     this.lineFour.text = this.nuts[3];
-        // } else if(element == 1){
-        //     this.lineOne.text = this.fruits[0];
-        //     this.lineTwo.text = this.fruits[1];
-        //     this.lineThree.text = this.fruits[2];
-        //     this.lineFour.text = this.fruits[3];
-        // } else if(element == 2){
-        //     this.lineOne.text = this.sweets[0];
-        //     this.lineTwo.text = this.sweets[1];
-        //     this.lineThree.text = this.sweets[2];
-        //     this.lineFour.text = this.sweets[3];
-        // } else if(element == 3){
-        //     this.lineOne.text = this.savorys[0];
-        //     this.lineTwo.text = this.savorys[1];
-        //     this.lineThree.text = this.savorys[2];
-        //     this.lineFour.text = this.savorys[3];
-        // }
 
         for(let t of this.textLineGroup.getChildren()) {
             if(element == 0){
