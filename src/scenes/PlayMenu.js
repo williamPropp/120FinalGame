@@ -173,7 +173,7 @@ class PlayMenu extends Phaser.Scene {
         this.openContracts = {
             postName: 'Contracts',
             infoName: 'Sell your labor!',
-            cost: 0,
+            cost: 5,
             priceTag: 'Price: $5',
             infoOne: 'Pay this fee to',
             infoTwo: 'open up the world',
