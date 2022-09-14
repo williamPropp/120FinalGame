@@ -182,7 +182,7 @@ class PlayMenu extends Phaser.Scene {
         this.bag2x = {
             postName: 'Bag 2x',
             infoName: 'Fill twice as much!',
-            cost: 0,
+            cost: 20,
             priceTag: 'Price: $20',
             infoOne: 'With new deep pocket',
             infoTwo: 'technology your bags are',
@@ -191,7 +191,7 @@ class PlayMenu extends Phaser.Scene {
         this.dispenserOne = {
             postName: 'Dispenser I',
             infoName: 'Insert Text',
-            cost: 0,
+            cost: 50,
             priceTag: 'Price: $50',
             infoOne: 'Fill your bags with',
             infoTwo: 'one more ingredient!',
@@ -200,7 +200,7 @@ class PlayMenu extends Phaser.Scene {
         this.bag4x = {
             postName: 'Bag 4x',
             infoName: 'Fill 4x as much!',
-            cost: 0,
+            cost: 50,
             priceTag: 'Price: $50',
             infoOne: 'Warp reality to your',
             infoTwo: 'will and redefine the',
@@ -209,7 +209,7 @@ class PlayMenu extends Phaser.Scene {
         this.dispenserTwo = {
             postName: 'Dispenser II',
             infoName: 'Insert Text',
-            cost: 0,
+            cost: 50,
             priceTag: 'Price: $50',
             infoOne: 'Another chance to',
             infoTwo: 'increase the mixing',
@@ -218,7 +218,7 @@ class PlayMenu extends Phaser.Scene {
         this.bag8x = {
             postName: 'Bag 8x',
             infoName: 'Fill 8x as much!',
-            cost: 0,
+            cost: 500,
             priceTag: 'Price: $500',
             infoOne: 'A spacial rift in an',
             infoTwo: 'unstable trail mix bag',
@@ -227,7 +227,7 @@ class PlayMenu extends Phaser.Scene {
         this.bag16x = {
             postName: 'Bag 16x',
             infoName: 'Fill 16x as much!',
-            cost: 0,
+            cost: 5000,
             priceTag: 'Price: $5,000',
             infoOne: 'A pocket dimension in',
             infoTwo: 'the palm of you hand,',
@@ -236,7 +236,7 @@ class PlayMenu extends Phaser.Scene {
         this.lobbyOne = {
             postName: 'Lobby I',
             infoName: 'Democracy at work',
-            cost: 0,
+            cost: 5000,
             priceTag: 'Price: $5,000',
             infoOne: 'Regulations just hinder',
             infoTwo: 'production. Fix labor',
@@ -245,7 +245,7 @@ class PlayMenu extends Phaser.Scene {
         this.lobbyTwo = {
             postName: 'Lobby II',
             infoName: 'Democracy?',
-            cost: 0,
+            cost: 5000,
             priceTag: 'Price: $5,000',
             infoOne: 'Fund a senator to',
             infoTwo: 'gain the upper hand.',
@@ -254,7 +254,7 @@ class PlayMenu extends Phaser.Scene {
         this.lobbyThree = {
             postName: 'Lobby III',
             infoName: 'Liberation ',
-            cost: 0,
+            cost: 5000,
             priceTag: 'Price: $5,000',
             infoOne: 'Your senetor friend is',
             infoTwo: 'running for president.',
