@@ -466,7 +466,7 @@ class PlayMenu extends Phaser.Scene {
 
                 if(this.currentTab == 'upgrades') {
                     console.log('upgrading!!')
-                    if(this.scenePointer.money > this.upgrades[this.element].cost){
+                    if(this.scenePointer.money >= this.upgrades[this.element].cost){
 
                         this.scenePointer.spendCash(this.upgrades[this.element].cost);
                         this.buyUpgrades(this.upgrades[this.element].postName, this.upgrades[this.element].cost);
